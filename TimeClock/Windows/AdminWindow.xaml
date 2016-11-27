@@ -1,0 +1,29 @@
+﻿<Window x:Name="windowAdmin" x:Class="TimeClock.AdminWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TimeClock"
+        mc:Ignorable="d"
+        Title="Admin" ResizeMode="NoResize" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" FontFamily="Segoe UI Semibold" FontSize="17" Closing="windowAdmin_Closing" Icon="TimeClock.ico">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Button x:Name="btnNewUser" Grid.Row="0" Width="150" Height="30" Content="_New User" Margin="10" Click="btnNewUser_Click" />
+        <Button x:Name="btnEditUser" Grid.Row="1" Width="150" Height="30" Content="_Edit User" Margin="10" Click="btnEditUser_Click" />
+        <Button x:Name="btnEditTimes" Grid.Row="2" Width="150" Height="30" Content="_Edit Times" Margin="10" Click="btnEditTimes_Click" />
+        <Button x:Name="btnLogOutAll" Grid.Row="3" Width="150" Height="30" Content="_Log Out All" Margin="10" Click="btnLogOutAll_Click" />
+        <Button x:Name="btnChangePassword" Grid.Row="4" Width="150" Height="30" Content="_Change Password" Margin="10" Click="btnChangePassword_Click" />
+        <Button x:Name="btnBack" Grid.Row="5" Width="150" Height="30" Content="_Back" Margin="10" Click="btnBack_Click" IsCancel="True" />
+    </Grid>
+</Window>
