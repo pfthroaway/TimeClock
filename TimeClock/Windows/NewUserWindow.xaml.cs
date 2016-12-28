@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,30 +6,24 @@ using System.Windows.Input;
 
 namespace TimeClock
 {
-    /// <summary>
-    /// Interaction logic for NewUserWindow.xaml
-    /// </summary>
-    public partial class NewUserWindow : Window
+    /// <summary>Interaction logic for NewUserWindow.xaml</summary>
+    public partial class NewUserWindow
     {
-        internal AdminWindow RefToAdminWindow { get; set; }
+        internal AdminWindow RefToAdminWindow { private get; set; }
 
-        /// <summary>
-        /// Checks each box has text to determine if Submit button should be enabled.
-        /// </summary>
+        /// <summary>Checks each box has text to determine if Submit button should be enabled.</summary>
         private void CheckInput()
         {
-            if (txtID.Text.Length > 0 && txtFirstName.Text.Length > 0 && txtLastName.Text.Length > 0 && pswdPassword.Password.Length > 0 && pswdConfirm.Password.Length > 0)
-                btnSubmit.IsEnabled = true;
-            else
-                btnSubmit.IsEnabled = false;
+            btnSubmit.IsEnabled = txtID.Text.Length > 0 && txtFirstName.Text.Length > 0 && txtLastName.Text.Length > 0 &&
+                                  pswdPassword.Password.Length > 0 && pswdConfirm.Password.Length > 0;
         }
 
         #region Button-Click Methods
 
         private void btnSubmit_Click(object sender, RoutedEventArgs e)
         {
-            if (AppState.AllUsers.Where(user => user.ID == txtID.Text).Count() > 0)
-                MessageBox.Show("This user ID has already been taken.", "Time Clock", MessageBoxButton.OK);
+            if (AppState.AllUsers.Count(user => user.ID == txtID.Text) > 0)
+                new Notification("This user ID has already been taken.", "Time Clock", NotificationButtons.OK, this).ShowDialog();
             else
             {
                 if (txtID.Text.Length >= 4 && txtFirstName.Text.Length >= 2 && txtLastName.Text.Length >= 2 && pswdPassword.Password.Length >= 4 && pswdConfirm.Password.Length >= 4)
@@ -42,10 +35,10 @@ namespace TimeClock
                         CloseWindow();
                     }
                     else
-                        MessageBox.Show("Please ensure the passwords match.", "Time Clock", MessageBoxButton.OK);
+                        new Notification("Please ensure the passwords match.", "Time Clock", NotificationButtons.OK, this).ShowDialog();
                 }
                 else
-                    MessageBox.Show("Please ensure the user ID and password are at least 4 characters long, and first and last names are at least 2 characters long.", "Sulimn", MessageBoxButton.OK);
+                    new Notification("Please ensure the user ID and password are at least 4 characters long, and first and last names are at least 2 characters long.", "Sulimn", NotificationButtons.OK, this).ShowDialog();
             }
         }
 
@@ -58,9 +51,7 @@ namespace TimeClock
 
         #region Window-Manipulation Methods
 
-        /// <summary>
-        /// Closes the Window.
-        /// </summary>
+        /// <summary>Closes the Window.</summary>
         private void CloseWindow()
         {
             this.Close();
@@ -71,41 +62,19 @@ namespace TimeClock
             InitializeComponent();
         }
 
-        private void txtID_GotFocus(object sender, RoutedEventArgs e)
+        private void txt_GotFocus(object sender, RoutedEventArgs e)
         {
-            txtID.Focus();
+            Functions.TextBoxGotFocus(sender);
         }
 
-        private void txtFirstName_GotFocus(object sender, RoutedEventArgs e)
+        private void pswd_GotFocus(object sender, RoutedEventArgs e)
         {
-            txtFirstName.Focus();
-        }
-
-        private void txtLastName_GotFocus(object sender, RoutedEventArgs e)
-        {
-            txtLastName.Focus();
-        }
-
-        private void pswdPassword_GotFocus(object sender, RoutedEventArgs e)
-        {
-            pswdPassword.Focus();
-        }
-
-        private void pswdConfirm_GotFocus(object sender, RoutedEventArgs e)
-        {
-            pswdConfirm.Focus();
+            Functions.PasswordBoxGotFocus(sender);
         }
 
         private void txtName_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            Key k = e.Key;
-
-            List<bool> keys = AppState.GetListOfKeys(Key.Back, Key.Delete, Key.Home, Key.End, Key.LeftShift, Key.RightShift, Key.Enter, Key.Tab, Key.LeftAlt, Key.RightAlt, Key.Left, Key.Right, Key.LeftCtrl, Key.RightCtrl, Key.Escape);
-
-            if (keys.Any(key => key == true) || Key.A <= k && k <= Key.Z)
-                e.Handled = false;
-            else
-                e.Handled = true;
+            Functions.PreviewKeyDown(e, KeyType.Letters);
         }
 
         private void txt_TextChanged(object sender, TextChangedEventArgs e)

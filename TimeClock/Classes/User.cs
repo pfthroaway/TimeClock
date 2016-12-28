@@ -6,37 +6,34 @@ namespace TimeClock
     internal class User : INotifyPropertyChanged, IEquatable<User>
     {
         private string _id, _firstName, _lastName, _password;
-        private bool _loggedIn = false;
+        private bool _loggedIn;
 
         #region Properties
 
         public string ID
         {
             get { return _id; }
-            set { _id = value; OnPropertyChanged("ID"); }
+            private set { _id = value; OnPropertyChanged("ID"); }
         }
 
         public string FirstName
         {
             get { return _firstName; }
-            set { _firstName = value; OnPropertyChanged("FirstName"); OnPropertyChanged("Names"); }
+            private set { _firstName = value; OnPropertyChanged("FirstName"); OnPropertyChanged("Names"); }
         }
 
         public string LastName
         {
             get { return _lastName; }
-            set { _lastName = value; OnPropertyChanged("LastName"); OnPropertyChanged("Names"); }
+            private set { _lastName = value; OnPropertyChanged("LastName"); OnPropertyChanged("Names"); }
         }
 
-        public string Names
-        {
-            get { return LastName + ", " + FirstName; }
-        }
+        public string Names => LastName + ", " + FirstName;
 
         public string Password
         {
             get { return _password; }
-            set { _password = value; OnPropertyChanged("Password"); }
+            private set { _password = value; OnPropertyChanged("Password"); }
         }
 
         public bool LoggedIn
@@ -62,7 +59,7 @@ namespace TimeClock
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged(string property)
+        private void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
@@ -71,7 +68,7 @@ namespace TimeClock
 
         #region Override Operators
 
-        public static bool Equals(User left, User right)
+        private static bool Equals(User left, User right)
         {
             if (ReferenceEquals(null, left) && ReferenceEquals(null, right)) return true;
             if (ReferenceEquals(null, left) ^ ReferenceEquals(null, right)) return false;
@@ -112,16 +109,12 @@ namespace TimeClock
 
         #region Constructors
 
-        /// <summary>
-        /// Initializes a default instance of User.
-        /// </summary>
+        /// <summary>Initializes a default instance of User.</summary>
         internal User()
         {
         }
 
-        /// <summary>
-        /// Initalizes an instance of User by assigning Properties.
-        /// </summary>
+        /// <summary>Initalizes an instance of User by assigning Properties.</summary>
         /// <param name="id">User's ID</param>
         /// <param name="firstName">User's First name</param>
         /// <param name="lastName">User's Last name</param>
@@ -136,9 +129,7 @@ namespace TimeClock
             LoggedIn = loggedIn;
         }
 
-        /// <summary>
-        /// Replaces this instance of User with another instance.
-        /// </summary>
+        /// <summary>Replaces this instance of User with another instance.</summary>
         /// <param name="otherUser">Instance of User to replace this one</param>
         internal User(User otherUser)
         {

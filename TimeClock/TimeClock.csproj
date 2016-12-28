@@ -81,6 +81,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\Functions.cs" />
+    <Compile Include="Classes\SortAdorner.cs" />
     <Compile Include="Windows\AdminChangePasswordWindow.xaml.cs">
       <DependentUpon>AdminChangePasswordWindow.xaml</DependentUpon>
     </Compile>
@@ -93,6 +95,9 @@
     </Compile>
     <Compile Include="Classes\Shift.cs" />
     <Compile Include="Classes\AppState.cs" />
+    <Compile Include="Windows\Notification.xaml.cs">
+      <DependentUpon>Notification.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\TimeClockWindow.xaml.cs">
       <DependentUpon>TimeClockWindow.xaml</DependentUpon>
     </Compile>
@@ -134,6 +139,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\Notification.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\TimeClockWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -172,12 +181,20 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="TimeClock.sqlite">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Windows\TimeClock.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Information.png" />
+    <Resource Include="Images\RedTriangle.png" />
+    <Resource Include="Images\YellowTriangle.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.103\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.103\build\net451\System.Data.SQLite.Core.targets')" />

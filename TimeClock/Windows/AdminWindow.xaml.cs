@@ -4,19 +4,16 @@ using System.Windows;
 
 namespace TimeClock
 {
-    /// <summary>
-    /// Interaction logic for AdminWindow.xaml
-    /// </summary>
-    public partial class AdminWindow : Window
+    /// <summary>Interaction logic for AdminWindow.xaml</summary>
+    public partial class AdminWindow
     {
-        internal MainWindow RefToMainWindow { get; set; }
+        internal MainWindow RefToMainWindow { private get; set; }
 
         #region Button-Click Methods
 
         private void btnNewUser_Click(object sender, RoutedEventArgs e)
         {
-            NewUserWindow newUserWindow = new NewUserWindow();
-            newUserWindow.RefToAdminWindow = this;
+            NewUserWindow newUserWindow = new NewUserWindow { RefToAdminWindow = this };
             newUserWindow.Show();
             this.Visibility = Visibility.Hidden;
         }
@@ -37,16 +34,18 @@ namespace TimeClock
                 foreach (Shift shft in loggedIn)
                     await AppState.LogOut(AppState.AllUsers.Find(user => user.ID == shft.ID));
 
-                MessageBox.Show("All users now logged out.", "Time Clock", MessageBoxButton.OK);
+                new Notification("All users now logged out.", "Time Clock", NotificationButtons.OK, this).ShowDialog();
             }
             else
-                MessageBox.Show("All users are currently logged out.", "Time Clock", MessageBoxButton.OK);
+                new Notification("All users are currently logged out.", "Time Clock", NotificationButtons.OK, this).ShowDialog();
         }
 
         private void btnChangePassword_Click(object sender, RoutedEventArgs e)
         {
-            AdminChangePasswordWindow adminChangePasswordWindow = new AdminChangePasswordWindow();
-            adminChangePasswordWindow.RefToAdminWindow = this;
+            AdminChangePasswordWindow adminChangePasswordWindow = new AdminChangePasswordWindow
+            {
+                RefToAdminWindow = this
+            };
             adminChangePasswordWindow.Show();
             this.Visibility = Visibility.Hidden;
         }
@@ -60,9 +59,7 @@ namespace TimeClock
 
         #region Window-Manipulation Methods
 
-        /// <summary>
-        /// Closes the Window.
-        /// </summary>
+        /// <summary>Closes the Window.</summary>
         private void CloseWindow()
         {
             this.Close();

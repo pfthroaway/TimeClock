@@ -2,20 +2,21 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using System.Globalization;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
 
 namespace TimeClock
 {
     internal static class AppState
     {
+        // ReSharper disable once InconsistentNaming
         private const string _DBPROVIDERANDSOURCE = "Data Source = TimeClock.sqlite;Version=3";
+
         private static string _adminPassword;
         internal static User CurrentUser = new User();
-        internal static List<Shift> CurrentUserTimes = new List<Shift>();
-        internal static List<User> AllUsers = new List<User>();
-        internal static List<Shift> CurrentlyLoggedIn = new List<Shift>();
+        internal static readonly List<Shift> CurrentUserTimes = new List<Shift>();
+        internal static readonly List<User> AllUsers = new List<User>();
+        internal static readonly List<Shift> CurrentlyLoggedIn = new List<Shift>();
 
         public static string AdminPassword
         {
@@ -23,29 +24,14 @@ namespace TimeClock
             set { _adminPassword = value; ChangeAdminPassword(); }
         }
 
-        /// <summary>
-        /// Turns several Keyboard.Keys into a list of Keys which can be tested using List.Any.
-        /// </summary>
-        /// <param name="keys">Array of Keys</param>
-        /// <returns></returns>
-        internal static List<bool> GetListOfKeys(params Key[] keys)
-        {
-            List<bool> allKeys = new List<bool>();
-            foreach (Key key in keys)
-                allKeys.Add(Keyboard.IsKeyDown(key));
-            return allKeys;
-        }
-
-        /// <summary>
-        /// Loads all the selected User's times from the database.
-        /// </summary>
+        /// <summary>Loads all the selected User's times from the database.</summary>
         /// <param name="user">User whose times are loaded from the database</param>
         /// <returns>True</returns>
         internal static async Task<bool> LoadUserTimes(User user)
         {
             CurrentUserTimes.Clear();
             SQLiteConnection con = new SQLiteConnection();
-            SQLiteDataAdapter da = new SQLiteDataAdapter();
+            SQLiteDataAdapter da;
             DataSet ds = new DataSet();
             con.ConnectionString = _DBPROVIDERANDSOURCE;
 
@@ -65,29 +51,26 @@ namespace TimeClock
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Error Loading Times", MessageBoxButton.OK);
+                    new Notification(ex.Message, "Error Loading Times", NotificationButtons.OK).ShowDialog();
                 }
                 finally { con.Close(); }
             });
             return true;
         }
 
-        /// <summary>
-        /// Logs in a User.
-        /// </summary>
+        /// <summary>Logs in a User.</summary>
         /// <param name="loginUser">User logging in</param>
         internal static async Task<bool> LogIn(User loginUser)
         {
             SQLiteCommand cmd = new SQLiteCommand();
-            SQLiteConnection con = new SQLiteConnection();
-            con.ConnectionString = _DBPROVIDERANDSOURCE;
+            SQLiteConnection con = new SQLiteConnection { ConnectionString = _DBPROVIDERANDSOURCE };
 
             string sql = "INSERT INTO LoggedInUsers([ID],[TimeIn])VALUES(@id,@timeIn)";
 
             cmd.CommandType = CommandType.Text;
             cmd.CommandText = sql;
             cmd.Parameters.AddWithValue("@id", loginUser.ID);
-            cmd.Parameters.AddWithValue("@timeIn", DateTime.Now.ToString());
+            cmd.Parameters.AddWithValue("@timeIn", DateTime.Now.ToString(CultureInfo.InvariantCulture));
             await Task.Factory.StartNew(() =>
             {
                 try
@@ -108,7 +91,7 @@ namespace TimeClock
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Error Logging In", MessageBoxButton.OK);
+                    new Notification(ex.Message, "Error Logging In", NotificationButtons.OK).ShowDialog();
                 }
                 finally { con.Close(); }
             });
@@ -116,15 +99,12 @@ namespace TimeClock
             return true;
         }
 
-        /// <summary>
-        /// Logs out a User.
-        /// </summary>
+        /// <summary>Logs out a User.</summary>
         /// <param name="logOutUser">User logging out</param>
         internal static async Task<bool> LogOut(User logOutUser)
         {
             SQLiteCommand cmd = new SQLiteCommand();
-            SQLiteConnection con = new SQLiteConnection();
-            con.ConnectionString = _DBPROVIDERANDSOURCE;
+            SQLiteConnection con = new SQLiteConnection { ConnectionString = _DBPROVIDERANDSOURCE };
             DateTime shiftStartTime = CurrentlyLoggedIn.Find(shift => shift.ID == logOutUser.ID).ShiftStart;
             DateTime logOutTime = DateTime.Now;
             string sql = "INSERT INTO Times([ID],[TimeIn],[TimeOut])VALUES(@id,@timeIn,@timeOut)";
@@ -132,8 +112,8 @@ namespace TimeClock
             cmd.CommandType = CommandType.Text;
             cmd.CommandText = sql;
             cmd.Parameters.AddWithValue("@id", logOutUser.ID);
-            cmd.Parameters.AddWithValue("@timeIn", shiftStartTime.ToString());
-            cmd.Parameters.AddWithValue("@timeOut", logOutTime.ToString());
+            cmd.Parameters.AddWithValue("@timeIn", shiftStartTime.ToString(CultureInfo.InvariantCulture));
+            cmd.Parameters.AddWithValue("@timeOut", logOutTime.ToString(CultureInfo.InvariantCulture));
             await Task.Factory.StartNew(() =>
             {
                 try
@@ -152,29 +132,26 @@ namespace TimeClock
                     CurrentlyLoggedIn.Remove(CurrentlyLoggedIn.Find(shift => shift.ID == logOutUser.ID));
                     logOutUser.LoggedIn = false;
                     AllUsers.Find(user => user.ID == logOutUser.ID).LoggedIn = false;
-                    cmd.CommandText = "UPDATE Users SET [LoggedIn] = @loggedIn WHERE [ID] = @id"; ;
+                    cmd.CommandText = "UPDATE Users SET [LoggedIn] = @loggedIn WHERE [ID] = @id";
                     cmd.Parameters.AddWithValue("@loggedIn", Int32Helper.Parse(logOutUser.LoggedIn));
                     cmd.Parameters.AddWithValue("@id", logOutUser.ID);
                     cmd.ExecuteNonQuery();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Error Logging Out", MessageBoxButton.OK);
+                    new Notification(ex.Message, "Error Logging Out", NotificationButtons.OK).ShowDialog();
                 }
                 finally { con.Close(); }
             });
             return true;
         }
 
-        /// <summary>
-        /// Adds a new User to the database.
-        /// </summary>
+        /// <summary>Adds a new User to the database.</summary>
         /// <param name="newUser">User to be added to the database.</param>
         internal static async void NewUser(User newUser)
         {
             SQLiteCommand cmd = new SQLiteCommand();
-            SQLiteConnection con = new SQLiteConnection();
-            con.ConnectionString = _DBPROVIDERANDSOURCE;
+            SQLiteConnection con = new SQLiteConnection { ConnectionString = _DBPROVIDERANDSOURCE };
 
             string sql = "INSERT INTO Users([ID],[UserPassword],[FirstName],[LastName],[LoggedIn])VALUES(@id,@password,@firstName,@lastName,@loggedIn)";
 
@@ -193,23 +170,21 @@ namespace TimeClock
                     con.Open();
                     cmd.ExecuteNonQuery();
                     AllUsers.Add(newUser);
-                    MessageBox.Show("New user added successfully.", "Time Clock", MessageBoxButton.OK);
+                    new Notification("New user added successfully.", "Time Clock", NotificationButtons.OK).ShowDialog();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Error Creating New User", MessageBoxButton.OK);
+                    new Notification(ex.Message, "Error Creating New User", NotificationButtons.OK).ShowDialog();
                 }
                 finally { con.Close(); }
             });
         }
 
-        /// <summary>
-        /// Loads all required items from the database on application load.
-        /// </summary>
+        /// <summary>Loads all required items from the database on application load.</summary>
         internal static async void LoadAll()
         {
             SQLiteConnection con = new SQLiteConnection();
-            SQLiteDataAdapter da = new SQLiteDataAdapter();
+            SQLiteDataAdapter da;
             DataSet ds = new DataSet();
             con.ConnectionString = _DBPROVIDERANDSOURCE;
 
@@ -256,28 +231,23 @@ namespace TimeClock
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Error Filling DataSet", MessageBoxButton.OK);
+                    new Notification(ex.Message, "Error Filling DataSet", NotificationButtons.OK).ShowDialog();
                 }
                 finally { con.Close(); }
             });
         }
 
-        /// <summary>
-        /// Saves a User.
-        /// </summary>
+        /// <summary>Saves a User.</summary>
         /// <param name="saveUser">User to be saved</param>
         internal static void SaveUser(User saveUser)
         {
         }
 
-        /// <summary>
-        /// Changes the Admin password in the database.
-        /// </summary>
+        /// <summary>Changes the Admin password in the database.</summary>
         private static async void ChangeAdminPassword()
         {
             SQLiteCommand cmd = new SQLiteCommand();
-            SQLiteConnection con = new SQLiteConnection();
-            con.ConnectionString = _DBPROVIDERANDSOURCE;
+            SQLiteConnection con = new SQLiteConnection { ConnectionString = _DBPROVIDERANDSOURCE };
             string sql = "UPDATE Admin SET [AdminPassword] = @adminPassword";
 
             cmd.CommandType = CommandType.Text;
@@ -294,22 +264,19 @@ namespace TimeClock
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Error Changing Admin Password", MessageBoxButton.OK);
+                    new Notification(ex.Message, "Error Changing Admin Password", NotificationButtons.OK).ShowDialog();
                 }
                 finally { con.Close(); }
             });
         }
 
-        /// <summary>
-        /// Changes a User's password.
-        /// </summary>
+        /// <summary>Changes a User's password.</summary>
         /// <param name="user">User whose password needs to be changed</param>
         /// <param name="newHashedPassword">New hashed password</param>
         internal static async void ChangeUserPassword(User user, string newHashedPassword)
         {
             SQLiteCommand cmd = new SQLiteCommand();
-            SQLiteConnection con = new SQLiteConnection();
-            con.ConnectionString = _DBPROVIDERANDSOURCE;
+            SQLiteConnection con = new SQLiteConnection { ConnectionString = _DBPROVIDERANDSOURCE };
             string sql = "UPDATE Users SET [UserPassword] = @userPassword WHERE [ID] = @id";
 
             cmd.CommandType = CommandType.Text;
@@ -327,7 +294,7 @@ namespace TimeClock
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Error Changing User Password", MessageBoxButton.OK);
+                    new Notification(ex.Message, "Error Changing User Password", NotificationButtons.OK).ShowDialog();
                 }
                 finally { con.Close(); }
             });

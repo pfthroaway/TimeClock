@@ -2,13 +2,11 @@
 
 namespace TimeClock
 {
-    /// <summary>
-    /// Interaction logic for AdminPasswordWindow.xaml
-    /// </summary>
-    public partial class AdminPasswordWindow : Window
+    /// <summary>Interaction logic for AdminPasswordWindow.xamlA</summary>
+    public partial class AdminPasswordWindow
     {
-        internal MainWindow RefToMainWindow { get; set; }
-        private bool admin = false;
+        internal MainWindow RefToMainWindow { private get; set; }
+        private bool _admin;
 
         #region Button-Click Methods
 
@@ -16,11 +14,11 @@ namespace TimeClock
         {
             if (PasswordHash.ValidatePassword(pswdAdmin.Password, AppState.AdminPassword))
             {
-                admin = true;
+                _admin = true;
                 CloseWindow();
             }
             else
-                MessageBox.Show("Invalid login.", "Sulimn", MessageBoxButton.OK);
+                new Notification("Invalid login.", "Sulimn", NotificationButtons.OK, this).ShowDialog();
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -32,9 +30,7 @@ namespace TimeClock
 
         #region Window-Manipulation Methods
 
-        /// <summary>
-        /// Closes the Window.
-        /// </summary>
+        /// <summary>Closes the Window.</summary>
         private void CloseWindow()
         {
             this.Close();
@@ -48,25 +44,21 @@ namespace TimeClock
 
         private void pswdAdmin_GotFocus(object sender, RoutedEventArgs e)
         {
-            pswdAdmin.SelectAll();
+            Functions.PasswordBoxGotFocus(sender);
         }
 
         private void pswdAdmin_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            if (pswdAdmin.Password.Length > 0)
-                btnSubmit.IsEnabled = true;
-            else
-                btnSubmit.IsEnabled = false;
+            btnSubmit.IsEnabled = pswdAdmin.Password.Length > 0;
         }
 
         private void windowAdminPassword_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (!admin)
+            if (!_admin)
                 RefToMainWindow.Show();
             else
             {
-                AdminWindow adminWindow = new AdminWindow();
-                adminWindow.RefToMainWindow = RefToMainWindow;
+                AdminWindow adminWindow = new AdminWindow { RefToMainWindow = RefToMainWindow };
                 adminWindow.Show();
             }
         }

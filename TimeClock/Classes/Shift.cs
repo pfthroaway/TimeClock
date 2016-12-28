@@ -3,9 +3,7 @@ using System.ComponentModel;
 
 namespace TimeClock
 {
-    /// <summary>
-    /// Represents a shift that was started or worked.
-    /// </summary>
+    /// <summary>Represents a shift that was started or worked.</summary>
     internal class Shift : INotifyPropertyChanged
     {
         private string _id;
@@ -16,19 +14,16 @@ namespace TimeClock
         public string ID
         {
             get { return _id; }
-            set { _id = value; OnPropertyChanged("ID"); }
+            private set { _id = value; OnPropertyChanged("ID"); }
         }
 
         public DateTime ShiftStart
         {
             get { return _shiftStart; }
-            set { _shiftStart = value; OnPropertyChanged("ShiftStart"); }
+            private set { _shiftStart = value; OnPropertyChanged("ShiftStart"); }
         }
 
-        public string ShiftStartToString
-        {
-            get { return ShiftStart.ToString(@"yyyy\/MM\/dd hh\:mm\:ss tt"); }
-        }
+        public string ShiftStartToString => ShiftStart.ToString(@"yyyy\/MM\/dd hh\:mm\:ss tt");
 
         public DateTime ShiftEnd
         {
@@ -37,10 +32,7 @@ namespace TimeClock
             set { _shiftEnd = value; OnPropertyChanged("ShiftEnd"); OnPropertyChanged("ShiftLength"); OnPropertyChanged("ShiftLengthToString"); }
         }
 
-        public string ShiftEndToString
-        {
-            get { return ShiftEnd.ToString(@"yyyy\/MM\/dd hh\:mm\:ss tt"); }
-        }
+        public string ShiftEndToString => ShiftEnd.ToString(@"yyyy\/MM\/dd hh\:mm\:ss tt");
 
         public TimeSpan ShiftLength
         {
@@ -53,16 +45,7 @@ namespace TimeClock
             }
         }
 
-        public string ShiftLengthToString
-        {
-            get
-            {
-                if (ShiftEnd != DateTime.MinValue)
-                    return ShiftLength.ToString(@"d\:hh\:mm\:ss");
-                else
-                    return (DateTime.Now - ShiftStart).ToString("d:hh:mm:ss");
-            }
-        }
+        public string ShiftLengthToString => ShiftEnd != DateTime.MinValue ? ShiftLength.ToString(@"d\:hh\:mm\:ss") : (DateTime.Now - ShiftStart).ToString("d:hh:mm:ss");
 
         #endregion Properties
 
@@ -70,7 +53,7 @@ namespace TimeClock
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged(string property)
+        private void OnPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
@@ -79,7 +62,7 @@ namespace TimeClock
 
         #region Override Operators
 
-        public static bool Equals(Shift left, Shift right)
+        private static bool Equals(Shift left, Shift right)
         {
             if (ReferenceEquals(null, left) && ReferenceEquals(null, right)) return true;
             if (ReferenceEquals(null, left) ^ ReferenceEquals(null, right)) return false;
@@ -120,19 +103,16 @@ namespace TimeClock
 
         #region Constructors
 
-        /// <summary>
-        /// Initalizes a default instance of Shift.
-        /// </summary>
+        /// <summary>Initalizes a default instance of Shift.</summary>
         internal Shift()
         {
             ShiftStart = new DateTime();
             ShiftEnd = new DateTime();
         }
 
-        /// <summary>
-        /// Initializes a new instance of Shift by assigning only the ShiftStart Property.
-        /// </summary>
-        /// <param name="shiftStart"></param>
+        /// <summary>Initializes a new instance of Shift by assigning only the ShiftStart Property.</summary>
+        /// <param name="id">ID</param>
+        /// <param name="shiftStart">Start of Shift</param>
         internal Shift(string id, DateTime shiftStart)
         {
             ID = id;
@@ -140,9 +120,8 @@ namespace TimeClock
             ShiftEnd = new DateTime();
         }
 
-        /// <summary>
-        /// Initializes a new instance of Shift by assigning Properties.
-        /// </summary>
+        /// <summary>Initializes a new instance of Shift by assigning Properties.</summary>
+        /// <param name="id">ID</param>
         /// <param name="shiftStart">Start of Shift</param>
         /// <param name="shiftEnd">End of Shift</param>
         internal Shift(string id, DateTime shiftStart, DateTime shiftEnd)
@@ -152,9 +131,7 @@ namespace TimeClock
             ShiftEnd = shiftEnd;
         }
 
-        /// <summary>
-        /// Replaces this instance of Shift with another instance.
-        /// </summary>
+        /// <summary>Replaces this instance of Shift with another instance.S</summary>
         /// <param name="otherShift">Instance of Shift to replace this instance</param>
         internal Shift(Shift otherShift)
         {
