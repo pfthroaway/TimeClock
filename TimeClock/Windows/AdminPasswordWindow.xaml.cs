@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Extensions;
+using System.Windows;
 
 namespace TimeClock
 {
@@ -18,7 +19,10 @@ namespace TimeClock
                 CloseWindow();
             }
             else
+            {
                 new Notification("Invalid login.", "Sulimn", NotificationButtons.OK, this).ShowDialog();
+                pswdAdmin.Focus();
+            }
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)

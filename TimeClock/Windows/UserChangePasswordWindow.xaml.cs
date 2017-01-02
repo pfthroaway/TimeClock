@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Extensions;
+using System.Windows;
 
 namespace TimeClock
 {

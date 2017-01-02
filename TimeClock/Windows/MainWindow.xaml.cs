@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Extensions;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
@@ -50,7 +51,6 @@ namespace TimeClock
         public MainWindow()
         {
             InitializeComponent();
-            AppState.LoadAll();
             txtUserID.Focus();
         }
 
@@ -70,5 +70,10 @@ namespace TimeClock
         }
 
         #endregion Window-Manipulation Methods
+
+        private async void windowMain_Loaded(object sender, RoutedEventArgs e)
+        {
+            await AppState.LoadAll();
+        }
     }
 }

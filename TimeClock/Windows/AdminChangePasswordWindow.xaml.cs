@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Extensions;
+using System.ComponentModel;
 using System.Windows;
 
 namespace TimeClock
@@ -53,7 +54,7 @@ namespace TimeClock
             pswdCurrentPassword.Focus();
         }
 
-        private void pswdChanged(object sender, RoutedEventArgs e)
+        private void PswdChanged(object sender, RoutedEventArgs e)
         {
             btnSubmit.IsEnabled = pswdCurrentPassword.Password.Length >= 4 && pswdNewPassword.Password.Length >= 4 &&
                                   pswdConfirmPassword.Password.Length >= 4;

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Extensions;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,9 +21,9 @@ namespace TimeClock
 
         #region Button-Click Methods
 
-        private void btnSubmit_Click(object sender, RoutedEventArgs e)
+        private async void btnSubmit_Click(object sender, RoutedEventArgs e)
         {
-            if (AppState.AllUsers.Count(user => user.ID == txtID.Text) > 0)
+            if (AppState.AllUsers.Any(user => user.ID == txtID.Text))
                 new Notification("This user ID has already been taken.", "Time Clock", NotificationButtons.OK, this).ShowDialog();
             else
             {
@@ -31,8 +32,8 @@ namespace TimeClock
                     if (pswdPassword.Password == pswdConfirm.Password)
                     {
                         User newUser = new User(txtID.Text.Trim(), txtFirstName.Text.Trim(), txtLastName.Text.Trim(), PasswordHash.HashPassword(pswdPassword.Password.Trim()), false);
-                        AppState.NewUser(newUser);
-                        CloseWindow();
+                        if (await AppState.NewUser(newUser))
+                            CloseWindow();
                     }
                     else
                         new Notification("Please ensure the passwords match.", "Time Clock", NotificationButtons.OK, this).ShowDialog();

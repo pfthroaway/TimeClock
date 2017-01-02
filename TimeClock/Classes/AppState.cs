@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Extensions;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
@@ -62,13 +63,9 @@ namespace TimeClock
         /// <param name="loginUser">User logging in</param>
         internal static async Task<bool> LogIn(User loginUser)
         {
-            SQLiteCommand cmd = new SQLiteCommand();
+            SQLiteCommand cmd = new SQLiteCommand { CommandText = "INSERT INTO LoggedInUsers([ID],[TimeIn])VALUES(@id,@timeIn)" };
             SQLiteConnection con = new SQLiteConnection { ConnectionString = _DBPROVIDERANDSOURCE };
 
-            string sql = "INSERT INTO LoggedInUsers([ID],[TimeIn])VALUES(@id,@timeIn)";
-
-            cmd.CommandType = CommandType.Text;
-            cmd.CommandText = sql;
             cmd.Parameters.AddWithValue("@id", loginUser.ID);
             cmd.Parameters.AddWithValue("@timeIn", DateTime.Now.ToString(CultureInfo.InvariantCulture));
             await Task.Factory.StartNew(() =>
@@ -83,8 +80,7 @@ namespace TimeClock
                     loginUser.LoggedIn = true;
                     AllUsers.Find(user => user.ID == loginUser.ID).LoggedIn = true;
 
-                    sql = "UPDATE Users SET [LoggedIn] = @loggedIn WHERE [ID] = @id";
-                    cmd.CommandText = sql;
+                    cmd.CommandText = "UPDATE Users SET [LoggedIn] = @loggedIn WHERE [ID] = @id";
                     cmd.Parameters.AddWithValue("@loggedIn", Int32Helper.Parse(loginUser.LoggedIn));
                     cmd.Parameters.AddWithValue("@id", loginUser.ID);
                     cmd.ExecuteNonQuery();
@@ -148,15 +144,11 @@ namespace TimeClock
 
         /// <summary>Adds a new User to the database.</summary>
         /// <param name="newUser">User to be added to the database.</param>
-        internal static async void NewUser(User newUser)
+        internal static async Task<bool> NewUser(User newUser)
         {
-            SQLiteCommand cmd = new SQLiteCommand();
+            bool success = false;
+            SQLiteCommand cmd = new SQLiteCommand { CommandText = "INSERT INTO Users([ID],[UserPassword],[FirstName],[LastName],[LoggedIn])VALUES(@id,@password,@firstName,@lastName,@loggedIn)" };
             SQLiteConnection con = new SQLiteConnection { ConnectionString = _DBPROVIDERANDSOURCE };
-
-            string sql = "INSERT INTO Users([ID],[UserPassword],[FirstName],[LastName],[LoggedIn])VALUES(@id,@password,@firstName,@lastName,@loggedIn)";
-
-            cmd.CommandType = CommandType.Text;
-            cmd.CommandText = sql;
             cmd.Parameters.AddWithValue("@id", newUser.ID);
             cmd.Parameters.AddWithValue("@password", PasswordHash.HashPassword(newUser.Password));
             cmd.Parameters.AddWithValue("@firstName", newUser.FirstName);
@@ -171,6 +163,7 @@ namespace TimeClock
                     cmd.ExecuteNonQuery();
                     AllUsers.Add(newUser);
                     new Notification("New user added successfully.", "Time Clock", NotificationButtons.OK).ShowDialog();
+                    success = true;
                 }
                 catch (Exception ex)
                 {
@@ -178,11 +171,13 @@ namespace TimeClock
                 }
                 finally { con.Close(); }
             });
+            return success;
         }
 
         /// <summary>Loads all required items from the database on application load.</summary>
-        internal static async void LoadAll()
+        internal static async Task<bool> LoadAll()
         {
+            bool success = false;
             SQLiteConnection con = new SQLiteConnection();
             SQLiteDataAdapter da;
             DataSet ds = new DataSet();
@@ -192,18 +187,15 @@ namespace TimeClock
             {
                 try
                 {
-                    string sql = "SELECT * FROM Admin";
-                    string table = "Admin";
-                    da = new SQLiteDataAdapter(sql, con);
-                    da.Fill(ds, table);
+                    da = new SQLiteDataAdapter("SELECT * FROM Admin", con);
+                    da.Fill(ds, "Admin");
 
                     if (ds.Tables[0].Rows.Count > 0)
                         AdminPassword = ds.Tables[0].Rows[0]["AdminPassword"].ToString();
 
                     ds = new DataSet();
-                    sql = "SELECT * FROM Users";
-                    da = new SQLiteDataAdapter(sql, con);
-                    da.Fill(ds, table);
+                    da = new SQLiteDataAdapter("SELECT * FROM Users", con);
+                    da.Fill(ds, "Users");
 
                     if (ds.Tables[0].Rows.Count > 0)
                     {
@@ -215,9 +207,8 @@ namespace TimeClock
                         }
                     }
                     ds = new DataSet();
-                    sql = "SELECT * FROM LoggedInUsers";
-                    da = new SQLiteDataAdapter(sql, con);
-                    da.Fill(ds, table);
+                    da = new SQLiteDataAdapter("SELECT * FROM LoggedInUsers", con);
+                    da.Fill(ds, "LoggedInUsers");
 
                     if (ds.Tables[0].Rows.Count > 0)
                     {
@@ -228,6 +219,8 @@ namespace TimeClock
                             CurrentlyLoggedIn.Add(newShift);
                         }
                     }
+
+                    success = true;
                 }
                 catch (Exception ex)
                 {
@@ -235,6 +228,8 @@ namespace TimeClock
                 }
                 finally { con.Close(); }
             });
+
+            return success;
         }
 
         /// <summary>Saves a User.</summary>
@@ -246,12 +241,8 @@ namespace TimeClock
         /// <summary>Changes the Admin password in the database.</summary>
         private static async void ChangeAdminPassword()
         {
-            SQLiteCommand cmd = new SQLiteCommand();
+            SQLiteCommand cmd = new SQLiteCommand { CommandText = "UPDATE Admin SET [AdminPassword] = @adminPassword" };
             SQLiteConnection con = new SQLiteConnection { ConnectionString = _DBPROVIDERANDSOURCE };
-            string sql = "UPDATE Admin SET [AdminPassword] = @adminPassword";
-
-            cmd.CommandType = CommandType.Text;
-            cmd.CommandText = sql;
             cmd.Parameters.AddWithValue("@adminPassword", AdminPassword);
 
             await Task.Factory.StartNew(() =>
@@ -275,12 +266,8 @@ namespace TimeClock
         /// <param name="newHashedPassword">New hashed password</param>
         internal static async void ChangeUserPassword(User user, string newHashedPassword)
         {
-            SQLiteCommand cmd = new SQLiteCommand();
+            SQLiteCommand cmd = new SQLiteCommand { CommandText = "UPDATE Users SET [UserPassword] = @userPassword WHERE [ID] = @id" };
             SQLiteConnection con = new SQLiteConnection { ConnectionString = _DBPROVIDERANDSOURCE };
-            string sql = "UPDATE Users SET [UserPassword] = @userPassword WHERE [ID] = @id";
-
-            cmd.CommandType = CommandType.Text;
-            cmd.CommandText = sql;
             cmd.Parameters.AddWithValue("@userPassword", newHashedPassword);
             cmd.Parameters.AddWithValue("@id", user.ID);
 
