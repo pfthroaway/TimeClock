@@ -15,12 +15,12 @@ namespace TimeClock
 
         #region Click Methods
 
-        private void btnBack_Click(object sender, RoutedEventArgs e)
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
             CloseWindow();
         }
 
-        private void lvShiftsColumnHeader_Click(object sender, RoutedEventArgs e)
+        private void LVShiftsColumnHeader_Click(object sender, RoutedEventArgs e)
         {
             GridViewColumnHeader column = (sender as GridViewColumnHeader);
             if (column != null)
@@ -29,7 +29,7 @@ namespace TimeClock
                 if (_listViewSortCol != null)
                 {
                     AdornerLayer.GetAdornerLayer(_listViewSortCol).Remove(_listViewSortAdorner);
-                    lvShifts.Items.SortDescriptions.Clear();
+                    LVShifts.Items.SortDescriptions.Clear();
                 }
 
                 ListSortDirection newDir = ListSortDirection.Ascending;
@@ -39,7 +39,7 @@ namespace TimeClock
                 _listViewSortCol = column;
                 _listViewSortAdorner = new SortAdorner(_listViewSortCol, newDir);
                 AdornerLayer.GetAdornerLayer(_listViewSortCol).Add(_listViewSortAdorner);
-                lvShifts.Items.SortDescriptions.Add(new SortDescription(sortBy, newDir));
+                LVShifts.Items.SortDescriptions.Add(new SortDescription(sortBy, newDir));
             }
         }
 
@@ -55,10 +55,10 @@ namespace TimeClock
         public UserLogWindow()
         {
             InitializeComponent();
-            lvShifts.ItemsSource = AppState.CurrentUserTimes;
+            LVShifts.ItemsSource = AppState.CurrentUserTimes;
         }
 
-        private void windowUserLog_Closing(object sender, CancelEventArgs e)
+        private void WindowUserLog_Closing(object sender, CancelEventArgs e)
         {
             RefToTimeClockWindow.Show();
         }

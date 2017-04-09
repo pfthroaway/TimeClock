@@ -1,235 +1,145 @@
 ﻿using Extensions;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SQLite;
-using System.Globalization;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace TimeClock
 {
     internal static class AppState
     {
-        // ReSharper disable once InconsistentNaming
-        private const string _DBPROVIDERANDSOURCE = "Data Source = TimeClock.sqlite;Version=3";
-
         private static string _adminPassword;
         internal static User CurrentUser = new User();
         internal static readonly List<Shift> CurrentUserTimes = new List<Shift>();
         internal static readonly List<User> AllUsers = new List<User>();
         internal static readonly List<Shift> CurrentlyLoggedIn = new List<Shift>();
+        private static readonly SQLiteDatabaseInteraction _databaseInteraction = new SQLiteDatabaseInteraction();
 
+        /// <summary>Administrator Password</summary>
         public static string AdminPassword
         {
             get { return _adminPassword; }
-            set { _adminPassword = value; ChangeAdminPassword(); }
+            set { _adminPassword = value; }
         }
+
+        #region Administrator Management
+
+        /// <summary>Changes the Admin password in the database.</summary>
+        /// <param name="hashedAdminPassword">New hashed admin password</param>
+        internal static async Task<bool> ChangeAdminPassword(string hashedAdminPassword)
+        {
+            if (await _databaseInteraction.ChangeAdminPassword(hashedAdminPassword))
+            {
+                AdminPassword = hashedAdminPassword;
+                return true;
+            }
+            return false;
+        }
+
+        #endregion Administrator Management
+
+        #region Load
 
         /// <summary>Loads all the selected User's times from the database.</summary>
         /// <param name="user">User whose times are loaded from the database</param>
         /// <returns>True</returns>
-        internal static async Task<bool> LoadUserTimes(User user)
+        /// <summary>Loads all required items from the database on application load.</summary>
+        internal static async Task LoadAll()
+        {
+            if (_databaseInteraction.VerifyDatabaseIntegrity())
+            {
+                AdminPassword = await _databaseInteraction.LoadAdminPassword();
+                AllUsers.AddRange(await _databaseInteraction.LoadUsers());
+                CurrentlyLoggedIn.AddRange(await _databaseInteraction.LoadLoggedInUsers());
+            }
+        }
+
+        internal static async Task LoadUserTimes(User user)
         {
             CurrentUserTimes.Clear();
-            SQLiteConnection con = new SQLiteConnection();
-            SQLiteDataAdapter da;
-            DataSet ds = new DataSet();
-            con.ConnectionString = _DBPROVIDERANDSOURCE;
-
-            await Task.Factory.StartNew(() =>
-            {
-                try
-                {
-                    string sql = "SELECT * FROM Times WHERE [ID]='" + user.ID + "'";
-                    string table = "Times";
-                    da = new SQLiteDataAdapter(sql, con);
-                    da.Fill(ds, table);
-                    if (ds.Tables[0].Rows.Count > 0)
-                    {
-                        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-                            CurrentUserTimes.Add(new Shift(user.ID, DateTimeHelper.Parse(ds.Tables[0].Rows[i]["TimeIn"]), DateTimeHelper.Parse(ds.Tables[0].Rows[i]["TimeOut"])));
-                    }
-                }
-                catch (Exception ex)
-                {
-                    new Notification(ex.Message, "Error Loading Times", NotificationButtons.OK).ShowDialog();
-                }
-                finally { con.Close(); }
-            });
-            return true;
+            CurrentUserTimes.AddRange(await _databaseInteraction.LoadShifts(user));
         }
+
+        #endregion Load
+
+        #region Log In/Out
 
         /// <summary>Logs in a User.</summary>
         /// <param name="loginUser">User logging in</param>
-        internal static async Task<bool> LogIn(User loginUser)
+        internal static async Task LogIn(User loginUser)
         {
-            SQLiteCommand cmd = new SQLiteCommand { CommandText = "INSERT INTO LoggedInUsers([ID],[TimeIn])VALUES(@id,@timeIn)" };
-            SQLiteConnection con = new SQLiteConnection { ConnectionString = _DBPROVIDERANDSOURCE };
-
-            cmd.Parameters.AddWithValue("@id", loginUser.ID);
-            cmd.Parameters.AddWithValue("@timeIn", DateTime.Now.ToString(CultureInfo.InvariantCulture));
-            await Task.Factory.StartNew(() =>
+            if (await _databaseInteraction.LogIn(loginUser))
             {
-                try
-                {
-                    cmd.Connection = con;
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    cmd.Parameters.Clear();
-                    CurrentlyLoggedIn.Add(new Shift(loginUser.ID, DateTime.Now));
-                    loginUser.LoggedIn = true;
-                    AllUsers.Find(user => user.ID == loginUser.ID).LoggedIn = true;
-
-                    cmd.CommandText = "UPDATE Users SET [LoggedIn] = @loggedIn WHERE [ID] = @id";
-                    cmd.Parameters.AddWithValue("@loggedIn", Int32Helper.Parse(loginUser.LoggedIn));
-                    cmd.Parameters.AddWithValue("@id", loginUser.ID);
-                    cmd.ExecuteNonQuery();
-                }
-                catch (Exception ex)
-                {
-                    new Notification(ex.Message, "Error Logging In", NotificationButtons.OK).ShowDialog();
-                }
-                finally { con.Close(); }
-            });
-
-            return true;
+                CurrentlyLoggedIn.Add(new Shift(loginUser.ID, DateTime.Now));
+                AllUsers.Find(user => user.ID == loginUser.ID).LoggedIn = true;
+            }
         }
 
         /// <summary>Logs out a User.</summary>
         /// <param name="logOutUser">User logging out</param>
-        internal static async Task<bool> LogOut(User logOutUser)
+        internal static async Task LogOut(User logOutUser)
         {
-            SQLiteCommand cmd = new SQLiteCommand();
-            SQLiteConnection con = new SQLiteConnection { ConnectionString = _DBPROVIDERANDSOURCE };
             DateTime shiftStartTime = CurrentlyLoggedIn.Find(shift => shift.ID == logOutUser.ID).ShiftStart;
-            DateTime logOutTime = DateTime.Now;
-            string sql = "INSERT INTO Times([ID],[TimeIn],[TimeOut])VALUES(@id,@timeIn,@timeOut)";
-
-            cmd.CommandType = CommandType.Text;
-            cmd.CommandText = sql;
-            cmd.Parameters.AddWithValue("@id", logOutUser.ID);
-            cmd.Parameters.AddWithValue("@timeIn", shiftStartTime.ToString(CultureInfo.InvariantCulture));
-            cmd.Parameters.AddWithValue("@timeOut", logOutTime.ToString(CultureInfo.InvariantCulture));
-            await Task.Factory.StartNew(() =>
+            Shift newShift = new Shift(logOutUser.ID, shiftStartTime, DateTime.Now);
+            if (await _databaseInteraction.LogOut(logOutUser, newShift))
             {
-                try
-                {
-                    cmd.Connection = con;
-                    con.Open();
-                    cmd.ExecuteNonQuery();
+                CurrentUserTimes.Add(newShift);
+                CurrentlyLoggedIn.Remove(CurrentlyLoggedIn.Find(shift => shift.ID == logOutUser.ID));
+                AllUsers.Find(user => user.ID == logOutUser.ID).LoggedIn = false;
+            }
+        }
 
-                    cmd.Parameters.Clear();
-                    cmd.CommandText = "DELETE FROM LoggedInUsers WHERE [ID] = @id";
-                    cmd.Parameters.AddWithValue("@id", logOutUser.ID);
-                    cmd.ExecuteNonQuery();
+        #endregion Log In/Out
 
-                    cmd.Parameters.Clear();
-                    CurrentUserTimes.Add(new Shift(logOutUser.ID, shiftStartTime, logOutTime));
-                    CurrentlyLoggedIn.Remove(CurrentlyLoggedIn.Find(shift => shift.ID == logOutUser.ID));
-                    logOutUser.LoggedIn = false;
-                    AllUsers.Find(user => user.ID == logOutUser.ID).LoggedIn = false;
-                    cmd.CommandText = "UPDATE Users SET [LoggedIn] = @loggedIn WHERE [ID] = @id";
-                    cmd.Parameters.AddWithValue("@loggedIn", Int32Helper.Parse(logOutUser.LoggedIn));
-                    cmd.Parameters.AddWithValue("@id", logOutUser.ID);
-                    cmd.ExecuteNonQuery();
-                }
-                catch (Exception ex)
-                {
-                    new Notification(ex.Message, "Error Logging Out", NotificationButtons.OK).ShowDialog();
-                }
-                finally { con.Close(); }
+        #region Notification Management
+
+        /// <summary>Displays a new Notification in a thread-safe way.</summary>
+        /// <param name="message">Message to be displayed</param>
+        /// <param name="title">Title of the Notification Window</param>
+        /// <param name="buttons">Button type to be displayed on the Window</param>
+        internal static void DisplayNotification(string message, string title, NotificationButtons buttons)
+        {
+            Application.Current.Dispatcher.Invoke((Action)delegate
+            {
+                new Notification(message, title, buttons).ShowDialog();
             });
-            return true;
+        }
+
+        /// <summary>Displays a new Notification in a thread-safe way.</summary>
+        /// <param name="message">Message to be displayed</param>
+        /// <param name="title">Title of the Notification Window</param>
+        /// <param name="buttons">Button type to be displayed on the Window</param>
+        /// <param name="Window">Window being referenced</param>
+        internal static void DisplayNotification(string message, string title, NotificationButtons buttons, Window Window)
+        {
+            Application.Current.Dispatcher.Invoke((Action)delegate
+            {
+                new Notification(message, title, buttons, Window).ShowDialog();
+            });
+        }
+
+        #endregion Notification Management
+
+        #region User Management
+
+        /// <summary>Changes a User's password.</summary>
+        /// <param name="user">User whose password needs to be changed</param>
+        /// <param name="newHashedPassword">New hashed password</param>
+        internal static async Task<bool> ChangeUserPassword(User user, string newHashedPassword)
+        {
+            return await _databaseInteraction.ChangeUserPassword(user, newHashedPassword);
         }
 
         /// <summary>Adds a new User to the database.</summary>
         /// <param name="newUser">User to be added to the database.</param>
         internal static async Task<bool> NewUser(User newUser)
         {
-            bool success = false;
-            SQLiteCommand cmd = new SQLiteCommand { CommandText = "INSERT INTO Users([ID],[UserPassword],[FirstName],[LastName],[LoggedIn])VALUES(@id,@password,@firstName,@lastName,@loggedIn)" };
-            SQLiteConnection con = new SQLiteConnection { ConnectionString = _DBPROVIDERANDSOURCE };
-            cmd.Parameters.AddWithValue("@id", newUser.ID);
-            cmd.Parameters.AddWithValue("@password", PasswordHash.HashPassword(newUser.Password));
-            cmd.Parameters.AddWithValue("@firstName", newUser.FirstName);
-            cmd.Parameters.AddWithValue("@lastName", newUser.LastName);
-            cmd.Parameters.AddWithValue("@loggedIn", newUser.LoggedIn);
-            await Task.Factory.StartNew(() =>
+            if (await _databaseInteraction.NewUser(newUser))
             {
-                try
-                {
-                    cmd.Connection = con;
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    AllUsers.Add(newUser);
-                    new Notification("New user added successfully.", "Time Clock", NotificationButtons.OK).ShowDialog();
-                    success = true;
-                }
-                catch (Exception ex)
-                {
-                    new Notification(ex.Message, "Error Creating New User", NotificationButtons.OK).ShowDialog();
-                }
-                finally { con.Close(); }
-            });
-            return success;
-        }
-
-        /// <summary>Loads all required items from the database on application load.</summary>
-        internal static async Task<bool> LoadAll()
-        {
-            bool success = false;
-            SQLiteConnection con = new SQLiteConnection();
-            SQLiteDataAdapter da;
-            DataSet ds = new DataSet();
-            con.ConnectionString = _DBPROVIDERANDSOURCE;
-
-            await Task.Factory.StartNew(() =>
-            {
-                try
-                {
-                    da = new SQLiteDataAdapter("SELECT * FROM Admin", con);
-                    da.Fill(ds, "Admin");
-
-                    if (ds.Tables[0].Rows.Count > 0)
-                        AdminPassword = ds.Tables[0].Rows[0]["AdminPassword"].ToString();
-
-                    ds = new DataSet();
-                    da = new SQLiteDataAdapter("SELECT * FROM Users", con);
-                    da.Fill(ds, "Users");
-
-                    if (ds.Tables[0].Rows.Count > 0)
-                    {
-                        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-                        {
-                            User newUser = new User(ds.Tables[0].Rows[i]["ID"].ToString(), ds.Tables[0].Rows[i]["FirstName"].ToString(), ds.Tables[0].Rows[i]["lastName"].ToString(), ds.Tables[0].Rows[i]["UserPassword"].ToString(), BoolHelper.Parse(ds.Tables[0].Rows[i]["LoggedIn"]));
-
-                            AllUsers.Add(newUser);
-                        }
-                    }
-                    ds = new DataSet();
-                    da = new SQLiteDataAdapter("SELECT * FROM LoggedInUsers", con);
-                    da.Fill(ds, "LoggedInUsers");
-
-                    if (ds.Tables[0].Rows.Count > 0)
-                    {
-                        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-                        {
-                            Shift newShift = new Shift(ds.Tables[0].Rows[i]["ID"].ToString(), DateTimeHelper.Parse(ds.Tables[0].Rows[i]["TimeIn"].ToString()));
-
-                            CurrentlyLoggedIn.Add(newShift);
-                        }
-                    }
-
-                    success = true;
-                }
-                catch (Exception ex)
-                {
-                    new Notification(ex.Message, "Error Filling DataSet", NotificationButtons.OK).ShowDialog();
-                }
-                finally { con.Close(); }
-            });
-
-            return success;
+                AllUsers.Add(newUser);
+                return true;
+            }
+            return false;
         }
 
         /// <summary>Saves a User.</summary>
@@ -238,53 +148,6 @@ namespace TimeClock
         {
         }
 
-        /// <summary>Changes the Admin password in the database.</summary>
-        private static async void ChangeAdminPassword()
-        {
-            SQLiteCommand cmd = new SQLiteCommand { CommandText = "UPDATE Admin SET [AdminPassword] = @adminPassword" };
-            SQLiteConnection con = new SQLiteConnection { ConnectionString = _DBPROVIDERANDSOURCE };
-            cmd.Parameters.AddWithValue("@adminPassword", AdminPassword);
-
-            await Task.Factory.StartNew(() =>
-            {
-                try
-                {
-                    cmd.Connection = con;
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                }
-                catch (Exception ex)
-                {
-                    new Notification(ex.Message, "Error Changing Admin Password", NotificationButtons.OK).ShowDialog();
-                }
-                finally { con.Close(); }
-            });
-        }
-
-        /// <summary>Changes a User's password.</summary>
-        /// <param name="user">User whose password needs to be changed</param>
-        /// <param name="newHashedPassword">New hashed password</param>
-        internal static async void ChangeUserPassword(User user, string newHashedPassword)
-        {
-            SQLiteCommand cmd = new SQLiteCommand { CommandText = "UPDATE Users SET [UserPassword] = @userPassword WHERE [ID] = @id" };
-            SQLiteConnection con = new SQLiteConnection { ConnectionString = _DBPROVIDERANDSOURCE };
-            cmd.Parameters.AddWithValue("@userPassword", newHashedPassword);
-            cmd.Parameters.AddWithValue("@id", user.ID);
-
-            await Task.Factory.StartNew(() =>
-            {
-                try
-                {
-                    cmd.Connection = con;
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                }
-                catch (Exception ex)
-                {
-                    new Notification(ex.Message, "Error Changing User Password", NotificationButtons.OK).ShowDialog();
-                }
-                finally { con.Close(); }
-            });
-        }
+        #endregion User Management
     }
 }

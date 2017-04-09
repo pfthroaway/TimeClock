@@ -9,25 +9,25 @@ namespace TimeClock
 
         private void CheckButton()
         {
-            btnInOut.Content = AppState.CurrentUser.LoggedIn ? "_OUT" : "_IN";
+            BtnInOut.Content = AppState.CurrentUser.LoggedIn ? "_OUT" : "_IN";
         }
 
         #region Button-Click Methods
 
-        private async void btnInOut_Click(object sender, RoutedEventArgs e)
+        private async void BtnInOut_Click(object sender, RoutedEventArgs e)
         {
-            btnInOut.IsEnabled = false;
+            BtnInOut.IsEnabled = false;
 
             if (AppState.CurrentUser.LoggedIn == false)
                 await AppState.LogIn(AppState.CurrentUser);
             else
                 await AppState.LogOut(AppState.CurrentUser);
 
-            btnInOut.IsEnabled = true;
+            BtnInOut.IsEnabled = true;
             CheckButton();
         }
 
-        private void btnChangePassword_Click(object sender, RoutedEventArgs e)
+        private void BtnChangePassword_Click(object sender, RoutedEventArgs e)
         {
             UserChangePasswordWindow userChangePasswordWindow = new UserChangePasswordWindow
             {
@@ -37,14 +37,14 @@ namespace TimeClock
             this.Visibility = Visibility.Hidden;
         }
 
-        private void btnLog_Click(object sender, RoutedEventArgs e)
+        private void BtnLog_Click(object sender, RoutedEventArgs e)
         {
             UserLogWindow userLogWindow = new UserLogWindow { RefToTimeClockWindow = this };
             userLogWindow.Show();
             this.Visibility = Visibility.Hidden;
         }
 
-        private void btnBack_Click(object sender, RoutedEventArgs e)
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
             CloseWindow();
         }
@@ -66,12 +66,12 @@ namespace TimeClock
             CheckButton();
         }
 
-        private async void windowTimeClock_Loaded(object sender, RoutedEventArgs e)
+        private async void WindowTimeClock_Loaded(object sender, RoutedEventArgs e)
         {
             await AppState.LoadUserTimes(AppState.CurrentUser);
         }
 
-        private void windowTimeClock_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void WindowTimeClock_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             RefToMainWindow.Show();
         }

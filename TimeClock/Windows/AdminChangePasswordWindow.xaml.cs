@@ -11,29 +11,31 @@ namespace TimeClock
 
         #region Button-Click Methods
 
-        private void btnSubmit_Click(object sender, RoutedEventArgs e)
+        private async void BtnSubmit_Click(object sender, RoutedEventArgs e)
         {
-            if (PasswordHash.ValidatePassword(pswdCurrentPassword.Password, AppState.AdminPassword))
+            if (PasswordHash.ValidatePassword(PswdCurrentPassword.Password, AppState.AdminPassword))
             {
-                if (pswdNewPassword.Password == pswdConfirmPassword.Password)
+                if (PswdNewPassword.Password == PswdConfirmPassword.Password)
                 {
-                    if (pswdCurrentPassword.Password != pswdNewPassword.Password)
+                    if (PswdCurrentPassword.Password != PswdNewPassword.Password)
                     {
-                        AppState.AdminPassword = PasswordHash.HashPassword(pswdNewPassword.Password);
-                        new Notification("Successfully changed administrator password.", "Time Clock", NotificationButtons.OK, this).ShowDialog();
-                        CloseWindow();
+                        if (await AppState.ChangeAdminPassword(PasswordHash.HashPassword(PswdNewPassword.Password)))
+                        {
+                            AppState.DisplayNotification("Successfully changed administrator password.", "Time Clock", NotificationButtons.OK, this);
+                            CloseWindow();
+                        }
                     }
                     else
-                        new Notification("The new password can't be the same as the current password.", "Time Clock", NotificationButtons.OK, this).ShowDialog();
+                        AppState.DisplayNotification("The new password can't be the same as the current password.", "Time Clock", NotificationButtons.OK, this);
                 }
                 else
-                    new Notification("Please ensure the new passwords match.", "Time Clock", NotificationButtons.OK, this).ShowDialog();
+                    AppState.DisplayNotification("Please ensure the new passwords match.", "Time Clock", NotificationButtons.OK, this);
             }
             else
-                new Notification("Invalid current administrator password.", "Time Clock", NotificationButtons.OK, this).ShowDialog();
+                AppState.DisplayNotification("Invalid current administrator password.", "Time Clock", NotificationButtons.OK, this);
         }
 
-        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             CloseWindow();
         }
@@ -51,21 +53,21 @@ namespace TimeClock
         public AdminChangePasswordWindow()
         {
             InitializeComponent();
-            pswdCurrentPassword.Focus();
+            PswdCurrentPassword.Focus();
         }
 
         private void PswdChanged(object sender, RoutedEventArgs e)
         {
-            btnSubmit.IsEnabled = pswdCurrentPassword.Password.Length >= 4 && pswdNewPassword.Password.Length >= 4 &&
-                                  pswdConfirmPassword.Password.Length >= 4;
+            BtnSubmit.IsEnabled = PswdCurrentPassword.Password.Length >= 4 && PswdNewPassword.Password.Length >= 4 &&
+                                  PswdConfirmPassword.Password.Length >= 4;
         }
 
-        private void pswd_GotFocus(object sender, RoutedEventArgs e)
+        private void Pswd_GotFocus(object sender, RoutedEventArgs e)
         {
             Functions.PasswordBoxGotFocus(sender);
         }
 
-        private void windowAdminChangePassword_Closing(object sender, CancelEventArgs e)
+        private void WindowAdminChangePassword_Closing(object sender, CancelEventArgs e)
         {
             RefToAdminWindow.Show();
         }

@@ -1,36 +1,36 @@
-﻿<Window x:Name="windowUserLog" x:Class="TimeClock.UserLogWindow"
+﻿<Window x:Name="WindowUserLog" x:Class="TimeClock.UserLogWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="User Log" MaxWidth="693" ResizeMode="NoResize" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" FontFamily="Segoe UI Semibold" FontSize="17" Closing="windowUserLog_Closing" Icon="TimeClock.ico">
+        Title="User Log" MaxWidth="693" ResizeMode="NoResize" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" FontFamily="Segoe UI Semibold" FontSize="17" Closing="WindowUserLog_Closing" Icon="TimeClock.ico">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <ListView Grid.Row="0" Name="lvShifts" ScrollViewer.VerticalScrollBarVisibility="Visible" Height="525" FontFamily="Lucida Console">
+        <ListView Grid.Row="0" Name="LVShifts" ScrollViewer.VerticalScrollBarVisibility="Visible" Height="525" FontFamily="Lucida Console">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Width="250" DisplayMemberBinding="{Binding ShiftStartToString}">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Shift Start" Click="lvShiftsColumnHeader_Click">Shift Start</GridViewColumnHeader>
+                            <GridViewColumnHeader Tag="ShiftStart" Click="LVShiftsColumnHeader_Click">Shift Start</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                     <GridViewColumn Width="250" DisplayMemberBinding="{Binding ShiftEndToString}">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Shift End" Click="lvShiftsColumnHeader_Click">Shift End</GridViewColumnHeader>
+                            <GridViewColumnHeader Tag="ShiftEnd" Click="LVShiftsColumnHeader_Click">Shift End</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                     <GridViewColumn Width="130" DisplayMemberBinding="{Binding ShiftLengthToString}">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Shift Length" Click="lvShiftsColumnHeader_Click">Shift Length</GridViewColumnHeader>
+                            <GridViewColumnHeader Tag="ShiftLength" Click="LVShiftsColumnHeader_Click">Shift Length</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button x:Name="btnBack" Grid.Row="1" Height="30" Width="125" Content="_Back" Margin="0,10,0,0" Click="btnBack_Click" />
+        <Button x:Name="BtnBack" Grid.Row="1" Height="30" Width="125" Content="_Back" Margin="0,10,0,0" Click="BtnBack_Click" />
     </Grid>
 </Window>

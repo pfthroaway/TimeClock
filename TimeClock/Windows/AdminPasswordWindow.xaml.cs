@@ -11,21 +11,21 @@ namespace TimeClock
 
         #region Button-Click Methods
 
-        private void btnSubmit_Click(object sender, RoutedEventArgs e)
+        private void BtnSubmit_Click(object sender, RoutedEventArgs e)
         {
-            if (PasswordHash.ValidatePassword(pswdAdmin.Password, AppState.AdminPassword))
+            if (PasswordHash.ValidatePassword(PswdAdmin.Password, AppState.AdminPassword))
             {
                 _admin = true;
                 CloseWindow();
             }
             else
             {
-                new Notification("Invalid login.", "Sulimn", NotificationButtons.OK, this).ShowDialog();
-                pswdAdmin.Focus();
+                AppState.DisplayNotification("Invalid login.", "Sulimn", NotificationButtons.OK, this);
+                PswdAdmin.Focus();
             }
         }
 
-        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             CloseWindow();
         }
@@ -43,20 +43,20 @@ namespace TimeClock
         public AdminPasswordWindow()
         {
             InitializeComponent();
-            pswdAdmin.Focus();
+            PswdAdmin.Focus();
         }
 
-        private void pswdAdmin_GotFocus(object sender, RoutedEventArgs e)
+        private void PswdAdmin_GotFocus(object sender, RoutedEventArgs e)
         {
             Functions.PasswordBoxGotFocus(sender);
         }
 
-        private void pswdAdmin_PasswordChanged(object sender, RoutedEventArgs e)
+        private void PswdAdmin_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            btnSubmit.IsEnabled = pswdAdmin.Password.Length > 0;
+            BtnSubmit.IsEnabled = PswdAdmin.Password.Length > 0;
         }
 
-        private void windowAdminPassword_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void WindowAdminPassword_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (!_admin)
                 RefToMainWindow.Show();

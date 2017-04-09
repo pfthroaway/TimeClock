@@ -1,4 +1,5 @@
 ﻿using Extensions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
@@ -12,36 +13,35 @@ namespace TimeClock
 
         #region Button-Click Methods
 
-        private void btnNewUser_Click(object sender, RoutedEventArgs e)
+        private void BtnNewUser_Click(object sender, RoutedEventArgs e)
         {
             NewUserWindow newUserWindow = new NewUserWindow { RefToAdminWindow = this };
             newUserWindow.Show();
             this.Visibility = Visibility.Hidden;
         }
 
-        private void btnEditUser_Click(object sender, RoutedEventArgs e)
+        private void BtnEditUser_Click(object sender, RoutedEventArgs e)
         {
         }
 
-        private void btnEditTimes_Click(object sender, RoutedEventArgs e)
+        private void BtnEditTimes_Click(object sender, RoutedEventArgs e)
         {
         }
 
-        private async void btnLogOutAll_Click(object sender, RoutedEventArgs e)
+        private async void BtnLogOutAll_Click(object sender, RoutedEventArgs e)
         {
             if (AppState.CurrentlyLoggedIn.Count > 0)
             {
                 List<Shift> loggedIn = new List<Shift>(AppState.CurrentlyLoggedIn);
                 foreach (Shift shft in loggedIn)
                     await AppState.LogOut(AppState.AllUsers.Find(user => user.ID == shft.ID));
-
-                new Notification("All users now logged out.", "Time Clock", NotificationButtons.OK, this).ShowDialog();
+                AppState.DisplayNotification("All users now logged out.", "Time Clock", NotificationButtons.OK, this);
             }
             else
-                new Notification("All users are currently logged out.", "Time Clock", NotificationButtons.OK, this).ShowDialog();
+                AppState.DisplayNotification("All users are currently logged out.", "Time Clock", NotificationButtons.OK, this);
         }
 
-        private void btnChangePassword_Click(object sender, RoutedEventArgs e)
+        private void BtnChangePassword_Click(object sender, RoutedEventArgs e)
         {
             AdminChangePasswordWindow adminChangePasswordWindow = new AdminChangePasswordWindow
             {
@@ -51,7 +51,7 @@ namespace TimeClock
             this.Visibility = Visibility.Hidden;
         }
 
-        private void btnBack_Click(object sender, RoutedEventArgs e)
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
         {
             CloseWindow();
         }
@@ -71,7 +71,7 @@ namespace TimeClock
             InitializeComponent();
         }
 
-        private void windowAdmin_Closing(object sender, CancelEventArgs e)
+        private void WindowAdmin_Closing(object sender, CancelEventArgs e)
         {
             RefToMainWindow.Show();
         }

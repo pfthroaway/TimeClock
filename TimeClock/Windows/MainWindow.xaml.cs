@@ -10,38 +10,38 @@ namespace TimeClock
     {
         #region Click Methods
 
-        private void mnuAdmin_Click(object sender, RoutedEventArgs e)
+        private void MnuAdmin_Click(object sender, RoutedEventArgs e)
         {
             AdminPasswordWindow adminPasswordWindow = new AdminPasswordWindow { RefToMainWindow = this };
             adminPasswordWindow.Show();
             this.Visibility = Visibility.Hidden;
         }
 
-        private void mnuFileExit_Click(object sender, RoutedEventArgs e)
+        private void MnuFileExit_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
 
-        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        private void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
-            if (AppState.AllUsers.Count(user => user.ID == txtUserID.Text) > 0)
+            if (AppState.AllUsers.Count(user => user.ID == TxtUserID.Text) > 0)
             {
-                User selectedUser = AppState.AllUsers.Find(user => user.ID == txtUserID.Text);
-                if (PasswordHash.ValidatePassword(pswdPassword.Password, selectedUser.Password))
+                User selectedUser = AppState.AllUsers.Find(user => user.ID == TxtUserID.Text);
+                if (PasswordHash.ValidatePassword(PswdPassword.Password, selectedUser.Password))
                 {
                     AppState.CurrentUser = new User(selectedUser);
-                    txtUserID.Clear();
-                    pswdPassword.Clear();
-                    txtUserID.Focus();
+                    TxtUserID.Clear();
+                    PswdPassword.Clear();
+                    TxtUserID.Focus();
                     TimeClockWindow timeClockWindow = new TimeClockWindow { RefToMainWindow = this };
                     timeClockWindow.Show();
                     this.Visibility = Visibility.Hidden;
                 }
                 else
-                    new Notification("Invalid login.", "Time Clock", NotificationButtons.OK, this).ShowDialog();
+                    AppState.DisplayNotification("Invalid login.", "Time Clock", NotificationButtons.OK, this);
             }
             else
-                new Notification("Invalid login.", "Time Clock", NotificationButtons.OK, this).ShowDialog();
+                AppState.DisplayNotification("Invalid login.", "Time Clock", NotificationButtons.OK, this);
         }
 
         #endregion Click Methods
@@ -51,27 +51,26 @@ namespace TimeClock
         public MainWindow()
         {
             InitializeComponent();
-            txtUserID.Focus();
+            TxtUserID.Focus();
         }
 
-        private void pswdPassword_GotFocus(object sender, RoutedEventArgs e)
+        private void PswdPassword_GotFocus(object sender, RoutedEventArgs e)
         {
             Functions.PasswordBoxGotFocus(sender);
         }
 
-        private void txtUserID_GotFocus(object sender, RoutedEventArgs e)
+        private void TxtUserID_GotFocus(object sender, RoutedEventArgs e)
         {
             Functions.TextBoxGotFocus(sender);
         }
 
-        private void txtUserID_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void TxtUserID_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            Functions.PreviewKeyDown(e, KeyType.Letters);
         }
 
         #endregion Window-Manipulation Methods
 
-        private async void windowMain_Loaded(object sender, RoutedEventArgs e)
+        private async void WindowMain_Loaded(object sender, RoutedEventArgs e)
         {
             await AppState.LoadAll();
         }

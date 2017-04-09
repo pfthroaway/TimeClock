@@ -1,4 +1,5 @@
 ﻿using Extensions;
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -15,35 +16,35 @@ namespace TimeClock
         /// <summary>Checks each box has text to determine if Submit button should be enabled.</summary>
         private void CheckInput()
         {
-            btnSubmit.IsEnabled = txtID.Text.Length > 0 && txtFirstName.Text.Length > 0 && txtLastName.Text.Length > 0 &&
-                                  pswdPassword.Password.Length > 0 && pswdConfirm.Password.Length > 0;
+            BtnSubmit.IsEnabled = TxtID.Text.Length > 0 && TxtFirstName.Text.Length > 0 && TxtLastName.Text.Length > 0 &&
+                                  PswdPassword.Password.Length > 0 && PswdConfirm.Password.Length > 0;
         }
 
         #region Button-Click Methods
 
-        private async void btnSubmit_Click(object sender, RoutedEventArgs e)
+        private async void BtnSubmit_Click(object sender, RoutedEventArgs e)
         {
-            if (AppState.AllUsers.Any(user => user.ID == txtID.Text))
-                new Notification("This user ID has already been taken.", "Time Clock", NotificationButtons.OK, this).ShowDialog();
+            if (AppState.AllUsers.Any(user => user.ID == TxtID.Text))
+                AppState.DisplayNotification("This user ID has already been taken.", "Time Clock", NotificationButtons.OK, this);
             else
             {
-                if (txtID.Text.Length >= 4 && txtFirstName.Text.Length >= 2 && txtLastName.Text.Length >= 2 && pswdPassword.Password.Length >= 4 && pswdConfirm.Password.Length >= 4)
+                if (TxtID.Text.Length >= 4 && TxtFirstName.Text.Length >= 2 && TxtLastName.Text.Length >= 2 && PswdPassword.Password.Length >= 4 && PswdConfirm.Password.Length >= 4)
                 {
-                    if (pswdPassword.Password == pswdConfirm.Password)
+                    if (PswdPassword.Password == PswdConfirm.Password)
                     {
-                        User newUser = new User(txtID.Text.Trim(), txtFirstName.Text.Trim(), txtLastName.Text.Trim(), PasswordHash.HashPassword(pswdPassword.Password.Trim()), false);
+                        User newUser = new User(TxtID.Text.Trim(), TxtFirstName.Text.Trim(), TxtLastName.Text.Trim(), PasswordHash.HashPassword(PswdPassword.Password.Trim()), false);
                         if (await AppState.NewUser(newUser))
                             CloseWindow();
                     }
                     else
-                        new Notification("Please ensure the passwords match.", "Time Clock", NotificationButtons.OK, this).ShowDialog();
+                        AppState.DisplayNotification("Please ensure the passwords match.", "Time Clock", NotificationButtons.OK, this);
                 }
                 else
-                    new Notification("Please ensure the user ID and password are at least 4 characters long, and first and last names are at least 2 characters long.", "Sulimn", NotificationButtons.OK, this).ShowDialog();
+                    AppState.DisplayNotification("Please ensure the user ID and password are at least 4 characters long, and first and last names are at least 2 characters long.", "Sulimn", NotificationButtons.OK, this);
             }
         }
 
-        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             CloseWindow();
         }
@@ -61,34 +62,35 @@ namespace TimeClock
         public NewUserWindow()
         {
             InitializeComponent();
+            TxtID.Focus();
         }
 
-        private void txt_GotFocus(object sender, RoutedEventArgs e)
+        private void Txt_GotFocus(object sender, RoutedEventArgs e)
         {
             Functions.TextBoxGotFocus(sender);
         }
 
-        private void pswd_GotFocus(object sender, RoutedEventArgs e)
+        private void Pswd_GotFocus(object sender, RoutedEventArgs e)
         {
             Functions.PasswordBoxGotFocus(sender);
         }
 
-        private void txtName_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void TxtName_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             Functions.PreviewKeyDown(e, KeyType.Letters);
         }
 
-        private void txt_TextChanged(object sender, TextChangedEventArgs e)
+        private void Txt_TextChanged(object sender, TextChangedEventArgs e)
         {
             CheckInput();
         }
 
-        private void pswd_TextChanged(object sender, RoutedEventArgs e)
+        private void Pswd_TextChanged(object sender, RoutedEventArgs e)
         {
             CheckInput();
         }
 
-        private void windowNewUser_Closing(object sender, CancelEventArgs e)
+        private void WindowNewUser_Closing(object sender, CancelEventArgs e)
         {
             RefToAdminWindow.Show();
         }
