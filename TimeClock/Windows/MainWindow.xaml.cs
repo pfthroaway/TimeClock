@@ -14,12 +14,12 @@ namespace TimeClock
         {
             AdminPasswordWindow adminPasswordWindow = new AdminPasswordWindow { RefToMainWindow = this };
             adminPasswordWindow.Show();
-            this.Visibility = Visibility.Hidden;
+            Visibility = Visibility.Hidden;
         }
 
         private void MnuFileExit_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void BtnLogin_Click(object sender, RoutedEventArgs e)
@@ -27,7 +27,7 @@ namespace TimeClock
             if (AppState.AllUsers.Count(user => user.ID == TxtUserID.Text) > 0)
             {
                 User selectedUser = AppState.AllUsers.Find(user => user.ID == TxtUserID.Text);
-                if (PasswordHash.ValidatePassword(PswdPassword.Password, selectedUser.Password))
+                if (PBKDF2.ValidatePassword(PswdPassword.Password, selectedUser.Password))
                 {
                     AppState.CurrentUser = new User(selectedUser);
                     TxtUserID.Clear();
@@ -35,13 +35,13 @@ namespace TimeClock
                     TxtUserID.Focus();
                     TimeClockWindow timeClockWindow = new TimeClockWindow { RefToMainWindow = this };
                     timeClockWindow.Show();
-                    this.Visibility = Visibility.Hidden;
+                    Visibility = Visibility.Hidden;
                 }
                 else
-                    AppState.DisplayNotification("Invalid login.", "Time Clock", NotificationButtons.OK, this);
+                    AppState.DisplayNotification("Invalid login.", "Time Clock", this);
             }
             else
-                AppState.DisplayNotification("Invalid login.", "Time Clock", NotificationButtons.OK, this);
+                AppState.DisplayNotification("Invalid login.", "Time Clock", this);
         }
 
         #endregion Click Methods

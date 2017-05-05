@@ -49,7 +49,7 @@ namespace TimeClock
 
         private void CloseWindow()
         {
-            this.Close();
+            Close();
         }
 
         public UserLogWindow()

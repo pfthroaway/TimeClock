@@ -4,24 +4,24 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.Globalization;
-using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace TimeClock
 {
     internal class SQLiteDatabaseInteraction : IDatabaseInteraction
     {
-        private readonly SQLiteConnection con = new SQLiteConnection { ConnectionString = $"Data Source = {_DATABASENAME};Version=3" };
+        private readonly string _con = $"Data Source = {_DATABASENAME};Version=3";
+
+        // ReSharper disable once InconsistentNaming
         private const string _DATABASENAME = "TimeClock.sqlite";
 
         /// <summary>Verifies that the requested database exists and that its file size is greater than zero. If not, it extracts the embedded database file to the local output folder.</summary>
         /// <returns>Returns true once the database has been validated</returns>
-        public bool VerifyDatabaseIntegrity()
+        public void VerifyDatabaseIntegrity()
         {
-            if (!File.Exists(_DATABASENAME) || new FileInfo(_DATABASENAME).Length == 0)
-                Functions.ExtractEmbeddedResource(Directory.GetCurrentDirectory(), "TimeClock", new List<string> { _DATABASENAME });
-
-            return true;
+            Functions.VerifyFileIntegrity(Assembly.GetExecutingAssembly()
+                .GetManifestResourceStream($"TimeClock.{_DATABASENAME}"), _DATABASENAME);
         }
 
         #region Administrator Management
@@ -29,52 +29,21 @@ namespace TimeClock
         /// <summary>Changes the Admin password in the database.</summary>
         /// <param name="hashedAdminPassword">New hashed admin password</param>
         /// <returns>Whether the admin password was updated in the database</returns>
-        public async Task<bool> ChangeAdminPassword(string newHashedPassword)
+        public async Task<bool> ChangeAdminPassword(string hashedAdminPassword)
         {
-            bool success = false;
             SQLiteCommand cmd = new SQLiteCommand { CommandText = "UPDATE Admin SET [AdminPassword] = @adminPassword" };
-            cmd.Parameters.AddWithValue("@adminPassword", newHashedPassword);
+            cmd.Parameters.AddWithValue("@adminPassword", hashedAdminPassword);
 
-            await Task.Run(() =>
-            {
-                try
-                {
-                    cmd.Connection = con;
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    success = true;
-                }
-                catch (Exception ex)
-                {
-                    AppState.DisplayNotification(ex.Message, "Error Changing Admin Password", NotificationButtons.OK);
-                }
-                finally { con.Close(); }
-            });
-            return success;
+            return await SQLite.ExecuteCommand(_con, cmd);
         }
 
         /// <summary>Loads the administrator password from the database.</summary>
         /// <returns>Administrator password</returns>
         public async Task<string> LoadAdminPassword()
         {
-            SQLiteDataAdapter da;
-            DataSet ds = new DataSet();
-            await Task.Run(() =>
-            {
-                try
-                {
-                    da = new SQLiteDataAdapter("SELECT * FROM Admin", con);
-                    da.Fill(ds, "Admin");
-                }
-                catch (Exception ex)
-                {
-                    AppState.DisplayNotification(ex.Message, "Error Filling DataSet", NotificationButtons.OK);
-                }
-                finally { con.Close(); }
-            });
-            if (ds.Tables[0].Rows.Count > 0)
-                return ds.Tables[0].Rows[0]["AdminPassword"].ToString();
-            return "";
+            DataSet ds = await SQLite.FillDataSet("SELECT * FROM Admin", _con);
+
+            return ds.Tables[0].Rows.Count > 0 ? ds.Tables[0].Rows[0]["AdminPassword"].ToString() : "";
         }
 
         #endregion Administrator Management
@@ -85,32 +54,19 @@ namespace TimeClock
         /// <returns>List of all Users currently logged in</returns>
         public async Task<List<Shift>> LoadLoggedInUsers()
         {
-            List<Shift> CurrentlyLoggedIn = new List<Shift>();
-            SQLiteDataAdapter da;
-            DataSet ds = new DataSet();
-            await Task.Run(() =>
-            {
-                try
-                {
-                    da = new SQLiteDataAdapter("SELECT * FROM LoggedInUsers", con);
-                    da.Fill(ds, "LoggedInUsers");
-                }
-                catch (Exception ex)
-                {
-                    AppState.DisplayNotification(ex.Message, "Error Filling DataSet", NotificationButtons.OK);
-                }
-                finally { con.Close(); }
-            });
+            List<Shift> currentlyLoggedIn = new List<Shift>();
+
+            DataSet ds = await SQLite.FillDataSet("SELECT * FROM LoggedInUsers", _con);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                 {
                     Shift newShift = new Shift(ds.Tables[0].Rows[i]["ID"].ToString(), DateTimeHelper.Parse(ds.Tables[0].Rows[i]["TimeIn"].ToString()));
 
-                    CurrentlyLoggedIn.Add(newShift);
+                    currentlyLoggedIn.Add(newShift);
                 }
             }
-            return CurrentlyLoggedIn;
+            return currentlyLoggedIn;
         }
 
         /// <summary>Loads all the selected User's Shifts from the database.</summary>
@@ -119,28 +75,14 @@ namespace TimeClock
         public async Task<List<Shift>> LoadShifts(User user)
         {
             List<Shift> userShifts = new List<Shift>();
-            SQLiteDataAdapter da;
-            DataSet ds = new DataSet();
-            await Task.Run(() =>
+            DataSet ds = await SQLite.FillDataSet("SELECT * FROM Times WHERE [ID]='" + user.ID + "'", _con);
+
+            if (ds.Tables[0].Rows.Count > 0)
             {
-                try
-                {
-                    string sql = "SELECT * FROM Times WHERE [ID]='" + user.ID + "'";
-                    string table = "Times";
-                    da = new SQLiteDataAdapter(sql, con);
-                    da.Fill(ds, table);
-                    if (ds.Tables[0].Rows.Count > 0)
-                    {
-                        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-                            userShifts.Add(new Shift(user.ID, DateTimeHelper.Parse(ds.Tables[0].Rows[i]["TimeIn"]), DateTimeHelper.Parse(ds.Tables[0].Rows[i]["TimeOut"])));
-                    }
-                }
-                catch (Exception ex)
-                {
-                    AppState.DisplayNotification(ex.Message, "Error Loading Shifts", NotificationButtons.OK);
-                }
-                finally { con.Close(); }
-            });
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                    userShifts.Add(new Shift(user.ID, DateTimeHelper.Parse(ds.Tables[0].Rows[i]["TimeIn"]), DateTimeHelper.Parse(ds.Tables[0].Rows[i]["TimeOut"])));
+            }
+
             return userShifts;
         }
 
@@ -148,32 +90,19 @@ namespace TimeClock
         /// <returns>List of all Users</returns>
         public async Task<List<User>> LoadUsers()
         {
-            List<User> AllUsers = new List<User>();
-            SQLiteDataAdapter da;
-            DataSet ds = new DataSet();
-            await Task.Run(() =>
-            {
-                try
-                {
-                    da = new SQLiteDataAdapter("SELECT * FROM Users", con);
-                    da.Fill(ds, "Users");
-                }
-                catch (Exception ex)
-                {
-                    AppState.DisplayNotification(ex.Message, "Error Filling DataSet", NotificationButtons.OK);
-                }
-                finally { con.Close(); }
-            });
+            List<User> allUsers = new List<User>();
+            DataSet ds = await SQLite.FillDataSet("SELECT * FROM Users", _con);
+
             if (ds.Tables[0].Rows.Count > 0)
             {
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                 {
                     User newUser = new User(ds.Tables[0].Rows[i]["ID"].ToString(), ds.Tables[0].Rows[i]["FirstName"].ToString(), ds.Tables[0].Rows[i]["lastName"].ToString(), ds.Tables[0].Rows[i]["UserPassword"].ToString(), BoolHelper.Parse(ds.Tables[0].Rows[i]["LoggedIn"]));
 
-                    AllUsers.Add(newUser);
+                    allUsers.Add(newUser);
                 }
             }
-            return AllUsers;
+            return allUsers;
         }
 
         #endregion Load
@@ -185,33 +114,16 @@ namespace TimeClock
         public async Task<bool> LogIn(User loginUser)
         {
             bool success = false;
-            SQLiteCommand cmd = new SQLiteCommand { CommandText = "INSERT INTO LoggedInUsers([ID],[TimeIn])VALUES(@id,@timeIn)" };
-
+            SQLiteCommand cmd = new SQLiteCommand { CommandText = "INSERT INTO LoggedInUsers([ID],[TimeIn])VALUES(@id,@timeIn); UPDATE Users SET[LoggedIn] = @loggedIn WHERE[ID] = @id" };
             cmd.Parameters.AddWithValue("@id", loginUser.ID);
             cmd.Parameters.AddWithValue("@timeIn", DateTime.Now.ToString(CultureInfo.InvariantCulture));
-            await Task.Run(() =>
+            cmd.Parameters.AddWithValue("@loggedIn", Int32Helper.Parse(true));
+
+            if (await SQLite.ExecuteCommand(_con, cmd))
             {
-                try
-                {
-                    cmd.Connection = con;
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    cmd.Parameters.Clear();
-
-                    loginUser.LoggedIn = true;
-                    cmd.CommandText = "UPDATE Users SET [LoggedIn] = @loggedIn WHERE [ID] = @id";
-                    cmd.Parameters.AddWithValue("@loggedIn", Int32Helper.Parse(loginUser.LoggedIn));
-                    cmd.Parameters.AddWithValue("@id", loginUser.ID);
-                    cmd.ExecuteNonQuery();
-                    success = true;
-                }
-                catch (Exception ex)
-                {
-                    AppState.DisplayNotification(ex.Message, "Error Logging In", NotificationButtons.OK);
-                }
-                finally { con.Close(); }
-            });
-
+                loginUser.LoggedIn = true;
+                success = true;
+            }
             return success;
         }
 
@@ -221,42 +133,24 @@ namespace TimeClock
         /// <returns>Whether a shift was successfully added to the database</returns>
         public async Task<bool> LogOut(User logOutUser, Shift logOutShift)
         {
+            bool success = false;
             SQLiteCommand cmd = new SQLiteCommand();
 
-            string sql = "INSERT INTO Times([ID],[TimeIn],[TimeOut])VALUES(@id,@timeIn,@timeOut)";
+            string sql = "INSERT INTO Times([ID],[TimeIn],[TimeOut])VALUES(@id,@timeIn,@timeOut);DELETE FROM LoggedInUsers WHERE[ID] = @id;UPDATE Users SET [LoggedIn] = @loggedIn WHERE [ID] = @id";
 
             cmd.CommandType = CommandType.Text;
             cmd.CommandText = sql;
             cmd.Parameters.AddWithValue("@id", logOutUser.ID);
             cmd.Parameters.AddWithValue("@timeIn", logOutShift.ShiftStart.ToString(CultureInfo.InvariantCulture));
             cmd.Parameters.AddWithValue("@timeOut", logOutShift.ShiftEnd.ToString(CultureInfo.InvariantCulture));
-            await Task.Run(() =>
+            cmd.Parameters.AddWithValue("@loggedIn", Int32Helper.Parse(false));
+            if (await SQLite.ExecuteCommand(_con, cmd))
             {
-                try
-                {
-                    cmd.Connection = con;
-                    con.Open();
-                    cmd.ExecuteNonQuery();
+                logOutUser.LoggedIn = false;
+                success = true;
+            }
 
-                    cmd.Parameters.Clear();
-                    cmd.CommandText = "DELETE FROM LoggedInUsers WHERE [ID] = @id";
-                    cmd.Parameters.AddWithValue("@id", logOutUser.ID);
-                    cmd.ExecuteNonQuery();
-
-                    logOutUser.LoggedIn = false;
-                    cmd.Parameters.Clear();
-                    cmd.CommandText = "UPDATE Users SET [LoggedIn] = @loggedIn WHERE [ID] = @id";
-                    cmd.Parameters.AddWithValue("@loggedIn", Int32Helper.Parse(logOutUser.LoggedIn));
-                    cmd.Parameters.AddWithValue("@id", logOutUser.ID);
-                    cmd.ExecuteNonQuery();
-                }
-                catch (Exception ex)
-                {
-                    AppState.DisplayNotification(ex.Message, "Error Logging Out", NotificationButtons.OK);
-                }
-                finally { con.Close(); }
-            });
-            return true;
+            return success;
         }
 
         #endregion Log In/Out
@@ -269,27 +163,11 @@ namespace TimeClock
         /// <returns>Whether the user's password was updated in the database</returns>
         public async Task<bool> ChangeUserPassword(User user, string newHashedPassword)
         {
-            bool success = false;
             SQLiteCommand cmd = new SQLiteCommand { CommandText = "UPDATE Users SET [UserPassword] = @userPassword WHERE [ID] = @id" };
             cmd.Parameters.AddWithValue("@userPassword", newHashedPassword);
             cmd.Parameters.AddWithValue("@id", user.ID);
 
-            await Task.Run(() =>
-            {
-                try
-                {
-                    cmd.Connection = con;
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    success = true;
-                }
-                catch (Exception ex)
-                {
-                    AppState.DisplayNotification(ex.Message, "Error Changing User Password", NotificationButtons.OK);
-                }
-                finally { con.Close(); }
-            });
-            return success;
+            return await SQLite.ExecuteCommand(_con, cmd);
         }
 
         /// <summary>Adds a new User to the database.</summary>
@@ -304,22 +182,13 @@ namespace TimeClock
             cmd.Parameters.AddWithValue("@firstName", newUser.FirstName);
             cmd.Parameters.AddWithValue("@lastName", newUser.LastName);
             cmd.Parameters.AddWithValue("@loggedIn", newUser.LoggedIn);
-            await Task.Run(() =>
+
+            if (await SQLite.ExecuteCommand(_con, cmd))
             {
-                try
-                {
-                    cmd.Connection = con;
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    AppState.DisplayNotification("New user added successfully.", "Time Clock", NotificationButtons.OK);
-                    success = true;
-                }
-                catch (Exception ex)
-                {
-                    AppState.DisplayNotification(ex.Message, "Error Creating New User", NotificationButtons.OK);
-                }
-                finally { con.Close(); }
-            });
+                AppState.DisplayNotification("New user added successfully.", "Time Clock");
+                success = true;
+            }
+
             return success;
         }
 

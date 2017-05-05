@@ -1,6 +1,4 @@
-﻿using Extensions;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 
@@ -17,7 +15,7 @@ namespace TimeClock
         {
             NewUserWindow newUserWindow = new NewUserWindow { RefToAdminWindow = this };
             newUserWindow.Show();
-            this.Visibility = Visibility.Hidden;
+            Visibility = Visibility.Hidden;
         }
 
         private void BtnEditUser_Click(object sender, RoutedEventArgs e)
@@ -35,10 +33,10 @@ namespace TimeClock
                 List<Shift> loggedIn = new List<Shift>(AppState.CurrentlyLoggedIn);
                 foreach (Shift shft in loggedIn)
                     await AppState.LogOut(AppState.AllUsers.Find(user => user.ID == shft.ID));
-                AppState.DisplayNotification("All users now logged out.", "Time Clock", NotificationButtons.OK, this);
+                AppState.DisplayNotification("All users now logged out.", "Time Clock", this);
             }
             else
-                AppState.DisplayNotification("All users are currently logged out.", "Time Clock", NotificationButtons.OK, this);
+                AppState.DisplayNotification("All users are currently logged out.", "Time Clock", this);
         }
 
         private void BtnChangePassword_Click(object sender, RoutedEventArgs e)
@@ -48,7 +46,7 @@ namespace TimeClock
                 RefToAdminWindow = this
             };
             adminChangePasswordWindow.Show();
-            this.Visibility = Visibility.Hidden;
+            Visibility = Visibility.Hidden;
         }
 
         private void BtnBack_Click(object sender, RoutedEventArgs e)
@@ -63,7 +61,7 @@ namespace TimeClock
         /// <summary>Closes the Window.</summary>
         private void CloseWindow()
         {
-            this.Close();
+            Close();
         }
 
         public AdminWindow()

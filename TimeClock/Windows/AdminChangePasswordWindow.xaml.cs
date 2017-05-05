@@ -13,26 +13,26 @@ namespace TimeClock
 
         private async void BtnSubmit_Click(object sender, RoutedEventArgs e)
         {
-            if (PasswordHash.ValidatePassword(PswdCurrentPassword.Password, AppState.AdminPassword))
+            if (PBKDF2.ValidatePassword(PswdCurrentPassword.Password, AppState.AdminPassword))
             {
                 if (PswdNewPassword.Password == PswdConfirmPassword.Password)
                 {
                     if (PswdCurrentPassword.Password != PswdNewPassword.Password)
                     {
-                        if (await AppState.ChangeAdminPassword(PasswordHash.HashPassword(PswdNewPassword.Password)))
+                        if (await AppState.ChangeAdminPassword(PBKDF2.HashPassword(PswdNewPassword.Password)))
                         {
-                            AppState.DisplayNotification("Successfully changed administrator password.", "Time Clock", NotificationButtons.OK, this);
+                            AppState.DisplayNotification("Successfully changed administrator password.", "Time Clock", this);
                             CloseWindow();
                         }
                     }
                     else
-                        AppState.DisplayNotification("The new password can't be the same as the current password.", "Time Clock", NotificationButtons.OK, this);
+                        AppState.DisplayNotification("The new password can't be the same as the current password.", "Time Clock", this);
                 }
                 else
-                    AppState.DisplayNotification("Please ensure the new passwords match.", "Time Clock", NotificationButtons.OK, this);
+                    AppState.DisplayNotification("Please ensure the new passwords match.", "Time Clock", this);
             }
             else
-                AppState.DisplayNotification("Invalid current administrator password.", "Time Clock", NotificationButtons.OK, this);
+                AppState.DisplayNotification("Invalid current administrator password.", "Time Clock", this);
         }
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
@@ -47,7 +47,7 @@ namespace TimeClock
         /// <summary>Closes the Window.</summary>
         private void CloseWindow()
         {
-            this.Close();
+            Close();
         }
 
         public AdminChangePasswordWindow()

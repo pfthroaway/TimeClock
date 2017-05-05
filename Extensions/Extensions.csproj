@@ -1,24 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6D13A9A0-4E40-46D5-8BBA-055CE01A8CDE}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TimeClock</RootNamespace>
-    <AssemblyName>TimeClock</AssemblyName>
+    <ProjectGuid>{20F40385-5991-461C-9340-2F5DE0E320F4}</ProjectGuid>
+    <OutputType>library</OutputType>
+    <RootNamespace>Extensions</RootNamespace>
+    <AssemblyName>Extensions</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -28,7 +25,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -36,20 +32,17 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>Windows\TimeClock.ico</ApplicationIcon>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
+    </Reference>
+    <Reference Include="Sodium, Version=0.10.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\libsodium-net.0.10.0\lib\Net40\Sodium.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.105.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Data.SQLite.Core.1.0.105.0\lib\net451\System.Data.SQLite.dll</HintPath>
@@ -60,12 +53,8 @@
     <Reference Include="System.Data.SQLite.Linq, Version=1.0.105.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Data.SQLite.Linq.1.0.105.0\lib\net451\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -74,78 +63,25 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Compile Include="Classes\IDatabaseInteraction.cs" />
-    <Compile Include="Classes\SQLiteDatabaseInteraction.cs" />
-    <Compile Include="Windows\AdminChangePasswordWindow.xaml.cs">
-      <DependentUpon>AdminChangePasswordWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\AdminWindow.xaml.cs">
-      <DependentUpon>AdminWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\NewUserWindow.xaml.cs">
-      <DependentUpon>NewUserWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Classes\Shift.cs" />
-    <Compile Include="Classes\AppState.cs" />
-    <Compile Include="Windows\TimeClockWindow.xaml.cs">
-      <DependentUpon>TimeClockWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Classes\User.cs" />
-    <Compile Include="Windows\UserChangePasswordWindow.xaml.cs">
-      <DependentUpon>UserChangePasswordWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\UserLogWindow.xaml.cs">
-      <DependentUpon>UserLogWindow.xaml</DependentUpon>
-    </Compile>
-    <Page Include="Windows\AdminChangePasswordWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\AdminPasswordWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\AdminWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\MainWindow.xaml">
+    <Compile Include="Argon2.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Functions.cs" />
+    <Compile Include="ListViewSort.cs" />
+    <Compile Include="SortAdorner.cs" />
+    <Compile Include="SQLite.cs" />
+    <Page Include="Notification.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Windows\AdminPasswordWindow.xaml.cs">
-      <DependentUpon>AdminPasswordWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
+    <Compile Include="KeyType.cs" />
+    <Compile Include="MD5.cs" />
+    <Compile Include="Notification.xaml.cs">
+      <DependentUpon>Notification.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Windows\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="Windows\NewUserWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\TimeClockWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\UserChangePasswordWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\UserLogWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PBKDF2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -163,25 +99,22 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <AppDesigner Include="Properties\" />
-    <EmbeddedResource Include="TimeClock.sqlite" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <Resource Include="Resources\Information.png" />
+    <Resource Include="Resources\RedTriangle.png" />
+    <Resource Include="Resources\YellowTriangle.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Windows\TimeClock.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Extensions\Extensions.csproj">
-      <Project>{20f40385-5991-461c-9340-2f5de0e320f4}</Project>
-      <Name>Extensions</Name>
-    </ProjectReference>
+    <EmbeddedResource Include="SQLite.Interop.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.105.0\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.105.0\build\net451\System.Data.SQLite.Core.targets')" />
@@ -190,12 +123,7 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.105.0\build\net451\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.105.0\build\net451\System.Data.SQLite.Core.targets'))" />
+    <Error Condition="!Exists('..\packages\Baseclass.Contrib.Nuget.Output.2.3.0\build\net40\Baseclass.Contrib.Nuget.Output.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Baseclass.Contrib.Nuget.Output.2.3.0\build\net40\Baseclass.Contrib.Nuget.Output.targets'))" />
   </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <Import Project="..\packages\Baseclass.Contrib.Nuget.Output.2.3.0\build\net40\Baseclass.Contrib.Nuget.Output.targets" Condition="Exists('..\packages\Baseclass.Contrib.Nuget.Output.2.3.0\build\net40\Baseclass.Contrib.Nuget.Output.targets')" />
 </Project>

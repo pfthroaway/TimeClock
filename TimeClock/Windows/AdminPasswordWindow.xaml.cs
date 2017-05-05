@@ -13,14 +13,14 @@ namespace TimeClock
 
         private void BtnSubmit_Click(object sender, RoutedEventArgs e)
         {
-            if (PasswordHash.ValidatePassword(PswdAdmin.Password, AppState.AdminPassword))
+            if (PBKDF2.ValidatePassword(PswdAdmin.Password, AppState.AdminPassword))
             {
                 _admin = true;
                 CloseWindow();
             }
             else
             {
-                AppState.DisplayNotification("Invalid login.", "Sulimn", NotificationButtons.OK, this);
+                AppState.DisplayNotification("Invalid login.", "Time Clock", this);
                 PswdAdmin.Focus();
             }
         }
@@ -37,7 +37,7 @@ namespace TimeClock
         /// <summary>Closes the Window.</summary>
         private void CloseWindow()
         {
-            this.Close();
+            Close();
         }
 
         public AdminPasswordWindow()

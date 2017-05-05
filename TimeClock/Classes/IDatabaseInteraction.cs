@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace TimeClock
 {
     internal interface IDatabaseInteraction
     {
-        bool VerifyDatabaseIntegrity();
+        void VerifyDatabaseIntegrity();
 
         Task<bool> LogIn(User loginUser);
 
@@ -18,7 +15,7 @@ namespace TimeClock
 
         Task<bool> ChangeUserPassword(User user, string newHashedPassword);
 
-        Task<bool> ChangeAdminPassword(string newHashedPassword);
+        Task<bool> ChangeAdminPassword(string hashedAdminPassword);
 
         Task<List<Shift>> LoadShifts(User user);
     }

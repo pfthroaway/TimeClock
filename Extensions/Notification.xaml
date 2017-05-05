@@ -1,0 +1,29 @@
+﻿<Window x:Class="Extensions.Notification"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Notification" SizeToContent="WidthAndHeight" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" FontFamily="Segoe UI Semibold" FontSize="17" Icon="Resources/Information.png">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.Resources>
+            <BitmapImage x:Key="YellowTriangle" UriSource="Resources/YellowTriangle.png" />
+            <BitmapImage x:Key="RedTriangle" UriSource="Resources/RedTriangle.png" />
+        </Grid.Resources>
+        <Image x:Name="ImgRed" Grid.Column="0" Grid.Row="0" Source="{StaticResource RedTriangle}" Height="70" />
+        <Image x:Name="ImgYellow" Grid.Column="0" Grid.Row="0" Source="{StaticResource YellowTriangle}" Height="70" />
+        <TextBlock x:Name="TxtPopup" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Width="400" TextWrapping="Wrap" TextAlignment="Center" Margin="0,0,0,10" />
+        <Button x:Name="BtnYes" Grid.Column="1" Grid.Row="1" Width="100" Height="30" Content="_Yes" Click="BtnYes_Click" IsDefault="True" />
+        <Button x:Name="BtnOk" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" Width="100" Height="30" Content="_OK" Click="BtnOK_Click" IsDefault="True" />
+        <Button x:Name="BtnNo" Grid.Column="2" Grid.Row="1" Width="100" Height="30" Content="_No" Click="BtnNo_Click" IsCancel="True" />
+    </Grid>
+</Window>

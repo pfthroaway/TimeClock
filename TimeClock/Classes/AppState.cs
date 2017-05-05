@@ -13,13 +13,13 @@ namespace TimeClock
         internal static readonly List<Shift> CurrentUserTimes = new List<Shift>();
         internal static readonly List<User> AllUsers = new List<User>();
         internal static readonly List<Shift> CurrentlyLoggedIn = new List<Shift>();
-        private static readonly SQLiteDatabaseInteraction _databaseInteraction = new SQLiteDatabaseInteraction();
+        private static readonly SQLiteDatabaseInteraction DatabaseInteraction = new SQLiteDatabaseInteraction();
 
         /// <summary>Administrator Password</summary>
         public static string AdminPassword
         {
-            get { return _adminPassword; }
-            set { _adminPassword = value; }
+            get => _adminPassword;
+            set => _adminPassword = value;
         }
 
         #region Administrator Management
@@ -28,7 +28,7 @@ namespace TimeClock
         /// <param name="hashedAdminPassword">New hashed admin password</param>
         internal static async Task<bool> ChangeAdminPassword(string hashedAdminPassword)
         {
-            if (await _databaseInteraction.ChangeAdminPassword(hashedAdminPassword))
+            if (await DatabaseInteraction.ChangeAdminPassword(hashedAdminPassword))
             {
                 AdminPassword = hashedAdminPassword;
                 return true;
@@ -40,24 +40,19 @@ namespace TimeClock
 
         #region Load
 
-        /// <summary>Loads all the selected User's times from the database.</summary>
-        /// <param name="user">User whose times are loaded from the database</param>
-        /// <returns>True</returns>
         /// <summary>Loads all required items from the database on application load.</summary>
         internal static async Task LoadAll()
         {
-            if (_databaseInteraction.VerifyDatabaseIntegrity())
-            {
-                AdminPassword = await _databaseInteraction.LoadAdminPassword();
-                AllUsers.AddRange(await _databaseInteraction.LoadUsers());
-                CurrentlyLoggedIn.AddRange(await _databaseInteraction.LoadLoggedInUsers());
-            }
+            DatabaseInteraction.VerifyDatabaseIntegrity();
+            AdminPassword = await DatabaseInteraction.LoadAdminPassword();
+            AllUsers.AddRange(await DatabaseInteraction.LoadUsers());
+            CurrentlyLoggedIn.AddRange(await DatabaseInteraction.LoadLoggedInUsers());
         }
 
         internal static async Task LoadUserTimes(User user)
         {
             CurrentUserTimes.Clear();
-            CurrentUserTimes.AddRange(await _databaseInteraction.LoadShifts(user));
+            CurrentUserTimes.AddRange(await DatabaseInteraction.LoadShifts(user));
         }
 
         #endregion Load
@@ -68,7 +63,7 @@ namespace TimeClock
         /// <param name="loginUser">User logging in</param>
         internal static async Task LogIn(User loginUser)
         {
-            if (await _databaseInteraction.LogIn(loginUser))
+            if (await DatabaseInteraction.LogIn(loginUser))
             {
                 CurrentlyLoggedIn.Add(new Shift(loginUser.ID, DateTime.Now));
                 AllUsers.Find(user => user.ID == loginUser.ID).LoggedIn = true;
@@ -81,7 +76,7 @@ namespace TimeClock
         {
             DateTime shiftStartTime = CurrentlyLoggedIn.Find(shift => shift.ID == logOutUser.ID).ShiftStart;
             Shift newShift = new Shift(logOutUser.ID, shiftStartTime, DateTime.Now);
-            if (await _databaseInteraction.LogOut(logOutUser, newShift))
+            if (await DatabaseInteraction.LogOut(logOutUser, newShift))
             {
                 CurrentUserTimes.Add(newShift);
                 CurrentlyLoggedIn.Remove(CurrentlyLoggedIn.Find(shift => shift.ID == logOutUser.ID));
@@ -96,26 +91,40 @@ namespace TimeClock
         /// <summary>Displays a new Notification in a thread-safe way.</summary>
         /// <param name="message">Message to be displayed</param>
         /// <param name="title">Title of the Notification Window</param>
-        /// <param name="buttons">Button type to be displayed on the Window</param>
-        internal static void DisplayNotification(string message, string title, NotificationButtons buttons)
+        internal static void DisplayNotification(string message, string title)
         {
-            Application.Current.Dispatcher.Invoke((Action)delegate
+            Application.Current.Dispatcher.Invoke(delegate
             {
-                new Notification(message, title, buttons).ShowDialog();
+                new Notification(message, title, NotificationButtons.OK).ShowDialog();
             });
         }
 
         /// <summary>Displays a new Notification in a thread-safe way.</summary>
         /// <param name="message">Message to be displayed</param>
         /// <param name="title">Title of the Notification Window</param>
-        /// <param name="buttons">Button type to be displayed on the Window</param>
-        /// <param name="Window">Window being referenced</param>
-        internal static void DisplayNotification(string message, string title, NotificationButtons buttons, Window Window)
+        /// <param name="window">Window being referenced</param>
+        internal static void DisplayNotification(string message, string title, Window window)
         {
-            Application.Current.Dispatcher.Invoke((Action)delegate
+            Application.Current.Dispatcher.Invoke(delegate
             {
-                new Notification(message, title, buttons, Window).ShowDialog();
+                new Notification(message, title, NotificationButtons.OK, window).ShowDialog();
             });
+        }
+
+        /// <summary>Displays a new Notification in a thread-safe way and retrieves a boolean result upon its closing.</summary>
+        /// <param name="message">Message to be displayed</param>
+        /// <param name="title">Title of the Notification Window</param>
+        /// <param name="window">Window being referenced</param>
+        /// <returns>Returns value of clicked button on Notification.</returns>
+        internal static bool YesNoNotification(string message, string title, Window window)
+        {
+            bool result = false;
+            Application.Current.Dispatcher.Invoke(delegate
+            {
+                if (new Notification(message, title, NotificationButtons.YesNo, window).ShowDialog() == true)
+                    result = true;
+            });
+            return result;
         }
 
         #endregion Notification Management
@@ -127,14 +136,14 @@ namespace TimeClock
         /// <param name="newHashedPassword">New hashed password</param>
         internal static async Task<bool> ChangeUserPassword(User user, string newHashedPassword)
         {
-            return await _databaseInteraction.ChangeUserPassword(user, newHashedPassword);
+            return await DatabaseInteraction.ChangeUserPassword(user, newHashedPassword);
         }
 
         /// <summary>Adds a new User to the database.</summary>
         /// <param name="newUser">User to be added to the database.</param>
         internal static async Task<bool> NewUser(User newUser)
         {
-            if (await _databaseInteraction.NewUser(newUser))
+            if (await DatabaseInteraction.NewUser(newUser))
             {
                 AllUsers.Add(newUser);
                 return true;

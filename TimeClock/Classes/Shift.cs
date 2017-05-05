@@ -13,13 +13,13 @@ namespace TimeClock
 
         public string ID
         {
-            get { return _id; }
+            get => _id;
             private set { _id = value; OnPropertyChanged("ID"); }
         }
 
         public DateTime ShiftStart
         {
-            get { return _shiftStart; }
+            get => _shiftStart;
             private set { _shiftStart = value; OnPropertyChanged("ShiftStart"); }
         }
 
@@ -27,8 +27,7 @@ namespace TimeClock
 
         public DateTime ShiftEnd
         {
-            get
-            { return _shiftEnd; }
+            get => _shiftEnd;
             set { _shiftEnd = value; OnPropertyChanged("ShiftEnd"); OnPropertyChanged("ShiftLength"); OnPropertyChanged("ShiftLengthToString"); }
         }
 

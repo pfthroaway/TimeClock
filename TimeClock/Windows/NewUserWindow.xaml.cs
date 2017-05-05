@@ -1,5 +1,4 @@
 ﻿using Extensions;
-using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -25,22 +24,22 @@ namespace TimeClock
         private async void BtnSubmit_Click(object sender, RoutedEventArgs e)
         {
             if (AppState.AllUsers.Any(user => user.ID == TxtID.Text))
-                AppState.DisplayNotification("This user ID has already been taken.", "Time Clock", NotificationButtons.OK, this);
+                AppState.DisplayNotification("This user ID has already been taken.", "Time Clock", this);
             else
             {
                 if (TxtID.Text.Length >= 4 && TxtFirstName.Text.Length >= 2 && TxtLastName.Text.Length >= 2 && PswdPassword.Password.Length >= 4 && PswdConfirm.Password.Length >= 4)
                 {
                     if (PswdPassword.Password == PswdConfirm.Password)
                     {
-                        User newUser = new User(TxtID.Text.Trim(), TxtFirstName.Text.Trim(), TxtLastName.Text.Trim(), PasswordHash.HashPassword(PswdPassword.Password.Trim()), false);
+                        User newUser = new User(TxtID.Text.Trim(), TxtFirstName.Text.Trim(), TxtLastName.Text.Trim(), PBKDF2.HashPassword(PswdPassword.Password.Trim()), false);
                         if (await AppState.NewUser(newUser))
                             CloseWindow();
                     }
                     else
-                        AppState.DisplayNotification("Please ensure the passwords match.", "Time Clock", NotificationButtons.OK, this);
+                        AppState.DisplayNotification("Please ensure the passwords match.", "Time Clock", this);
                 }
                 else
-                    AppState.DisplayNotification("Please ensure the user ID and password are at least 4 characters long, and first and last names are at least 2 characters long.", "Sulimn", NotificationButtons.OK, this);
+                    AppState.DisplayNotification("Please ensure the user ID and password are at least 4 characters long, and first and last names are at least 2 characters long.", "Time Clock", this);
             }
         }
 
@@ -56,7 +55,7 @@ namespace TimeClock
         /// <summary>Closes the Window.</summary>
         private void CloseWindow()
         {
-            this.Close();
+            Close();
         }
 
         public NewUserWindow()

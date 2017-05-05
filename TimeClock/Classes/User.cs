@@ -12,19 +12,19 @@ namespace TimeClock
 
         public string ID
         {
-            get { return _id; }
+            get => _id;
             private set { _id = value; OnPropertyChanged("ID"); }
         }
 
         public string FirstName
         {
-            get { return _firstName; }
+            get => _firstName;
             private set { _firstName = value; OnPropertyChanged("FirstName"); OnPropertyChanged("Names"); }
         }
 
         public string LastName
         {
-            get { return _lastName; }
+            get => _lastName;
             private set { _lastName = value; OnPropertyChanged("LastName"); OnPropertyChanged("Names"); }
         }
 
@@ -32,13 +32,13 @@ namespace TimeClock
 
         public string Password
         {
-            get { return _password; }
+            get => _password;
             private set { _password = value; OnPropertyChanged("Password"); }
         }
 
         public bool LoggedIn
         {
-            get { return _loggedIn; }
+            get => _loggedIn;
             set { _loggedIn = value; OnPropertyChanged("LoggedIn"); OnPropertyChanged("LoggedInText"); }
         }
 

@@ -34,14 +34,14 @@ namespace TimeClock
                 RefToTimeClockWindow = this
             };
             userChangePasswordWindow.Show();
-            this.Visibility = Visibility.Hidden;
+            Visibility = Visibility.Hidden;
         }
 
         private void BtnLog_Click(object sender, RoutedEventArgs e)
         {
             UserLogWindow userLogWindow = new UserLogWindow { RefToTimeClockWindow = this };
             userLogWindow.Show();
-            this.Visibility = Visibility.Hidden;
+            Visibility = Visibility.Hidden;
         }
 
         private void BtnBack_Click(object sender, RoutedEventArgs e)
@@ -56,7 +56,7 @@ namespace TimeClock
         /// <summary>Closes the Window.</summary>
         private void CloseWindow()
         {
-            this.Close();
+            Close();
         }
 
         public TimeClockWindow()
