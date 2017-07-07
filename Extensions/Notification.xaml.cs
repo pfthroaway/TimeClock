@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Extensions.Enums;
+using System;
 using System.Windows;
 
 namespace Extensions
 {
-    public enum NotificationButtons { YesNo, OK }
-
     public partial class Notification
     {
         /// <summary>Toggles which buttons are displayed on the Notification.</summary>
@@ -21,7 +20,8 @@ namespace Extensions
             }
             catch (Exception ex)
             {
-                new Notification(ex.Message, "Error Converting Boolean to Enum.", NotificationButtons.OK, this).ShowDialog();
+                new Notification(ex.Message, "Error Converting Boolean to Enum.", NotificationButtons.OK, this)
+                    .ShowDialog();
             }
         }
 

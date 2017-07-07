@@ -1,9 +1,11 @@
 ﻿using Extensions;
-using System.Linq;
+using Extensions.Encryption;
 using System.Windows;
 using System.Windows.Input;
+using TimeClock.Classes;
+using TimeClock.Classes.Entities;
 
-namespace TimeClock
+namespace TimeClock.Windows
 {
     /// <summary>Interaction logic for MainWindow.xaml</summary>
     public partial class MainWindow
@@ -12,7 +14,7 @@ namespace TimeClock
 
         private void MnuAdmin_Click(object sender, RoutedEventArgs e)
         {
-            AdminPasswordWindow adminPasswordWindow = new AdminPasswordWindow { RefToMainWindow = this };
+            Admin.AdminPasswordWindow adminPasswordWindow = new Admin.AdminPasswordWindow { PreviousWindow = this };
             adminPasswordWindow.Show();
             Visibility = Visibility.Hidden;
         }
@@ -22,23 +24,18 @@ namespace TimeClock
             Close();
         }
 
-        private void BtnLogin_Click(object sender, RoutedEventArgs e)
+        private async void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
-            if (AppState.AllUsers.Count(user => user.ID == TxtUserID.Text) > 0)
+            User checkUser = await AppState.LoadUser(TxtUserID.Text);
+            if (checkUser != null && PBKDF2.ValidatePassword(PswdPassword.Password, checkUser.Password))
             {
-                User selectedUser = AppState.AllUsers.Find(user => user.ID == TxtUserID.Text);
-                if (PBKDF2.ValidatePassword(PswdPassword.Password, selectedUser.Password))
-                {
-                    AppState.CurrentUser = new User(selectedUser);
-                    TxtUserID.Clear();
-                    PswdPassword.Clear();
-                    TxtUserID.Focus();
-                    TimeClockWindow timeClockWindow = new TimeClockWindow { RefToMainWindow = this };
-                    timeClockWindow.Show();
-                    Visibility = Visibility.Hidden;
-                }
-                else
-                    AppState.DisplayNotification("Invalid login.", "Time Clock", this);
+                AppState.CurrentUser = new User(checkUser);
+                TxtUserID.Clear();
+                PswdPassword.Clear();
+                TxtUserID.Focus();
+                Users.TimeClockWindow timeClockWindow = new Users.TimeClockWindow { PreviousWindow = this };
+                timeClockWindow.Show();
+                Visibility = Visibility.Hidden;
             }
             else
                 AppState.DisplayNotification("Invalid login.", "Time Clock", this);
@@ -47,6 +44,11 @@ namespace TimeClock
         #endregion Click Methods
 
         #region Window-Manipulation Methods
+
+        private async void WindowMain_Loaded(object sender, RoutedEventArgs e)
+        {
+            await AppState.LoadAll();
+        }
 
         public MainWindow()
         {
@@ -69,10 +71,5 @@ namespace TimeClock
         }
 
         #endregion Window-Manipulation Methods
-
-        private async void WindowMain_Loaded(object sender, RoutedEventArgs e)
-        {
-            await AppState.LoadAll();
-        }
     }
 }

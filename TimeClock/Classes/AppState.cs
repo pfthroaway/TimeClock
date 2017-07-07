@@ -1,26 +1,22 @@
 ﻿using Extensions;
+using Extensions.Enums;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
+using TimeClock.Classes.Database;
+using TimeClock.Classes.Entities;
 
-namespace TimeClock
+namespace TimeClock.Classes
 {
+    /// <summary>Represents the current state of the application.</summary>
     internal static class AppState
     {
-        private static string _adminPassword;
         internal static User CurrentUser = new User();
-        internal static readonly List<Shift> CurrentUserTimes = new List<Shift>();
-        internal static readonly List<User> AllUsers = new List<User>();
-        internal static readonly List<Shift> CurrentlyLoggedIn = new List<Shift>();
         private static readonly SQLiteDatabaseInteraction DatabaseInteraction = new SQLiteDatabaseInteraction();
 
         /// <summary>Administrator Password</summary>
-        public static string AdminPassword
-        {
-            get => _adminPassword;
-            set => _adminPassword = value;
-        }
+        public static string AdminPassword { get; set; }
 
         #region Administrator Management
 
@@ -40,19 +36,32 @@ namespace TimeClock
 
         #region Load
 
+        /// <summary>Gets the next User ID autoincrement value in the database for the Users table.</summary>
+        /// <returns>Next User ID value</returns>
+        public static async Task<int> GetNextUserIndex()
+        {
+            return await DatabaseInteraction.GetNextUserIndex();
+        }
+
         /// <summary>Loads all required items from the database on application load.</summary>
         internal static async Task LoadAll()
         {
             DatabaseInteraction.VerifyDatabaseIntegrity();
             AdminPassword = await DatabaseInteraction.LoadAdminPassword();
-            AllUsers.AddRange(await DatabaseInteraction.LoadUsers());
-            CurrentlyLoggedIn.AddRange(await DatabaseInteraction.LoadLoggedInUsers());
         }
 
-        internal static async Task LoadUserTimes(User user)
+        /// <summary>Loads a User from the database.</summary>
+        /// <returns>User</returns>
+        public static async Task<User> LoadUser(string username)
         {
-            CurrentUserTimes.Clear();
-            CurrentUserTimes.AddRange(await DatabaseInteraction.LoadShifts(user));
+            return await DatabaseInteraction.LoadUser(username);
+        }
+
+        /// <summary>Loads all Users from the database.</summary>
+        /// <returns>User</returns>
+        public static async Task<List<User>> LoadUsers(bool loggedIn = false)
+        {
+            return await DatabaseInteraction.LoadUsers(loggedIn);
         }
 
         #endregion Load
@@ -60,29 +69,12 @@ namespace TimeClock
         #region Log In/Out
 
         /// <summary>Logs in a User.</summary>
-        /// <param name="loginUser">User logging in</param>
-        internal static async Task LogIn(User loginUser)
-        {
-            if (await DatabaseInteraction.LogIn(loginUser))
-            {
-                CurrentlyLoggedIn.Add(new Shift(loginUser.ID, DateTime.Now));
-                AllUsers.Find(user => user.ID == loginUser.ID).LoggedIn = true;
-            }
-        }
+        /// <param name="loginShift">Shift started by User</param>
+        internal static async Task<bool> LogIn(Shift loginShift) => await DatabaseInteraction.LogIn(loginShift);
 
         /// <summary>Logs out a User.</summary>
-        /// <param name="logOutUser">User logging out</param>
-        internal static async Task LogOut(User logOutUser)
-        {
-            DateTime shiftStartTime = CurrentlyLoggedIn.Find(shift => shift.ID == logOutUser.ID).ShiftStart;
-            Shift newShift = new Shift(logOutUser.ID, shiftStartTime, DateTime.Now);
-            if (await DatabaseInteraction.LogOut(logOutUser, newShift))
-            {
-                CurrentUserTimes.Add(newShift);
-                CurrentlyLoggedIn.Remove(CurrentlyLoggedIn.Find(shift => shift.ID == logOutUser.ID));
-                AllUsers.Find(user => user.ID == logOutUser.ID).LoggedIn = false;
-            }
-        }
+        /// <param name="logOutShift">Shift to be created on logout</param>
+        internal static async Task<bool> LogOut(Shift logOutShift) => await DatabaseInteraction.LogOut(logOutShift);
 
         #endregion Log In/Out
 
@@ -131,29 +123,33 @@ namespace TimeClock
 
         #region User Management
 
-        /// <summary>Changes a User's password.</summary>
-        /// <param name="user">User whose password needs to be changed</param>
-        /// <param name="newHashedPassword">New hashed password</param>
-        internal static async Task<bool> ChangeUserPassword(User user, string newHashedPassword)
+        /// <summary>Changes a User's details in the database.</summary>
+        /// <param name="oldUser">User whose details needs to be changed</param>
+        /// <param name="newUser">User with new details</param>
+        /// <returns>True if successfully updated in the database</returns>
+        internal static async Task<bool> ChangeUserDetails(User oldUser, User newUser)
         {
-            return await DatabaseInteraction.ChangeUserPassword(user, newHashedPassword);
+            return await DatabaseInteraction.ChangeUserDetails(oldUser, newUser);
+        }
+
+        /// <summary>Deletes a User and all their Shifts from the database.</summary>
+        /// <param name="user">User to be deleted</param>
+        /// <returns>True if successful</returns>
+        public static async Task<bool> DeleteUser(User user)
+        {
+            return await DatabaseInteraction.DeleteUser(user);
         }
 
         /// <summary>Adds a new User to the database.</summary>
         /// <param name="newUser">User to be added to the database.</param>
         internal static async Task<bool> NewUser(User newUser)
         {
-            if (await DatabaseInteraction.NewUser(newUser))
-            {
-                AllUsers.Add(newUser);
-                return true;
-            }
-            return false;
+            return await DatabaseInteraction.NewUser(newUser);
         }
 
-        /// <summary>Saves a User.</summary>
-        /// <param name="saveUser">User to be saved</param>
-        internal static void SaveUser(User saveUser)
+        /// <summary>Updates a User.</summary>
+        /// <param name="updateUser">User to be updated</param>
+        internal static void UpdateUser(User updateUser)
         {
         }
 
