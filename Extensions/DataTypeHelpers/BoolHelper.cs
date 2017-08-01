@@ -6,7 +6,7 @@ namespace Extensions.DataTypeHelpers
     /// <summary>Extension class to more easily parse Booleans.</summary>
     public static class BoolHelper
     {
-        /// <summary>Utilizes bool.TryParse to easily Parse a Boolean.</summary>
+        /// <summary>Utilizes bool.TryParse to easily parse a Boolean.</summary>
         /// <param name="text">Text to be parsed</param>
         /// <returns>Parsed Boolean</returns>
         public static bool Parse(string text)
@@ -15,7 +15,7 @@ namespace Extensions.DataTypeHelpers
             return temp;
         }
 
-        /// <summary>Utilizes Convert.ToBoolean to easily Parse a Boolean.</summary>
+        /// <summary>Utilizes Convert.ToBoolean to easily parse a Boolean.</summary>
         /// <param name="obj">Object to be parsed</param>
         /// <returns>Parsed Boolean</returns>
         public static bool Parse(object obj)

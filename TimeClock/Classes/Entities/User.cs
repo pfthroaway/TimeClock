@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Extensions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using Extensions;
 
 namespace TimeClock.Classes.Entities
 {
@@ -20,28 +20,28 @@ namespace TimeClock.Classes.Entities
         public int ID
         {
             get => _id;
-            private set { _id = value; OnPropertyChanged("ID"); }
+            set { _id = value; OnPropertyChanged("ID"); }
         }
 
         /// <summary>User ID</summary>
         public string Username
         {
             get => _username;
-            private set { _username = value; OnPropertyChanged("Username"); }
+            set { _username = value; OnPropertyChanged("Username"); }
         }
 
         /// <summary>First name</summary>
         public string FirstName
         {
             get => _firstName;
-            private set { _firstName = value; OnPropertyChanged("FirstName"); OnPropertyChanged("Names"); }
+            set { _firstName = value; OnPropertyChanged("FirstName"); OnPropertyChanged("Names"); }
         }
 
         /// <summary>Last name</summary>
         public string LastName
         {
             get => _lastName;
-            private set { _lastName = value; OnPropertyChanged("LastName"); OnPropertyChanged("Names"); }
+            set { _lastName = value; OnPropertyChanged("LastName"); OnPropertyChanged("Names"); }
         }
 
         /// <summary>Last name, first name</summary>
@@ -75,7 +75,7 @@ namespace TimeClock.Classes.Entities
 
         #region Shift Manipulation
 
-        /// <summary>Adds a Shift to User's Shifts</summary>
+        /// <summary>Adds a Shift to User's Shifts.</summary>
         /// <param name="newShift">Shift to be added</param>
         internal void AddShift(Shift newShift)
         {
@@ -85,12 +85,9 @@ namespace TimeClock.Classes.Entities
 
         /// <summary>Gets the most recent Shift.</summary>
         /// <returns>Most recent Shift</returns>
-        internal Shift GetMostRecentShift()
-        {
-            return _shifts[0];
-        }
+        internal Shift GetMostRecentShift() => _shifts[0];
 
-        /// <summary>Modifies a Shift in User's Shifts</summary>
+        /// <summary>Modifies a Shift in User's Shifts.</summary>
         /// <param name="oldShift">Shift to be replaced</param>
         /// <param name="newShift">Shift to be replace old Shift</param>
         internal void ModifyShift(Shift oldShift, Shift newShift)
@@ -99,7 +96,7 @@ namespace TimeClock.Classes.Entities
             UpdateShifts();
         }
 
-        /// <summary>Removes a Shift from User's Shifts</summary>
+        /// <summary>Removes a Shift from User's Shifts.</summary>
         /// <param name="newShift">Shift to be removed</param>
         internal void RemoveShift(Shift newShift)
         {
@@ -107,6 +104,7 @@ namespace TimeClock.Classes.Entities
             UpdateShifts();
         }
 
+        /// <summary>Updates Shifts list.</summary>
         private void UpdateShifts()
         {
             OnPropertyChanged("Shifts");
@@ -136,35 +134,17 @@ namespace TimeClock.Classes.Entities
             return left.ID == right.ID && string.Equals(left.Username, right.Username, StringComparison.OrdinalIgnoreCase) && string.Equals(left.FirstName, right.FirstName, StringComparison.OrdinalIgnoreCase) && string.Equals(left.LastName, right.LastName, StringComparison.OrdinalIgnoreCase) && string.Equals(left.Password, right.Password, StringComparison.OrdinalIgnoreCase) && left.LoggedIn == right.LoggedIn && !left.Shifts.Except(right.Shifts).Any();
         }
 
-        public override bool Equals(object obj)
-        {
-            return Equals(this, obj as User);
-        }
+        public override bool Equals(object obj) => Equals(this, obj as User);
 
-        public bool Equals(User otherUser)
-        {
-            return Equals(this, otherUser);
-        }
+        public bool Equals(User otherUser) => Equals(this, otherUser);
 
-        public static bool operator ==(User left, User right)
-        {
-            return Equals(left, right);
-        }
+        public static bool operator ==(User left, User right) => Equals(left, right);
 
-        public static bool operator !=(User left, User right)
-        {
-            return !Equals(left, right);
-        }
+        public static bool operator !=(User left, User right) => !Equals(left, right);
 
-        public override int GetHashCode()
-        {
-            return base.GetHashCode() ^ 17;
-        }
+        public override int GetHashCode() => base.GetHashCode() ^ 17;
 
-        public override string ToString()
-        {
-            return Username + ": " + LastName + ", " + FirstName;
-        }
+        public override string ToString() => $"{Username}: {LastName}, {FirstName}";
 
         #endregion Override Operators
 

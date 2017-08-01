@@ -67,7 +67,7 @@ namespace Extensions
             string color)
         {
             Color selectedColor = Colors.Black;
-            if (!string.IsNullOrEmpty(color))
+            if (!string.IsNullOrWhiteSpace(color))
                 selectedColor = (Color)ColorConverter.ConvertFromString(color);
             GridViewColumnHeader column = (sender as GridViewColumnHeader);
             if (column != null)
@@ -124,7 +124,26 @@ namespace Extensions
                     break;
 
                 case KeyType.Letters:
-                    e.Handled = !keys.Any(key => key) && (Key.A > k || k > Key.Z);
+                    e.Handled = !keys.Any(key => key) && (Key.A > k || k > Key.Z) && (Key.D0 > k || k > Key.D9) &&
+                                (Key.NumPad0 > k || k > Key.NumPad9);
+                    break;
+
+                case KeyType.LettersSpace:
+                    e.Handled = !keys.Any(key => key) && (Key.A > k || k > Key.Z) && k != Key.Space;
+                    break;
+
+                case KeyType.LettersSpaceComma:
+                    e.Handled = !keys.Any(key => key) && (Key.A > k || k > Key.Z) && k != Key.Space && k != Key.OemComma;
+                    break;
+
+                case KeyType.LettersIntegersSpace:
+                    e.Handled = !keys.Any(key => key) && (Key.A > k || k > Key.Z) && (Key.D0 > k || k > Key.D9) &&
+                                (Key.NumPad0 > k || k > Key.NumPad9) && k != Key.Space;
+                    break;
+
+                case KeyType.LettersIntegersSpaceComma:
+                    e.Handled = !keys.Any(key => key) && (Key.A > k || k > Key.Z) && (Key.D0 > k || k > Key.D9) &&
+                                (Key.NumPad0 > k || k > Key.NumPad9) && k != Key.Space && k != Key.OemComma;
                     break;
 
                 case KeyType.NegativeDecimals:
@@ -155,7 +174,7 @@ namespace Extensions
             txt.SelectAll();
         }
 
-        /// <summary>Deletes all text in textbox which isn't a letter.</summary>
+        /// <summary>Deletes all text in textbox which isn't acceptable input.</summary>
         /// <param name="sender">Object to be cast</param>
         /// <param name="keyType">Type of input allowed</param>
         public static void TextBoxTextChanged(object sender, KeyType keyType)
@@ -182,6 +201,30 @@ namespace Extensions
                 case KeyType.Letters:
                     txt.Text = new string((from c in txt.Text
                                            where char.IsLetter(c)
+                                           select c).ToArray());
+                    break;
+
+                case KeyType.LettersSpace:
+                    txt.Text = new string((from c in txt.Text
+                                           where char.IsLetter(c) || c.IsSpace()
+                                           select c).ToArray());
+                    break;
+
+                case KeyType.LettersSpaceComma:
+                    txt.Text = new string((from c in txt.Text
+                                           where char.IsLetter(c) || c.IsSpace() || c.IsComma()
+                                           select c).ToArray());
+                    break;
+
+                case KeyType.LettersIntegersSpace:
+                    txt.Text = new string((from c in txt.Text
+                                           where char.IsLetterOrDigit(c) || c.IsSpace()
+                                           select c).ToArray());
+                    break;
+
+                case KeyType.LettersIntegersSpaceComma:
+                    txt.Text = new string((from c in txt.Text
+                                           where char.IsLetterOrDigit(c) || c.IsSpace() || c.IsComma()
                                            select c).ToArray());
                     break;
 

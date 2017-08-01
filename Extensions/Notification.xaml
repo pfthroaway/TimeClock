@@ -4,9 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Notification" ResizeMode="NoResize" SizeToContent="WidthAndHeight" FontFamily="Segoe UI Semibold"
-        FontSize="17" WindowStartupLocation="CenterScreen" Foreground="#BDC7C1" Background="#000032"
-        Icon="Resources/Information.png">
+        Style="{StaticResource WindowStyle}"
+        Title="Notification" WindowStartupLocation="CenterScreen" Icon="Resources/Information.png">
+    <!--<Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Dictionaries/Dark.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>-->
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100" />

@@ -6,6 +6,10 @@
         Decimals,
         Integers,
         Letters,
+        LettersSpace,
+        LettersSpaceComma,
+        LettersIntegersSpace,
+        LettersIntegersSpaceComma,
         NegativeDecimals,
         NegativeIntegers
     }

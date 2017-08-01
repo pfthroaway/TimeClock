@@ -6,16 +6,33 @@ namespace Extensions.DataTypeHelpers
     /// <summary>Extension class to more easily parse Integers.</summary>
     public static class Int32Helper
     {
-        /// <summary>Utilizes int.TryParse to easily Parse an Integer.</summary>
+        /// <summary>Utilizes int.TryParse to easily parse an Integer.</summary>
         /// <param name="text">Text to be parsed</param>
-        /// <returns></returns>
+        /// <returns>Parsed integer</returns>
         public static int Parse(string text)
         {
             int.TryParse(text, out int temp);
             return temp;
         }
 
-        /// <summary>Utilizes int.TryParse to easily Parse an Integer.</summary>
+        /// <summary>Utilizes Convert.ToInt32 to easily parse an Integer.</summary>
+        /// <param name="enumer">Enum to be parsed</param>
+        /// <returns>Parsed integer</returns>
+        public static int Parse(Enum enumer)
+        {
+            int temp = 0;
+            try
+            {
+                temp = Convert.ToInt32(enumer);
+            }
+            catch (Exception e)
+            {
+                new Notification(e.Message, "Error Parsing Integer", NotificationButtons.OK).ShowDialog();
+            }
+            return temp;
+        }
+
+        /// <summary>Utilizes int.TryParse to easily parse an Integer.</summary>
         /// <param name="dbl">Double to be parsed</param>
         /// <returns>Parsed integer</returns>
         public static int Parse(double dbl)
@@ -32,7 +49,7 @@ namespace Extensions.DataTypeHelpers
             return temp;
         }
 
-        /// <summary>Utilizes int.TryParse to easily Parse an Integer.</summary>
+        /// <summary>Utilizes int.TryParse to easily parse an Integer.</summary>
         /// <param name="dcml">Decimal to be parsed</param>
         /// <returns>Parsed integer</returns>
         public static int Parse(decimal dcml)
@@ -50,7 +67,7 @@ namespace Extensions.DataTypeHelpers
             return temp;
         }
 
-        /// <summary>Utilizes int.TryParse to easily Parse an Integer.</summary>
+        /// <summary>Utilizes int.TryParse to easily parse an Integer.</summary>
         /// <param name="obj">Object to be parsed</param>
         /// <returns>Parsed integer</returns>
         public static int Parse(object obj)

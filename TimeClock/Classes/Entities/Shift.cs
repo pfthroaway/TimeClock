@@ -30,9 +30,16 @@ namespace TimeClock.Classes.Entities
         public DateTime ShiftEnd
         {
             get => _shiftEnd;
-            set { _shiftEnd = value; OnPropertyChanged("ShiftEnd"); OnPropertyChanged("ShiftLength"); OnPropertyChanged("ShiftLengthToString"); }
+            set
+            {
+                _shiftEnd = value;
+                OnPropertyChanged("ShiftEnd");
+                OnPropertyChanged("ShiftLength");
+                OnPropertyChanged("ShiftLengthToString");
+            }
         }
 
+        /// <summary>Has this Shift been edited?</summary>
         public bool Edited
         {
             get => _edited;
@@ -57,7 +64,11 @@ namespace TimeClock.Classes.Entities
         public TimeSpan ShiftLength => ShiftEnd != DateTime.MinValue ? ShiftEnd - ShiftStart : DateTime.Now - ShiftStart;
 
         /// <summary>Length of Shift, formatted to string.</summary>
-        public string ShiftLengthToString => ShiftEnd != DateTime.MinValue ? ShiftLength.ToString(@"d\:hh\:mm\:ss") : "";
+        public string ShiftLengthToString => ShiftEnd != DateTime.MinValue
+            ? ShiftLength.Days > 0
+                ? ShiftLength.ToString(@"d\:hh\:mm\:ss")
+                : ShiftLength.ToString(@"hh\:mm\:ss")
+            : "";
 
         #endregion Helper Properties
 
@@ -81,35 +92,17 @@ namespace TimeClock.Classes.Entities
             return left.ID == right.ID && left.ShiftStart == right.ShiftStart && left.ShiftEnd == right.ShiftEnd && left.Edited == right.Edited;
         }
 
-        public override bool Equals(object obj)
-        {
-            return Equals(this, obj as Shift);
-        }
+        public override bool Equals(object obj) => Equals(this, obj as Shift);
 
-        public bool Equals(Shift otherShift)
-        {
-            return Equals(this, otherShift);
-        }
+        public bool Equals(Shift otherShift) => Equals(this, otherShift);
 
-        public static bool operator ==(Shift left, Shift right)
-        {
-            return Equals(left, right);
-        }
+        public static bool operator ==(Shift left, Shift right) => Equals(left, right);
 
-        public static bool operator !=(Shift left, Shift right)
-        {
-            return !Equals(left, right);
-        }
+        public static bool operator !=(Shift left, Shift right) => !Equals(left, right);
 
-        public override int GetHashCode()
-        {
-            return base.GetHashCode() ^ 17;
-        }
+        public override int GetHashCode() => base.GetHashCode() ^ 17;
 
-        public override string ToString()
-        {
-            return ID + ": " + ShiftStart + ", " + ShiftEnd;
-        }
+        public override string ToString() => $"{ID}: {ShiftStart}, {ShiftEnd}";
 
         #endregion Override Operators
 

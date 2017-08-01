@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Extensions.Encryption
 {
-    public class MD5
+    public static class MD5
     {
         /// <summary>Converts a byte array to a string.</summary>
         /// <param name="arrayInput">Byte array to be converted</param>

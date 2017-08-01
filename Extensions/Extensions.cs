@@ -18,6 +18,11 @@ namespace Extensions
                 list.AddRange(currentList);
         }
 
+        /// <summary>Determines if this character is a comma.</summary>
+        /// <param name="c">Character to be evaluated</param>
+        /// <returns>Returns true if character is a comma</returns>
+        public static bool IsComma(this char c) => c.Equals(',');
+
         /// <summary>Determines if this character is a hyphen.</summary>
         /// <param name="c">Character to be evaluated</param>
         /// <returns>Returns true if character is a hyphen</returns>
@@ -30,10 +35,11 @@ namespace Extensions
         public static bool IsNullOrEmpty<T>(this IList<T> list) => (list == null || list.Count < 1);
 
         /// <summary>Determines if a Dictionary is empty.</summary>
-        /// <typeparam name="T">Type of Dictionary</typeparam>
+        /// <typeparam name="T">Type of Key</typeparam>
+        /// <typeparam name="TU">Type of Value</typeparam>
         /// <param name="dictionary">Dictionary being checked</param>
         /// <returns>Returns true if empty</returns>
-        public static bool IsNullOrEmpty<T, U>(this IDictionary<T, U> dictionary) => (dictionary == null || dictionary.Count < 1);
+        public static bool IsNullOrEmpty<T, TU>(this IDictionary<T, TU> dictionary) => (dictionary == null || dictionary.Count < 1);
 
         /// <summary>Determines if this character is a period.</summary>
         /// <param name="c">Character to be evaluated</param>
@@ -44,6 +50,11 @@ namespace Extensions
         /// <param name="c">Character to be evaluated</param>
         /// <returns>Returns true if character is a period or comma</returns>
         public static bool IsPeriodOrComma(this char c) => c.Equals('.') | c.Equals(',');
+
+        /// <summary>Determines if this character is a space.</summary>
+        /// <param name="c">Character to be evaluated</param>
+        /// <returns>Returns true if character is a space</returns>
+        public static bool IsSpace(this char c) => c.Equals(' ');
 
         /// <summary>Formats DateTime.Now to my desired string format</summary>
         /// <param name="dt">DateTime</param>

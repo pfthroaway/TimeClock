@@ -4,6 +4,7 @@ using TimeClock.Classes.Entities;
 
 namespace TimeClock.Classes.Database
 {
+    /// <summary>Represents required interactions for implementations of databases.</summary>
     internal interface IDatabaseInteraction
     {
         void VerifyDatabaseIntegrity();

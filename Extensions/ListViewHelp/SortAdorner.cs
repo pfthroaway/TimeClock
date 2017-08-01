@@ -9,10 +9,10 @@ namespace Extensions.ListViewHelp
     public class SortAdorner : Adorner
     {
         private static readonly Geometry AscGeometry =
-            Geometry.Parse("M 0 4 L 3.5 0 L 7 4 Z");
+            Geometry.Parse("M 0 8 L 7 0 L 14 8 Z");
 
         private static readonly Geometry DescGeometry =
-            Geometry.Parse("M 0 0 L 3.5 4 L 7 0 Z");
+            Geometry.Parse("M 0 0 L 7 8 L 14 0 Z");
 
         public ListSortDirection Direction { get; }
 
@@ -34,16 +34,13 @@ namespace Extensions.ListViewHelp
 
             TranslateTransform transform = new TranslateTransform
             (
-                AdornedElement.RenderSize.Width - 15,
+                AdornedElement.RenderSize.Width - 30,
                 (AdornedElement.RenderSize.Height - 5) / 2
             );
             drawingContext.PushTransform(transform);
 
-            Geometry geometry = AscGeometry;
-            if (Direction == ListSortDirection.Descending)
-                geometry = DescGeometry;
+            Geometry geometry = Direction != ListSortDirection.Descending ? AscGeometry : DescGeometry;
             drawingContext.DrawGeometry(_adornerColor, null, geometry);
-
             drawingContext.Pop();
         }
     }

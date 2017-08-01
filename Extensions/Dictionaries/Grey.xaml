@@ -1,0 +1,29 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Grey/Button.xaml" />
+        <ResourceDictionary Source="Grey/CheckBox.xaml" />
+        <ResourceDictionary Source="Grey/ComboBox.xaml" />
+        <ResourceDictionary Source="Grey/DatePicker.xaml" />
+        <ResourceDictionary Source="Grey/Frame.xaml" />
+        <ResourceDictionary Source="Grey/GridView.xaml" />
+        <ResourceDictionary Source="Grey/GroupBox.xaml" />
+        <ResourceDictionary Source="Grey/ListBox.xaml" />
+        <ResourceDictionary Source="Grey/ListView.xaml" />
+        <ResourceDictionary Source="Grey/Menu.xaml" />
+        <ResourceDictionary Source="Grey/Page.xaml" />
+        <ResourceDictionary Source="Grey/PasswordBox.xaml" />
+        <ResourceDictionary Source="Grey/TabControl.xaml" />
+        <ResourceDictionary Source="Grey/TextBlock.xaml" />
+        <ResourceDictionary Source="Grey/TextBox.xaml" />
+        <ResourceDictionary Source="Grey/Window.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!--
+    Background: #1E2124
+    Foreground: #CCCCCC
+    Control   : #2F3136
+    HoverPress: #42464D
+    Bright    : #999999
+    Border    : #0292FC
+    -->
+</ResourceDictionary>

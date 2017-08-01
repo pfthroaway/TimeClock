@@ -11,20 +11,18 @@ using TimeClock.Classes.Entities;
 
 namespace TimeClock.Classes.Database
 {
+    /// <summary>Represents database interaction covered by SQLite.</summary>
     internal class SQLiteDatabaseInteraction : IDatabaseInteraction
     {
-        private readonly string _con = $"Data Source = {_DATABASENAME}; Version = 3; PRAGMA foreign_keys = ON";
+        private readonly string _con = $"Data Source = {_DATABASENAME}; foreign keys = TRUE; Version = 3";
 
         // ReSharper disable once InconsistentNaming
         private const string _DATABASENAME = "TimeClock.sqlite";
 
         /// <summary>Verifies that the requested database exists and that its file size is greater than zero. If not, it extracts the embedded database file to the local output folder.</summary>
         /// <returns>Returns true once the database has been validated</returns>
-        public void VerifyDatabaseIntegrity()
-        {
-            Functions.VerifyFileIntegrity(Assembly.GetExecutingAssembly()
-                .GetManifestResourceStream($"TimeClock.{_DATABASENAME}"), _DATABASENAME);
-        }
+        public void VerifyDatabaseIntegrity() => Functions.VerifyFileIntegrity(Assembly.GetExecutingAssembly()
+            .GetManifestResourceStream($"TimeClock.{_DATABASENAME}"), _DATABASENAME);
 
         #region Administrator Management
 
@@ -133,7 +131,7 @@ namespace TimeClock.Classes.Database
                 DataRow dr = ds.Tables[0].Rows[0];
 
                 loadUser = new User(Int32Helper.Parse(dr["ID"]), dr["Username"].ToString(), dr["FirstName"].ToString(),
-                dr["lastName"].ToString(), dr["Password"].ToString(), BoolHelper.Parse(dr["LoggedIn"]),
+                dr["LastName"].ToString(), dr["Password"].ToString(), BoolHelper.Parse(dr["LoggedIn"]),
                 await LoadShifts(Int32Helper.Parse(dr["ID"])));
             }
             return loadUser;
@@ -152,7 +150,7 @@ namespace TimeClock.Classes.Database
             List<User> allUsers = new List<User>();
             if (ds.Tables[0].Rows.Count > 0)
                 foreach (DataRow dr in ds.Tables[0].Rows)
-                    allUsers.Add(new User(Int32Helper.Parse(dr["ID"]), dr["Username"].ToString(), dr["FirstName"].ToString(), dr["lastName"].ToString(), dr["Password"].ToString(), BoolHelper.Parse(dr["LoggedIn"]), await LoadShifts(Int32Helper.Parse(dr["ID"]))));
+                    allUsers.Add(new User(Int32Helper.Parse(dr["ID"]), dr["Username"].ToString(), dr["FirstName"].ToString(), dr["LastName"].ToString(), dr["Password"].ToString(), BoolHelper.Parse(dr["LoggedIn"]), await LoadShifts(Int32Helper.Parse(dr["ID"]))));
             return allUsers;
         }
 
@@ -220,7 +218,7 @@ namespace TimeClock.Classes.Database
             {
                 foreach (Shift shift in user.Shifts)
                 {
-                    await InsertAudit($"Admin", "Delete Shift",
+                    await InsertAudit("Admin", "Delete Shift",
                         $"Logged in: {shift.ShiftStartToString}, Logged out: {shift.ShiftEndToString}", "[Deleted]");
                 }
                 cmd.CommandText += ";DELETE FROM Times WHERE [ID] = @id";
@@ -234,7 +232,7 @@ namespace TimeClock.Classes.Database
         public async Task<bool> NewUser(User newUser)
         {
             bool success = false;
-            SQLiteCommand cmd = new SQLiteCommand { CommandText = "INSERT INTO Users([Username],[Password],[FirstName],[LastName],[LoggedIn])VALUES(@id,@password,@firstName,@lastName,@loggedIn)" };
+            SQLiteCommand cmd = new SQLiteCommand { CommandText = "INSERT INTO Users([Username], [Password], [FirstName], [LastName], [LoggedIn])VALUES(@id, @password, @firstName, @lastName, @loggedIn)" };
             cmd.Parameters.AddWithValue("@id", newUser.Username);
             cmd.Parameters.AddWithValue("@password", newUser.Password);
             cmd.Parameters.AddWithValue("@firstName", newUser.FirstName);

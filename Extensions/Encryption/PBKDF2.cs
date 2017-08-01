@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 namespace Extensions.Encryption
 {
     /// <summary>Handles hashing and validating passwords using PBKDF2.</summary>
-    public class PBKDF2
+    public static class PBKDF2
     {
         private const int SaltByteSize = 24;
         private const int HashByteSize = 20; // to match the size of the PBKDF2-HMAC-SHA-1 hash
