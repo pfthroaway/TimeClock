@@ -41,7 +41,7 @@ namespace TimeClock.Classes.Database
         /// <returns>Administrator password</returns>
         public async Task<string> LoadAdminPassword()
         {
-            DataSet ds = await SQLite.FillDataSet("SELECT * FROM Admin", _con);
+            DataSet ds = await SQLite.FillDataSet(_con, "SELECT * FROM Admin");
 
             return ds.Tables[0].Rows.Count > 0 ? ds.Tables[0].Rows[0]["AdminPassword"].ToString() : "";
         }
@@ -78,7 +78,7 @@ namespace TimeClock.Classes.Database
         /// <returns>Next User ID value</returns>
         public async Task<int> GetNextUserIndex()
         {
-            DataSet ds = await SQLite.FillDataSet("SELECT * FROM SQLITE_SEQUENCE WHERE name = 'Users'", _con);
+            DataSet ds = await SQLite.FillDataSet(_con, "SELECT * FROM SQLITE_SEQUENCE WHERE name = 'Users'");
 
             if (ds.Tables[0].Rows.Count > 0)
                 return Int32Helper.Parse(ds.Tables[0].Rows[0]["seq"]) + 1;
@@ -91,7 +91,7 @@ namespace TimeClock.Classes.Database
         {
             List<Shift> currentlyLoggedIn = new List<Shift>();
 
-            DataSet ds = await SQLite.FillDataSet("SELECT * FROM LoggedInUsers", _con);
+            DataSet ds = await SQLite.FillDataSet(_con, "SELECT * FROM LoggedInUsers");
             if (ds.Tables[0].Rows.Count > 0)
             {
                 currentlyLoggedIn.AddRange(from DataRow dr in ds.Tables[0].Rows select new Shift(Int32Helper.Parse(dr["ID"]), DateTimeHelper.Parse(dr["TimeIn"].ToString())));
@@ -108,7 +108,7 @@ namespace TimeClock.Classes.Database
             SQLiteCommand cmd = new SQLiteCommand { CommandText = "SELECT * FROM Times WHERE [ID] = @id" };
             cmd.Parameters.AddWithValue("@id", userID);
 
-            DataSet ds = await SQLite.FillDataSet(cmd, _con);
+            DataSet ds = await SQLite.FillDataSet(_con, cmd);
 
             if (ds.Tables[0].Rows.Count > 0)
             {
@@ -124,7 +124,7 @@ namespace TimeClock.Classes.Database
         {
             SQLiteCommand cmd = new SQLiteCommand { CommandText = "SELECT * FROM Users WHERE [Username] = @name" };
             cmd.Parameters.AddWithValue("@name", username);
-            DataSet ds = await SQLite.FillDataSet(cmd, _con);
+            DataSet ds = await SQLite.FillDataSet(_con, cmd);
             User loadUser = new User();
             if (ds.Tables[0].Rows.Count > 0)
             {
@@ -145,7 +145,7 @@ namespace TimeClock.Classes.Database
             SQLiteCommand cmd = new SQLiteCommand { CommandText = "SELECT * FROM Users" };
             if (loggedIn)
                 cmd.CommandText += " WHERE [LoggedIn] = 1";
-            DataSet ds = await SQLite.FillDataSet(cmd, _con);
+            DataSet ds = await SQLite.FillDataSet(_con, cmd);
 
             List<User> allUsers = new List<User>();
             if (ds.Tables[0].Rows.Count > 0)

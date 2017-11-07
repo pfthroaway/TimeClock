@@ -171,7 +171,7 @@
         </Grid>
     </ControlTemplate>
 
-    <!-- Style for overall  ScrollBar -->
+    <!-- Style for overall ScrollBar -->
     <Style x:Key="{x:Type ScrollBar}" TargetType="{x:Type ScrollBar}">
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -191,7 +191,7 @@
         </Style.Triggers>
     </Style>
 
-    <!-- Style for overall  ScrollViewer -->
+    <!-- Style for overall ScrollViewer -->
     <Style x:Key="FavsScrollViewer" TargetType="{x:Type ScrollViewer}">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="Template">

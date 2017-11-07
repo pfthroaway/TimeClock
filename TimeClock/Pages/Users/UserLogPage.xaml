@@ -25,7 +25,7 @@
                             <GridViewColumnHeader MaxWidth="250" Tag="ShiftEnd" Click="LVShiftsColumnHeader_Click">Shift End</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
-                    <GridViewColumn Width="140"  DisplayMemberBinding="{Binding ShiftLengthToString}">
+                    <GridViewColumn Width="140" DisplayMemberBinding="{Binding ShiftLengthToString}">
                         <GridViewColumn.Header>
                             <GridViewColumnHeader MaxWidth="140" Tag="ShiftLength" Click="LVShiftsColumnHeader_Click">Shift Length</GridViewColumnHeader>
                         </GridViewColumn.Header>

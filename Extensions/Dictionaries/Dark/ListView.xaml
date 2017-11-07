@@ -71,10 +71,10 @@
                         </Border>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
                             <Setter Property="Background" Value="#000033" />
                         </Trigger>
-                        <Trigger Property="ItemsControl.AlternationIndex"  Value="1">
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
                             <Setter Property="Background" Value="#000066" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="true">

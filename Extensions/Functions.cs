@@ -13,7 +13,7 @@ using System.Windows.Media;
 namespace Extensions
 {
     /// <summary>Represents a collection of useful reusable methods.</summary>
-    public class Functions
+    public static class Functions
     {
         /// <summary>Verifies that the requested file exists and that its file size is greater than zero. If not, it extracts the embedded file to the local output folder.</summary>
         /// <param name="resourceStream">Resource Stream from Assembly.GetExecutingAssembly().GetManifestResourceStream()</param>
@@ -31,13 +31,18 @@ namespace Extensions
         public static void ExtractEmbeddedResource(Stream resourceStream, string resourceName)
         {
             if (resourceStream != null)
+            {
                 using (BinaryReader r = new BinaryReader(resourceStream))
-                using (FileStream fs =
-                    new FileStream(Directory.GetCurrentDirectory() + "\\" + resourceName, FileMode.OpenOrCreate))
-                using (BinaryWriter w = new BinaryWriter(fs))
                 {
-                    w.Write(r.ReadBytes((int)resourceStream.Length));
+                    using (FileStream fs = new FileStream(Directory.GetCurrentDirectory() + "\\" + resourceName, FileMode.OpenOrCreate))
+                    {
+                        using (BinaryWriter w = new BinaryWriter(fs))
+                        {
+                            w.Write(r.ReadBytes((int)resourceStream.Length));
+                        }
+                    }
                 }
+            }
         }
 
         /// <summary>Turns several Keyboard.Keys into a list of Keys which can be tested using List.Any.</summary>

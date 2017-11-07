@@ -23,7 +23,7 @@ namespace TimeClock.Classes.Entities
             set { _id = value; OnPropertyChanged("ID"); }
         }
 
-        /// <summary>User ID</summary>
+        /// <summary>Username</summary>
         public string Username
         {
             get => _username;
@@ -118,10 +118,7 @@ namespace TimeClock.Classes.Entities
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void OnPropertyChanged(string property)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
+        private void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
 
         #endregion Data-Binding
 

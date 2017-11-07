@@ -1,5 +1,6 @@
 ﻿using Extensions.Enums;
 using System;
+using System.Globalization;
 
 namespace Extensions.DataTypeHelpers
 {
@@ -11,7 +12,7 @@ namespace Extensions.DataTypeHelpers
         /// <returns>Parsed integer</returns>
         public static int Parse(string text)
         {
-            int.TryParse(text, out int temp);
+            int.TryParse(text, NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out int temp);
             return temp;
         }
 
@@ -32,7 +33,7 @@ namespace Extensions.DataTypeHelpers
             return temp;
         }
 
-        /// <summary>Utilizes int.TryParse to easily parse an Integer.</summary>
+        /// <summary>Attempts to easily parse an Integer.</summary>
         /// <param name="dbl">Double to be parsed</param>
         /// <returns>Parsed integer</returns>
         public static int Parse(double dbl)
@@ -49,7 +50,7 @@ namespace Extensions.DataTypeHelpers
             return temp;
         }
 
-        /// <summary>Utilizes int.TryParse to easily parse an Integer.</summary>
+        /// <summary>Attempts to easily parse an Integer.</summary>
         /// <param name="dcml">Decimal to be parsed</param>
         /// <returns>Parsed integer</returns>
         public static int Parse(decimal dcml)
@@ -72,7 +73,7 @@ namespace Extensions.DataTypeHelpers
         /// <returns>Parsed integer</returns>
         public static int Parse(object obj)
         {
-            int.TryParse(obj.ToString(), out int temp);
+            int.TryParse(obj.ToString(), NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out int temp);
             return temp;
         }
 

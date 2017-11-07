@@ -1,4 +1,6 @@
-﻿namespace Extensions.DataTypeHelpers
+﻿using System.Globalization;
+
+namespace Extensions.DataTypeHelpers
 {
     /// <summary>Extension class to more easily parse Doubles.</summary>
     public static class DoubleHelper
@@ -8,7 +10,7 @@
         /// <returns>Parsed Double</returns>
         public static double Parse(string text)
         {
-            double.TryParse(text, out double temp);
+            double.TryParse(text, NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out double temp);
             return temp;
         }
 
@@ -17,7 +19,7 @@
         /// <returns>Parsed Double</returns>
         public static double Parse(object obj)
         {
-            double.TryParse(obj.ToString(), out double temp);
+            double.TryParse(obj.ToString(), NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out double temp);
             return temp;
         }
     }

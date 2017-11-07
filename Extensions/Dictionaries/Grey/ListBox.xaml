@@ -75,10 +75,10 @@
                         <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
                             <Setter Property="Background" Value="#1E2124" />
                         </Trigger>
-                        <Trigger Property="ItemsControl.AlternationIndex"  Value="1">
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
                             <Setter Property="Background" Value="#2F3136" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="true">

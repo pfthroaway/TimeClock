@@ -17,8 +17,7 @@
                 <Separator />
                 <MenuItem x:Name="MnuFileExit" Header="_Exit" Click="MnuFileExit_Click" />
             </MenuItem>
-            <MenuItem x:Name="MnuAdmin" Header="_Admin" Click="MnuAdmin_Click">
-            </MenuItem>
+            <MenuItem x:Name="MnuAdmin" Header="_Admin" Click="MnuAdmin_Click" />
         </Menu>
         <Frame
             x:Name="MainFrame"

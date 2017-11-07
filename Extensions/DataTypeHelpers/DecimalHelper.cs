@@ -1,4 +1,6 @@
-﻿namespace Extensions.DataTypeHelpers
+﻿using System.Globalization;
+
+namespace Extensions.DataTypeHelpers
 {
     /// <summary>Extension class to more easily parse Decimals.</summary>
     public static class DecimalHelper
@@ -8,7 +10,7 @@
         /// <returns>Parsed Decimal</returns>
         public static decimal Parse(string text)
         {
-            decimal.TryParse(text, out decimal temp);
+            decimal.TryParse(text, NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out decimal temp);
             return temp;
         }
 
@@ -17,7 +19,7 @@
         /// <returns>Parsed Decimal</returns>
         public static decimal Parse(object obj)
         {
-            decimal.TryParse(obj.ToString(), out decimal temp);
+            decimal.TryParse(obj.ToString(), NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out decimal temp);
             return temp;
         }
     }

@@ -19,10 +19,10 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="User ID:" TextAlignment="Center" Margin="0,0,0,5" />
-        <TextBox x:Name="TxtUserID" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" TextAlignment="Center" MaxLength="20" Width="200" PreviewKeyDown="TxtUserID_PreviewKeyDown" GotFocus="TxtUserID_GotFocus" Margin="0,0,0,10" Padding="5" />
+        <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="Username:" TextAlignment="Center" Margin="0,0,0,5" />
+        <TextBox x:Name="TxtUserID" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Width="300" TextAlignment="Center" PreviewKeyDown="TxtUserID_PreviewKeyDown" GotFocus="TxtUserID_GotFocus" Margin="0,0,0,10" />
         <TextBlock Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Text="Password" TextAlignment="Center" Margin="0,0,0,5" />
-        <PasswordBox x:Name="PswdPassword" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" MaxLength="20" Width="200" GotFocus="PswdPassword_GotFocus" Margin="0,0,0,10" Padding="5" />
-        <Button x:Name="BtnLogin" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Width="125" Content="_Login" Click="BtnLogin_Click" IsDefault="True" />
+        <PasswordBox x:Name="PswdPassword" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Width="300" HorizontalContentAlignment="Center" GotFocus="PswdPassword_GotFocus" Margin="0,0,0,20" />
+        <Button x:Name="BtnLogin" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Content="_Login" Click="BtnLogin_Click" IsDefault="True" />
     </Grid>
 </Page>

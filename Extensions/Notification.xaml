@@ -6,13 +6,6 @@
         mc:Ignorable="d"
         Style="{StaticResource WindowStyle}"
         Title="Notification" WindowStartupLocation="CenterScreen" Icon="Resources/Information.png">
-    <!--<Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Dictionaries/Dark.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>-->
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100" />
@@ -31,15 +24,8 @@
         <Image x:Name="ImgYellow" Grid.Column="0" Grid.Row="0" Source="{StaticResource YellowTriangle}" Height="70" />
         <TextBlock x:Name="TxtPopup" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Width="400" TextWrapping="Wrap"
                    TextAlignment="Center" Margin="0,0,0,10" />
-        <Button x:Name="BtnYes" Grid.Column="1" Grid.Row="1" Width="100" Click="BtnYes_Click" IsDefault="True">
-            <AccessText Text="_Yes" />
-        </Button>
-        <Button x:Name="BtnOk" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" Width="100" Click="BtnOK_Click"
-                IsDefault="True">
-            <AccessText Text="_OK" />
-        </Button>
-        <Button x:Name="BtnNo" Grid.Column="2" Grid.Row="1" Width="100" Click="BtnNo_Click" IsCancel="True">
-            <AccessText Text="_No" />
-        </Button>
+        <Button x:Name="BtnYes" Grid.Column="1" Grid.Row="1" Width="100" Content="_Yes" Click="BtnYes_Click" IsDefault="True" />
+        <Button x:Name="BtnOk" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" Width="100" Content="_OK" Click="BtnOK_Click" IsDefault="True" />
+        <Button x:Name="BtnNo" Grid.Column="2" Grid.Row="1" Width="100" Content="_No" Click="BtnNo_Click" IsCancel="True" />
     </Grid>
 </Window>
