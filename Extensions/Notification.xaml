@@ -5,7 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Style="{StaticResource WindowStyle}"
-        Title="Notification" WindowStartupLocation="CenterScreen" Icon="Resources/Information.png">
+        Title="Notification"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Normal"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
+        Icon="Resources/Information.png">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100" />

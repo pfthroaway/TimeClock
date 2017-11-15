@@ -4,8 +4,9 @@
         <Setter Property="Background" Value="#1E2124" />
         <Setter Property="FontFamily" Value="Segoe UI Semibold" />
         <Setter Property="FontSize" Value="17" />
-        <Setter Property="SizeToContent" Value="WidthAndHeight" />
+        <Setter Property="SizeToContent" Value="Manual" />
         <Setter Property="Foreground" Value="#CCCCCC" />
-        <Setter Property="ResizeMode" Value="NoResize" />
+        <Setter Property="ResizeMode" Value="CanResize" />
+        <Setter Property="WindowState" Value="Maximized" />
     </Style>
 </ResourceDictionary>
