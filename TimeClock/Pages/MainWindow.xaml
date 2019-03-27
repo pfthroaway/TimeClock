@@ -8,6 +8,8 @@
         Title="Time Clock"
         WindowState="Maximized"
         ResizeMode="CanResize"
+        MinWidth="600"
+        MinHeight="600"
         SizeToContent="Manual"
         WindowStartupLocation="CenterScreen"
         Loaded="WindowMain_Loaded">
@@ -19,23 +21,13 @@
             </MenuItem>
             <MenuItem x:Name="MnuAdmin" Header="_Admin" Click="MnuAdmin_Click" />
         </Menu>
-        <Frame
-            x:Name="MainFrame"
+        <Viewbox Stretch="Uniform">
+            <Frame x:Name="MainFrame"
             ScrollViewer.VerticalScrollBarVisibility="Auto"
             ScrollViewer.HorizontalScrollBarVisibility="Auto"
             ScrollViewer.CanContentScroll="True"
             NavigationUIVisibility="Hidden"
-            SizeChanged="MainFrame_OnSizeChanged"
-            Source="LoginPage.xaml"
-            HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch">
-            <Frame.LayoutTransform>
-                <ScaleTransform x:Name="ApplicationScaleTransform"
-                                CenterX="0"
-                                CenterY="0"
-                                ScaleX="{Binding ElementName=WindowMain, Path=ScaleValue}"
-                                ScaleY="{Binding ElementName=WindowMain, Path=ScaleValue}" />
-            </Frame.LayoutTransform>
-        </Frame>
+            Source="LoginPage.xaml" />
+        </Viewbox>
     </DockPanel>
 </Window>

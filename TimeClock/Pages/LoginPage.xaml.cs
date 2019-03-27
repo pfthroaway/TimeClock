@@ -32,20 +32,9 @@ namespace TimeClock.Pages
             TxtUserID.Focus();
         }
 
-        private void LoginPage_OnLoaded(object sender, RoutedEventArgs e)
-        {
-            AppState.CalculateScale(Grid);
-        }
+        private void PswdPassword_GotFocus(object sender, RoutedEventArgs e) => Functions.PasswordBoxGotFocus(sender);
 
-        private void PswdPassword_GotFocus(object sender, RoutedEventArgs e)
-        {
-            Functions.PasswordBoxGotFocus(sender);
-        }
-
-        private void TxtUserID_GotFocus(object sender, RoutedEventArgs e)
-        {
-            Functions.TextBoxGotFocus(sender);
-        }
+        private void TxtUserID_GotFocus(object sender, RoutedEventArgs e) => Functions.TextBoxGotFocus(sender);
 
         private void TxtUserID_PreviewKeyDown(object sender, KeyEventArgs e)
         {

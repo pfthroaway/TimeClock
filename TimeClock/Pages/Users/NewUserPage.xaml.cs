@@ -2,6 +2,7 @@
 using Extensions.Encryption;
 using Extensions.Enums;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -14,10 +15,11 @@ namespace TimeClock.Pages.Users
     public partial class NewUserPage
     {
         /// <summary>Checks whether each box has text to determine if Submit button should be enabled.</summary>
-        private void CheckInput() => BtnSubmit.IsEnabled =
-            TxtUsername.Text.Length > 0 && TxtFirstName.Text.Length > 0 &&
-            TxtLastName.Text.Length > 0 &&
-            PswdPassword.Password.Length > 0 && PswdConfirm.Password.Length > 0;
+        private void CheckInput() => BtnSubmit.IsEnabled = TxtUsername.Text.Length > 0
+            && TxtFirstName.Text.Length > 0
+            && TxtLastName.Text.Length > 0
+            && PswdPassword.Password.Length > 0 && PswdConfirm.Password.Length > 0
+            && TxtRoles.Text.Length > 0;
 
         #region Button-Click Methods
 
@@ -32,7 +34,7 @@ namespace TimeClock.Pages.Users
                 {
                     if (PswdPassword.Password == PswdConfirm.Password)
                     {
-                        User newUser = new User(await AppState.GetNextUserIndex(), TxtUsername.Text.Trim(), TxtFirstName.Text.Trim(), TxtLastName.Text.Trim(), PBKDF2.HashPassword(PswdPassword.Password.Trim()), false, new List<Shift>());
+                        User newUser = new User(await AppState.GetNextUserIndex(), TxtUsername.Text.Trim(), TxtFirstName.Text.Trim(), TxtLastName.Text.Trim(), PBKDF2.HashPassword(PswdPassword.Password.Trim()), false, TxtRoles.Text.Split(',').Select(str => str.Trim()).ToList(), new List<Shift>());
                         if (await AppState.NewUser(newUser))
                             ClosePage();
                     }
@@ -58,8 +60,6 @@ namespace TimeClock.Pages.Users
             InitializeComponent();
             TxtUsername.Focus();
         }
-
-        private void NewUserPage_OnLoaded(object sender, RoutedEventArgs e) => AppState.CalculateScale(Grid);
 
         private void Txt_GotFocus(object sender, RoutedEventArgs e) => Functions.TextBoxGotFocus(sender);
 

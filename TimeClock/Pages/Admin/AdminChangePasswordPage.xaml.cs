@@ -40,8 +40,6 @@ namespace TimeClock.Pages.Admin
             PswdCurrentPassword.Focus();
         }
 
-        private void AdminChangePasswordPage_OnLoaded(object sender, RoutedEventArgs e) => AppState.CalculateScale(Grid);
-
         private void PswdChanged(object sender, RoutedEventArgs e) => BtnSubmit.IsEnabled =
             PswdCurrentPassword.Password.Length >= 4 && PswdNewPassword.Password.Length >= 4 &&
             PswdConfirmPassword.Password.Length >= 4;

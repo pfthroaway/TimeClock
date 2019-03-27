@@ -46,8 +46,6 @@ namespace TimeClock.Pages.Users
             PswdCurrentPassword.Focus();
         }
 
-        private void UserChangePasswordPage_OnLoaded(object sender, RoutedEventArgs e) => AppState.CalculateScale(Grid);
-
         private void Pswd_GotFocus(object sender, RoutedEventArgs e) => Functions.PasswordBoxGotFocus(sender);
 
         private void PswdChanged(object sender, RoutedEventArgs e) => BtnSubmit.IsEnabled =

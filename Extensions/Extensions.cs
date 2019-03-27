@@ -32,14 +32,14 @@ namespace Extensions
         /// <typeparam name="T">Type of List</typeparam>
         /// <param name="list">List being checked</param>
         /// <returns>Returns true if empty</returns>
-        public static bool IsNullOrEmpty<T>(this IList<T> list) => (list == null || list.Count < 1);
+        public static bool IsNullOrEmpty<T>(this IList<T> list) => list == null || list.Count < 1;
 
         /// <summary>Determines if a Dictionary is empty.</summary>
         /// <typeparam name="T">Type of Key</typeparam>
         /// <typeparam name="TU">Type of Value</typeparam>
         /// <param name="dictionary">Dictionary being checked</param>
         /// <returns>Returns true if empty</returns>
-        public static bool IsNullOrEmpty<T, TU>(this IDictionary<T, TU> dictionary) => (dictionary == null || dictionary.Count < 1);
+        public static bool IsNullOrEmpty<T, TU>(this IDictionary<T, TU> dictionary) => dictionary == null || dictionary.Count < 1;
 
         /// <summary>Determines if this character is a period.</summary>
         /// <param name="c">Character to be evaluated</param>

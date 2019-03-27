@@ -5,9 +5,8 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       mc:Ignorable="d"
       Style="{StaticResource PageStyle}"
-      Title="Login"
-      Loaded="LoginPage_OnLoaded">
-    <Grid x:Name="Grid" Margin="10">
+      Title="Login">
+    <Grid x:Name="Grid" Margin="50">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />

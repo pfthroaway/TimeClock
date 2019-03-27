@@ -55,7 +55,7 @@ namespace TimeClock.Classes.Database
         /// <param name="action">Was the action an update, deletion, etc.?</param>
         /// <param name="originalItem">Original item</param>
         /// <param name="alteredItem">Altered item</param>
-        /// <returns></returns>
+        /// <returns>Returns true if successful</returns>
         public async Task<bool> InsertAudit(string editor, string action, string originalItem, string alteredItem)
         {
             SQLiteCommand cmd = new SQLiteCommand
@@ -94,7 +94,7 @@ namespace TimeClock.Classes.Database
             DataSet ds = await SQLite.FillDataSet(_con, "SELECT * FROM LoggedInUsers");
             if (ds.Tables[0].Rows.Count > 0)
             {
-                currentlyLoggedIn.AddRange(from DataRow dr in ds.Tables[0].Rows select new Shift(Int32Helper.Parse(dr["ID"]), DateTimeHelper.Parse(dr["TimeIn"].ToString())));
+                currentlyLoggedIn.AddRange(from DataRow dr in ds.Tables[0].Rows select new Shift(Int32Helper.Parse(dr["ID"]), dr["Role"].ToString(), DateTimeHelper.Parse(dr["TimeIn"].ToString())));
             }
             return currentlyLoggedIn;
         }
@@ -112,7 +112,7 @@ namespace TimeClock.Classes.Database
 
             if (ds.Tables[0].Rows.Count > 0)
             {
-                userShifts.AddRange(from DataRow dr in ds.Tables[0].Rows select new Shift(userID, DateTimeHelper.Parse(dr["TimeIn"]), DateTimeHelper.Parse(dr["TimeOut"])));
+                userShifts.AddRange(from DataRow dr in ds.Tables[0].Rows select new Shift(userID, dr["Role"].ToString(), DateTimeHelper.Parse(dr["TimeIn"]), DateTimeHelper.Parse(dr["TimeOut"]), BoolHelper.Parse(dr["Edited"])));
             }
 
             return userShifts.OrderByDescending(shift => shift.ShiftStart).ToList();
@@ -130,9 +130,7 @@ namespace TimeClock.Classes.Database
             {
                 DataRow dr = ds.Tables[0].Rows[0];
 
-                loadUser = new User(Int32Helper.Parse(dr["ID"]), dr["Username"].ToString(), dr["FirstName"].ToString(),
-                dr["LastName"].ToString(), dr["Password"].ToString(), BoolHelper.Parse(dr["LoggedIn"]),
-                await LoadShifts(Int32Helper.Parse(dr["ID"])));
+                loadUser = new User(Int32Helper.Parse(dr["ID"]), dr["Username"].ToString(), dr["FirstName"].ToString(), dr["LastName"].ToString(), dr["Password"].ToString(), BoolHelper.Parse(dr["LoggedIn"]), dr["Roles"].ToString().Split(',').Select(str => str.Trim()).ToList(), await LoadShifts(Int32Helper.Parse(dr["ID"])));
             }
             return loadUser;
         }
@@ -150,7 +148,7 @@ namespace TimeClock.Classes.Database
             List<User> allUsers = new List<User>();
             if (ds.Tables[0].Rows.Count > 0)
                 foreach (DataRow dr in ds.Tables[0].Rows)
-                    allUsers.Add(new User(Int32Helper.Parse(dr["ID"]), dr["Username"].ToString(), dr["FirstName"].ToString(), dr["LastName"].ToString(), dr["Password"].ToString(), BoolHelper.Parse(dr["LoggedIn"]), await LoadShifts(Int32Helper.Parse(dr["ID"]))));
+                    allUsers.Add(new User(Int32Helper.Parse(dr["ID"]), dr["Username"].ToString(), dr["FirstName"].ToString(), dr["LastName"].ToString(), dr["Password"].ToString(), BoolHelper.Parse(dr["LoggedIn"]), dr["Roles"].ToString().Split(',').Select(str => str.Trim()).ToList(), await LoadShifts(Int32Helper.Parse(dr["ID"]))));
             return allUsers;
         }
 
@@ -162,9 +160,11 @@ namespace TimeClock.Classes.Database
         /// <param name="loginShift">Shift started by User</param>
         public async Task<bool> LogIn(Shift loginShift)
         {
-            SQLiteCommand cmd = new SQLiteCommand { CommandText = "INSERT INTO Times([ID],[TimeIn])VALUES(@id,@timeIn); UPDATE Users SET [LoggedIn] = @loggedIn WHERE [ID] = @id" };
+            SQLiteCommand cmd = new SQLiteCommand { CommandText = "INSERT INTO Times([ID],[Role],[TimeIn],[Edited])VALUES(@id,@role,@timeIn,@edited); UPDATE Users SET [LoggedIn] = @loggedIn WHERE [ID] = @id" };
             cmd.Parameters.AddWithValue("@id", loginShift.ID);
+            cmd.Parameters.AddWithValue("@role", loginShift.Role);
             cmd.Parameters.AddWithValue("@timeIn", loginShift.ShiftStartToString);
+            cmd.Parameters.AddWithValue("@edited", 0);
             cmd.Parameters.AddWithValue("@loggedIn", 1);
 
             return await SQLite.ExecuteCommand(_con, cmd);
@@ -197,11 +197,12 @@ namespace TimeClock.Classes.Database
         /// <returns>True if successfully updated in the database</returns>
         public async Task<bool> ChangeUserDetails(User oldUser, User newUser)
         {
-            SQLiteCommand cmd = new SQLiteCommand { CommandText = "UPDATE Users SET [Username] = @username, [Password] = @password, [FirstName] = @firstName, [LastName] = @lastName WHERE [ID] = @id" };
+            SQLiteCommand cmd = new SQLiteCommand { CommandText = "UPDATE Users SET [Username] = @username, [Password] = @password, [FirstName] = @firstName, [LastName] = @lastName, [Roles] = @roles WHERE [ID] = @id" };
             cmd.Parameters.AddWithValue("@username", newUser.Username);
             cmd.Parameters.AddWithValue("@firstName", newUser.FirstName);
             cmd.Parameters.AddWithValue("@lastName", newUser.LastName);
             cmd.Parameters.AddWithValue("@password", newUser.Password);
+            cmd.Parameters.AddWithValue("@roles", newUser.RolesToString);
             cmd.Parameters.AddWithValue("@id", oldUser.ID);
 
             return await SQLite.ExecuteCommand(_con, cmd);
@@ -232,12 +233,13 @@ namespace TimeClock.Classes.Database
         public async Task<bool> NewUser(User newUser)
         {
             bool success = false;
-            SQLiteCommand cmd = new SQLiteCommand { CommandText = "INSERT INTO Users([Username], [Password], [FirstName], [LastName], [LoggedIn])VALUES(@id, @password, @firstName, @lastName, @loggedIn)" };
+            SQLiteCommand cmd = new SQLiteCommand { CommandText = "INSERT INTO Users([Username], [Password], [FirstName], [LastName], [LoggedIn], [Roles])VALUES(@id, @password, @firstName, @lastName, @loggedIn, @roles)" };
             cmd.Parameters.AddWithValue("@id", newUser.Username);
             cmd.Parameters.AddWithValue("@password", newUser.Password);
             cmd.Parameters.AddWithValue("@firstName", newUser.FirstName);
             cmd.Parameters.AddWithValue("@lastName", newUser.LastName);
             cmd.Parameters.AddWithValue("@loggedIn", newUser.LoggedIn);
+            cmd.Parameters.AddWithValue("@roles", newUser.RolesToString);
 
             if (await SQLite.ExecuteCommand(_con, cmd))
             {

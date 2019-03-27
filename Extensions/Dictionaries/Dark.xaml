@@ -13,6 +13,7 @@
         <ResourceDictionary Source="Dark/Menu.xaml" />
         <ResourceDictionary Source="Dark/Page.xaml" />
         <ResourceDictionary Source="Dark/PasswordBox.xaml" />
+        <ResourceDictionary Source="Dark/RadioButton.xaml" />
         <ResourceDictionary Source="Dark/Separator.xaml" />
         <ResourceDictionary Source="Dark/TabControl.xaml" />
         <ResourceDictionary Source="Dark/TextBlock.xaml" />

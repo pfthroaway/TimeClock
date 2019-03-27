@@ -17,8 +17,15 @@ namespace TimeClock.Pages.Admin
         /// <summary>Determines if buttons should be enabled.</summary>
         private void CheckInput()
         {
-            bool enabled = TxtUsername.Text.Length > 0 && TxtFirstName.Text.Length > 0 && TxtLastName.Text.Length > 0 &&
-                           TxtUsername.Text != SelectedUser.Username | TxtFirstName.Text != SelectedUser.FirstName | TxtLastName.Text != SelectedUser.LastName | (PswdPassword.Password.Length > 0 && PswdConfirm.Password.Length > 0);
+            bool enabled = TxtUsername.Text.Length > 0
+                && TxtFirstName.Text.Length > 0
+                && TxtLastName.Text.Length > 0
+                && TxtUsername.Text != SelectedUser.Username
+                || TxtFirstName.Text != SelectedUser.FirstName
+                || TxtLastName.Text != SelectedUser.LastName
+                || PswdPassword.Password.Length > 0
+                && PswdConfirm.Password.Length > 0
+                && TxtRoles.Text.Length > 0;
             BtnSubmit.IsEnabled = enabled;
             BtnReset.IsEnabled = enabled;
         }
@@ -29,6 +36,7 @@ namespace TimeClock.Pages.Admin
             TxtUsername.Text = SelectedUser.Username;
             TxtFirstName.Text = SelectedUser.FirstName;
             TxtLastName.Text = SelectedUser.LastName;
+            TxtRoles.Text = SelectedUser.RolesToString;
             PswdPassword.Password = "";
             PswdConfirm.Password = "";
         }
@@ -50,7 +58,7 @@ namespace TimeClock.Pages.Admin
                     checkUser.Password = PswdPassword.Password.Length >= 4 ? PBKDF2.HashPassword(PswdPassword.Password.Trim()) : SelectedUser.Password;
 
                     if (await AppState.ChangeUserDetails(SelectedUser, checkUser))
-                        ClosePage();
+                        AppState.GoBack();
                 }
                 else
                     AppState.DisplayNotification("This username has already been taken.", "Time Clock");
@@ -66,14 +74,11 @@ namespace TimeClock.Pages.Admin
 
         private void BtnReset_Click(object sender, RoutedEventArgs e) => Reset();
 
-        private void BtnCancel_Click(object sender, RoutedEventArgs e) => ClosePage();
+        private void BtnCancel_Click(object sender, RoutedEventArgs e) => AppState.GoBack();
 
         #endregion Button-Click Methods
 
         #region Page-Manipulation Methods
-
-        /// <summary>Closes the Page.</summary>
-        private void ClosePage() => AppState.GoBack();
 
         public AdminModifyUserPage()
         {
@@ -81,11 +86,7 @@ namespace TimeClock.Pages.Admin
             TxtUsername.Focus();
         }
 
-        private void AdminModifyUserPage_OnLoaded(object sender, RoutedEventArgs e)
-        {
-            AppState.CalculateScale(Grid);
-            Reset();
-        }
+        private void AdminModifyUserPage_OnLoaded(object sender, RoutedEventArgs e) => Reset();
 
         private void Txt_GotFocus(object sender, RoutedEventArgs e) => Functions.TextBoxGotFocus(sender);
 

@@ -27,26 +27,18 @@ namespace Extensions
 
         #region Button-Click Methods
 
-        private void BtnYes_Click(object sender, RoutedEventArgs e)
-        {
-            CloseWindow(true);
-        }
+        private void BtnYes_Click(object sender, RoutedEventArgs e) => CloseWindow(true);
 
-        private void BtnOK_Click(object sender, RoutedEventArgs e)
-        {
-            CloseWindow(true);
-        }
+        private void BtnOK_Click(object sender, RoutedEventArgs e) => CloseWindow(true);
 
-        private void BtnNo_Click(object sender, RoutedEventArgs e)
-        {
-            CloseWindow(false);
-        }
+        private void BtnNo_Click(object sender, RoutedEventArgs e) => CloseWindow(false);
 
         #endregion Button-Click Methods
 
         #region Window-Manipulation Methods
 
         /// <summary>Closes the Window.</summary>
+        /// <param name="result">Result</param>
         private void CloseWindow(bool result)
         {
             DialogResult = result;

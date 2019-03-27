@@ -20,6 +20,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <TextBlock Grid.Column="0" Grid.Row="0" Text="Username:" TextAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,10" />
         <TextBox x:Name="TxtUsername" Grid.Column="1" Grid.Row="0" Width="300" TextAlignment="Center" GotFocus="Txt_GotFocus" TextChanged="Txt_TextChanged" Margin="0,0,0,10" />
@@ -27,14 +28,16 @@
         <TextBox x:Name="TxtFirstName" Grid.Column="1" Grid.Row="1" Width="300" TextAlignment="Center" GotFocus="Txt_GotFocus" PreviewKeyDown="TxtName_PreviewKeyDown" TextChanged="Txt_TextChanged" Margin="0,0,0,10" />
         <TextBlock Grid.Column="0" Grid.Row="2" Text="Last Name:" TextAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,10" />
         <TextBox x:Name="TxtLastName" Grid.Column="1" Grid.Row="2" Width="300" TextAlignment="Center" GotFocus="Txt_GotFocus" PreviewKeyDown="TxtName_PreviewKeyDown" TextChanged="Txt_TextChanged" Margin="0,0,0,10" />
-        <TextBlock Grid.Column="0" Grid.Row="3" Text="Change Password:" TextAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,10" />
-        <PasswordBox x:Name="PswdPassword" Grid.Column="1" Grid.Row="3" Width="300" HorizontalContentAlignment="Center" GotFocus="Pswd_GotFocus" PasswordChanged="Pswd_TextChanged" Margin="0,0,0,10" />
-        <TextBlock Grid.Column="0" Grid.Row="4" Text="Confirm Password:" TextAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,20" />
-        <PasswordBox x:Name="PswdConfirm" Grid.Column="1" Grid.Row="4" Width="300" HorizontalContentAlignment="Center" GotFocus="Pswd_GotFocus" PasswordChanged="Pswd_TextChanged" Margin="0,0,0,20" />
-        <StackPanel Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
+        <TextBlock Grid.Column="0" Grid.Row="3" Text="Roles:" TextAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,10" />
+        <TextBox x:Name="TxtRoles" Grid.Column="1" Grid.Row="3" Width="300" TextAlignment="Center" GotFocus="Txt_GotFocus" TextChanged="Txt_TextChanged" Margin="0,0,0,10" />
+        <TextBlock Grid.Column="0" Grid.Row="4" Text="Change Password:" TextAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,10" />
+        <PasswordBox x:Name="PswdPassword" Grid.Column="1" Grid.Row="4" Width="300" HorizontalContentAlignment="Center" GotFocus="Pswd_GotFocus" PasswordChanged="Pswd_TextChanged" Margin="0,0,0,10" />
+        <TextBlock Grid.Column="0" Grid.Row="5" Text="Confirm Password:" TextAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,20" />
+        <PasswordBox x:Name="PswdConfirm" Grid.Column="1" Grid.Row="5" Width="300" HorizontalContentAlignment="Center" GotFocus="Pswd_GotFocus" PasswordChanged="Pswd_TextChanged" Margin="0,0,0,20" />
+        <StackPanel Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
             <Button x:Name="BtnSubmit" Width="145" Content="_Submit" Click="BtnSubmit_Click" IsDefault="True" IsEnabled="False" Margin="0,0,20,0" />
             <Button x:Name="BtnReset" Width="145" Content="_Reset" Click="BtnReset_Click" />
         </StackPanel>
-        <Button x:Name="BtnCancel" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6" Width="145" Content="_Cancel" Click="BtnCancel_Click" IsCancel="True" />
+        <Button x:Name="BtnCancel" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="7" Width="145" Content="_Cancel" Click="BtnCancel_Click" IsCancel="True" />
     </Grid>
 </Page>

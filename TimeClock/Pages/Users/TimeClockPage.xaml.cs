@@ -13,14 +13,17 @@ namespace TimeClock.Pages.Users
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void OnPropertyChanged(string property)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
+        private void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
 
         #endregion Data-Binding
 
-        private void CheckButton() => BtnInOut.Content = AppState.CurrentUser.LoggedIn ? "_OUT" : "_IN";
+        /// <summary>Checks information regarding the In/Out button.</summary>
+        private void CheckButton()
+        {
+            BtnInOut.Content = AppState.CurrentUser.LoggedIn ? "_OUT" : "_IN";
+            if (!AppState.CurrentUser.LoggedIn)
+                BtnInOut.IsEnabled = CmbRoles.SelectedIndex >= 0;
+        }
 
         #region Button-Click Methods
 
@@ -28,9 +31,9 @@ namespace TimeClock.Pages.Users
         {
             BtnInOut.IsEnabled = false;
 
-            if (AppState.CurrentUser.LoggedIn == false)
+            if (!AppState.CurrentUser.LoggedIn)
             {
-                Shift newShift = new Shift(AppState.CurrentUser.ID, DateTime.Now);
+                Shift newShift = new Shift(AppState.CurrentUser.ID, CmbRoles.SelectedItem.ToString(), DateTime.Now);
                 if (await AppState.LogIn(newShift))
                 {
                     AppState.CurrentUser.AddShift(newShift);
@@ -69,10 +72,12 @@ namespace TimeClock.Pages.Users
         {
             InitializeComponent();
             DataContext = AppState.CurrentUser;
+            CmbRoles.ItemsSource = AppState.CurrentUser.Roles;
+            CmbRoles.SelectedIndex = 0;
             CheckButton();
         }
 
-        private void TimeClockPage_OnLoaded(object sender, RoutedEventArgs e) => AppState.CalculateScale(Grid);
+        private void CmbRoles_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e) => CheckButton();
 
         #endregion Page-Manipulation Methods
     }

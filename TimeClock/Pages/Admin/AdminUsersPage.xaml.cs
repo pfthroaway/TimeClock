@@ -77,11 +77,7 @@ namespace TimeClock.Pages.Admin
 
         public AdminUsersPage() => InitializeComponent();
 
-        private async void AdminUsersPage_OnLoaded(object sender, RoutedEventArgs e)
-        {
-            AppState.CalculateScale(Grid);
-            await RefreshItemsSource();
-        }
+        private async void AdminUsersPage_OnLoaded(object sender, RoutedEventArgs e) => await RefreshItemsSource();
 
         #endregion Page-Manipulation Methods
     }

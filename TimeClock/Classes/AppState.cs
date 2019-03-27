@@ -21,25 +21,6 @@ namespace TimeClock.Classes
         /// <summary>Instance of MainWindow currently loaded</summary>
         internal static MainWindow MainWindow { get; set; }
 
-        /// <summary>Width of the Page currently being displayed in the MainWindow</summary>
-        internal static double CurrentPageWidth { get; set; }
-
-        /// <summary>Height of the Page currently being displayed in the MainWindow</summary>
-        internal static double CurrentPageHeight { get; set; }
-
-        /// <summary>Calculates the scale needed for the MainWindow.</summary>
-        /// <param name="grid">Grid of current Page</param>
-        internal static void CalculateScale(Grid grid)
-        {
-            CurrentPageHeight = grid.ActualHeight;
-            CurrentPageWidth = grid.ActualWidth;
-            MainWindow.CalculateScale();
-
-            Page newPage = MainWindow.MainFrame.Content as Page;
-            if (newPage != null)
-                newPage.Style = (Style)MainWindow.FindResource("PageStyle");
-        }
-
         /// <summary>Navigates to selected Page.</summary>
         /// <param name="newPage">Page to navigate to.</param>
         internal static void Navigate(Page newPage) => MainWindow.MainFrame.Navigate(newPage);

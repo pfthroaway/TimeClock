@@ -5,7 +5,6 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
       Style="{StaticResource PageStyle}"
-      Loaded="UserLogPage_OnLoaded"
       Title="User Log">
     <Grid x:Name="Grid" Margin="10">
         <Grid.RowDefinitions>

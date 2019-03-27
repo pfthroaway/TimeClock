@@ -11,7 +11,7 @@ namespace Extensions
         /// <summary>Returns a Functions.GenerateRandomNumber based on this thread.</summary>
         public static Random ThisThreadsRandom => _local ??
                                                   (_local = new Random(
-                                                      unchecked(Environment.TickCount * 31 +
-                                                                Thread.CurrentThread.ManagedThreadId)));
+                                                      unchecked((Environment.TickCount * 31)
+                                                                + Thread.CurrentThread.ManagedThreadId)));
     }
 }

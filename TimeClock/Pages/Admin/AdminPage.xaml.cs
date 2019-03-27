@@ -47,8 +47,6 @@ namespace TimeClock.Pages.Admin
 
         public AdminPage() => InitializeComponent();
 
-        private void AdminPage_OnLoaded(object sender, RoutedEventArgs e) => AppState.CalculateScale(Grid);
-
         #endregion Page-Manipulation Methods
     }
 }

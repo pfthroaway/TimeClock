@@ -119,18 +119,18 @@ namespace Extensions
             switch (keyType)
             {
                 case KeyType.Decimals:
-                    e.Handled = !keys.Any(key => key) && (Key.D0 > k || k > Key.D9) &&
-                                (Key.NumPad0 > k || k > Key.NumPad9) && k != Key.Decimal && k != Key.OemPeriod;
+                    e.Handled = !keys.Any(key => key) && (Key.D0 > k || k > Key.D9)
+                                && (Key.NumPad0 > k || k > Key.NumPad9) && k != Key.Decimal && k != Key.OemPeriod;
                     break;
 
                 case KeyType.Integers:
-                    e.Handled = !keys.Any(key => key) && (Key.D0 > k || k > Key.D9) &&
-                                (Key.NumPad0 > k || k > Key.NumPad9);
+                    e.Handled = !keys.Any(key => key) && (Key.D0 > k || k > Key.D9)
+                                && (Key.NumPad0 > k || k > Key.NumPad9);
                     break;
 
                 case KeyType.Letters:
-                    e.Handled = !keys.Any(key => key) && (Key.A > k || k > Key.Z) && (Key.D0 > k || k > Key.D9) &&
-                                (Key.NumPad0 > k || k > Key.NumPad9);
+                    e.Handled = !keys.Any(key => key) && (Key.A > k || k > Key.Z) && (Key.D0 > k || k > Key.D9)
+                                && (Key.NumPad0 > k || k > Key.NumPad9);
                     break;
 
                 case KeyType.LettersSpace:
@@ -142,24 +142,24 @@ namespace Extensions
                     break;
 
                 case KeyType.LettersIntegersSpace:
-                    e.Handled = !keys.Any(key => key) && (Key.A > k || k > Key.Z) && (Key.D0 > k || k > Key.D9) &&
-                                (Key.NumPad0 > k || k > Key.NumPad9) && k != Key.Space;
+                    e.Handled = !keys.Any(key => key) && (Key.A > k || k > Key.Z) && (Key.D0 > k || k > Key.D9)
+                                && (Key.NumPad0 > k || k > Key.NumPad9) && k != Key.Space;
                     break;
 
                 case KeyType.LettersIntegersSpaceComma:
-                    e.Handled = !keys.Any(key => key) && (Key.A > k || k > Key.Z) && (Key.D0 > k || k > Key.D9) &&
-                                (Key.NumPad0 > k || k > Key.NumPad9) && k != Key.Space && k != Key.OemComma;
+                    e.Handled = !keys.Any(key => key) && (Key.A > k || k > Key.Z) && (Key.D0 > k || k > Key.D9)
+                                && (Key.NumPad0 > k || k > Key.NumPad9) && k != Key.Space && k != Key.OemComma;
                     break;
 
                 case KeyType.NegativeDecimals:
-                    e.Handled = !keys.Any(key => key) && (Key.D0 > k || k > Key.D9) &&
-                                (Key.NumPad0 > k || k > Key.NumPad9) && k != Key.Decimal && k != Key.Subtract &&
-                                k != Key.OemPeriod && k != Key.OemMinus;
+                    e.Handled = !keys.Any(key => key) && (Key.D0 > k || k > Key.D9)
+                                && (Key.NumPad0 > k || k > Key.NumPad9) && k != Key.Decimal && k != Key.Subtract
+                                && k != Key.OemPeriod && k != Key.OemMinus;
                     break;
 
                 case KeyType.NegativeIntegers:
-                    e.Handled = !keys.Any(key => key) && (Key.D0 > k || k > Key.D9) &&
-                                (Key.NumPad0 > k || k > Key.NumPad9) && k != Key.Subtract && k != Key.OemMinus;
+                    e.Handled = !keys.Any(key => key) && (Key.D0 > k || k > Key.D9)
+                                && (Key.NumPad0 > k || k > Key.NumPad9) && k != Key.Subtract && k != Key.OemMinus;
                     break;
 
                 default:

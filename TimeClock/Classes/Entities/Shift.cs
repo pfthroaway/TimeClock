@@ -7,6 +7,7 @@ namespace TimeClock.Classes.Entities
     internal class Shift : INotifyPropertyChanged
     {
         private int _id;
+        private string _role;
         private DateTime _shiftStart, _shiftEnd;
         private bool _edited;
 
@@ -19,14 +20,25 @@ namespace TimeClock.Classes.Entities
             private set { _id = value; OnPropertyChanged("ID"); }
         }
 
-        /// <summary>Time Shift started.</summary>
+        /// <summary>The <see cref="User"/>'s role this <see cref="Shift"/>.</summary>
+        public string Role
+        {
+            get => _role;
+            set
+            {
+                _role = value;
+                OnPropertyChanged("Role");
+            }
+        }
+
+        /// <summary>Time <see cref="Shift"/> started.</summary>
         public DateTime ShiftStart
         {
             get => _shiftStart;
             private set { _shiftStart = value; OnPropertyChanged("ShiftStart"); OnPropertyChanged("ShiftLength"); OnPropertyChanged("ShiftLengthToString"); }
         }
 
-        /// <summary>Time Shift ended.</summary>
+        /// <summary>Time <see cref="Shift"/> ended.</summary>
         public DateTime ShiftEnd
         {
             get => _shiftEnd;
@@ -39,7 +51,7 @@ namespace TimeClock.Classes.Entities
             }
         }
 
-        /// <summary>Has this Shift been edited?</summary>
+        /// <summary>Has this <see cref="Shift"/> been edited?</summary>
         public bool Edited
         {
             get => _edited;
@@ -54,16 +66,16 @@ namespace TimeClock.Classes.Entities
 
         #region Helper Properties
 
-        /// <summary>Time Shift started, formatted to string.</summary>
+        /// <summary>Time <see cref="Shift"/> started, formatted to string.</summary>
         public string ShiftStartToString => ShiftStart.ToString(@"yyyy\/MM\/dd hh\:mm\:ss tt");
 
-        /// <summary>Time Shift ended, formatted to string.</summary>
+        /// <summary>Time <see cref="Shift"/> ended, formatted to string.</summary>
         public string ShiftEndToString => ShiftEnd != DateTime.MinValue ? ShiftEnd.ToString(@"yyyy\/MM\/dd hh\:mm\:ss tt") : "";
 
-        /// <summary>Length of Shift.</summary>
+        /// <summary>Length of <see cref="Shift"/>.</summary>
         public TimeSpan ShiftLength => ShiftEnd != DateTime.MinValue ? ShiftEnd - ShiftStart : DateTime.Now - ShiftStart;
 
-        /// <summary>Length of Shift, formatted to string.</summary>
+        /// <summary>Length of <see cref="Shift"/>, formatted to string.</summary>
         public string ShiftLengthToString => ShiftEnd != DateTime.MinValue
             ? ShiftLength.Days > 0
                 ? ShiftLength.ToString(@"d\:hh\:mm\:ss")
@@ -89,7 +101,7 @@ namespace TimeClock.Classes.Entities
         {
             if (ReferenceEquals(null, left) && ReferenceEquals(null, right)) return true;
             if (ReferenceEquals(null, left) ^ ReferenceEquals(null, right)) return false;
-            return left.ID == right.ID && left.ShiftStart == right.ShiftStart && left.ShiftEnd == right.ShiftEnd && left.Edited == right.Edited;
+            return left.ID == right.ID && left.Role == right.Role && left.ShiftStart == right.ShiftStart && left.ShiftEnd == right.ShiftEnd && left.Edited == right.Edited;
         }
 
         public override bool Equals(object obj) => Equals(this, obj as Shift);
@@ -108,34 +120,38 @@ namespace TimeClock.Classes.Entities
 
         #region Constructors
 
-        /// <summary>Initalizes a default instance of Shift.</summary>
+        /// <summary>Initalizes a default instance of <see cref="Shift"/>.</summary>
         internal Shift()
         {
             ShiftStart = new DateTime();
             ShiftEnd = new DateTime();
         }
 
-        /// <summary>Initializes a new instance of Shift by assigning only the ShiftStart Property.</summary>
+        /// <summary>Initializes a new instance of <see cref="Shift"/> by assigning only the ShiftStart Property.</summary>
         /// <param name="id">ID</param>
-        /// <param name="shiftStart">Start of Shift</param>
-        internal Shift(int id, DateTime shiftStart) : this(id, shiftStart, new DateTime())
+        /// <param name="role"></param>
+        /// <param name="shiftStart">Start time of <see cref="Shift"/></param>
+        internal Shift(int id, string role, DateTime shiftStart) : this(id, role, shiftStart, new DateTime(), false)
         {
         }
 
-        /// <summary>Initializes a new instance of Shift by assigning Properties.</summary>
+        /// <summary>Initializes a new instance of <see cref="Shift"/> by assigning Properties.</summary>
         /// <param name="id">ID</param>
-        /// <param name="shiftStart">Start of Shift</param>
-        /// <param name="shiftEnd">End of Shift</param>
-        internal Shift(int id, DateTime shiftStart, DateTime shiftEnd)
+        /// <param name="role">The <see cref="User"/>'s role this <see cref="Shift"/></param>
+        /// <param name="shiftStart">Start of <see cref="Shift"/></param>
+        /// <param name="shiftEnd">End of <see cref="Shift"/></param>
+        internal Shift(int id, string role, DateTime shiftStart, DateTime shiftEnd, bool edited)
         {
             ID = id;
+            Role = role;
             ShiftStart = shiftStart;
             ShiftEnd = shiftEnd;
+            Edited = edited;
         }
 
-        /// <summary>Replaces this instance of Shift with another instance.S</summary>
-        /// <param name="other">Instance of Shift to replace this instance</param>
-        internal Shift(Shift other) : this(other.ID, other.ShiftStart, other.ShiftEnd)
+        /// <summary>Replaces this instance of <see cref="Shift"/> with another instance.</summary>
+        /// <param name="other">Instance of <see cref="Shift"/> to replace this instance</param>
+        internal Shift(Shift other) : this(other.ID, other.Role, other.ShiftStart, other.ShiftEnd, other.Edited)
         {
         }
 

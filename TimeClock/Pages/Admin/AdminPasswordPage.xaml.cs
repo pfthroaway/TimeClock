@@ -48,8 +48,6 @@ namespace TimeClock.Pages.Admin
             PswdAdmin.Focus();
         }
 
-        private void AdminPasswordPage_OnLoaded(object sender, RoutedEventArgs e) => AppState.CalculateScale(Grid);
-
         private void PswdAdmin_GotFocus(object sender, RoutedEventArgs e) => Functions.PasswordBoxGotFocus(sender);
 
         private void PswdAdmin_PasswordChanged(object sender, RoutedEventArgs e) => BtnSubmit.IsEnabled = PswdAdmin.Password.Length > 0;

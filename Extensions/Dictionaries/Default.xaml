@@ -12,6 +12,7 @@
         <ResourceDictionary Source="Default/Menu.xaml" />
         <ResourceDictionary Source="Default/Page.xaml" />
         <ResourceDictionary Source="Default/PasswordBox.xaml" />
+        <ResourceDictionary Source="Default/RadioButton.xaml" />
         <ResourceDictionary Source="Default/TextBlock.xaml" />
         <ResourceDictionary Source="Default/TabControl.xaml" />
         <ResourceDictionary Source="Default/TextBox.xaml" />

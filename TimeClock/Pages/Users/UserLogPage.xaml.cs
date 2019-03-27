@@ -42,8 +42,6 @@ namespace TimeClock.Pages.Users
             LVShifts.ItemsSource = AppState.CurrentUser.Shifts;
         }
 
-        private void UserLogPage_OnLoaded(object sender, RoutedEventArgs e) => AppState.CalculateScale(Grid);
-
         #endregion Page-Manipulation Methods
     }
 }
