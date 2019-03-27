@@ -81,6 +81,9 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Functions.cs" />
     <Compile Include="DataTypeHelpers\Int32Helper.cs" />
+    <Compile Include="InputNotification.xaml.cs">
+      <DependentUpon>InputNotification.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ListViewHelp\ListViewSort.cs" />
     <Compile Include="ListViewHelp\SortAdorner.cs" />
     <Compile Include="DatabaseHelp\SQLite.cs" />
@@ -310,6 +313,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Dictionaries\Grey\Window.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="InputNotification.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

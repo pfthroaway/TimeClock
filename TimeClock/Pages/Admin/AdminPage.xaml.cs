@@ -12,6 +12,8 @@ namespace TimeClock.Pages.Admin
     {
         #region Button-Click Methods
 
+        private void BtnManageRoles_Click(object sender, RoutedEventArgs e) => AppState.Navigate(new AdminRolesPage());
+
         private void BtnNewUser_Click(object sender, RoutedEventArgs e) => AppState.Navigate(new NewUserPage());
 
         private void BtnViewUsers_Click(object sender, RoutedEventArgs e) => AppState.Navigate(new AdminUsersPage());

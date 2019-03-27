@@ -17,9 +17,11 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Button x:Name="BtnNewUser" Grid.Row="0" Width="165" Content="_New User" Click="BtnNewUser_Click" Margin="0,0,0,10" />
         <Button x:Name="BtnViewUsers" Grid.Row="1" Width="165" Content="_View Users" Click="BtnViewUsers_Click" Margin="0,0,0,10" />
+        <Button x:Name="BtnManageRoles" Grid.Row="2" Width="165" Content="_Manage Roles" Click="BtnManageRoles_Click"  Margin="0,0,0,10" />
         <Button x:Name="BtnLogOutAll" Grid.Row="3" Width="165" Content="_Log Out All" Click="BtnLogOutAll_Click" Margin="0,0,0,10" />
         <Button x:Name="BtnChangePassword" Grid.Row="4" Width="165" Content="_Change Password" Click="BtnChangePassword_Click" Margin="0,0,0,10" />
         <Button x:Name="BtnBack" Grid.Row="5" Width="165" Content="_Back" Click="BtnBack_Click" IsCancel="True" />
