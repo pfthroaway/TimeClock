@@ -16,15 +16,11 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <ListBox x:Name="LstRoles" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Height="300" Width="310" ItemsSource="{Binding}" SelectionChanged="LstRoles_SelectionChanged" Margin="0,0,0,10" />
-        <TextBlock Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="New Role Name:" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,10,5" />
-        <TextBox x:Name="TxtNewRole" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Width="310" TextChanged="TxtNewRole_TextChanged" Margin="0,0,0,20" />
-        <Button x:Name="BtnNewRole" Grid.Column="0" Grid.Row="3" Width="150" Content="_New Role" Click="BtnNewRole_Click" IsEnabled="False" Margin="0,0,10,10" />
-        <Button x:Name="BtnDeleteRole" Grid.Column="1" Grid.Row="3" Width="150" Content="_Delete Role" Click="BtnDeleteRole_Click" IsEnabled="False" Margin="0,0,0,10" />
-        <Button x:Name="BtnModifyRole" Grid.Column="0" Grid.Row="4" Width="150" Content="_Modify Role" Click="BtnModifyRole_Click" IsEnabled="False" Margin="0,0,10,0" />
-        <Button x:Name="BtnBack" Grid.Column="1" Grid.Row="4" Width="150" Content="_Back" Click="BtnBack_Click" IsCancel="False" />
+        <Button x:Name="BtnNewRole" Grid.Column="0" Grid.Row="1" Width="150" Content="_New Role" Click="BtnNewRole_Click" Margin="0,0,10,10" />
+        <Button x:Name="BtnDeleteRole" Grid.Column="1" Grid.Row="1" Width="150" Content="_Delete Role" Click="BtnDeleteRole_Click" IsEnabled="False" Margin="0,0,0,10" />
+        <Button x:Name="BtnModifyRole" Grid.Column="0" Grid.Row="2" Width="150" Content="_Modify Role" Click="BtnModifyRole_Click" IsEnabled="False" Margin="0,0,10,0" />
+        <Button x:Name="BtnBack" Grid.Column="1" Grid.Row="2" Width="150" Content="_Back" Click="BtnBack_Click" IsCancel="False" />
     </Grid>
 </Page>

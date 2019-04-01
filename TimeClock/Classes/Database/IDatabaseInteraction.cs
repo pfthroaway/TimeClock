@@ -16,6 +16,26 @@ namespace TimeClock.Classes.Database
         /// <returns>Whether the admin password was updated in the database</returns>
         Task<bool> ChangeAdminPassword(string hashedAdminPassword);
 
+        #region Role Management
+
+        /// <summary>Adds a Role to the database.</summary>
+        /// <param name="newRole">Role to be added</param>
+        /// <returns>True if successful</returns>
+        Task<bool> AddNewRole(string newRole);
+
+        /// <summary>Deletes a Role from the database.</summary>
+        /// <param name="deleteRole">Role to be deleted</param>
+        /// <returns>True if successful</returns>
+        Task<bool> DeleteRole(string deleteRole);
+
+        /// <summary>Modifies a Role in the database.</summary>
+        /// <param name="originalRole">Original Role</param>
+        /// <param name="modifyRole">Modified Role</param>
+        /// <returns>True if successful</returns>
+        Task<bool> ModifyRole(string originalRole, string modifyRole);
+
+        #endregion Role Management
+
         #endregion Administrator Management
 
         #region Audit
@@ -43,6 +63,10 @@ namespace TimeClock.Classes.Database
         /// <summary>Loads all Users currently logged in</summary>
         /// <returns>List of all Users currently logged in</returns>
         Task<List<Shift>> LoadLoggedInUsers();
+
+        /// <summary>Loads all Roles from the database.</summary>
+        /// <returns>Returns the list of Roles</returns>
+        Task<List<string>> LoadRoles();
 
         /// <summary>Loads all the selected User's Shifts from the database.</summary>
         /// <param name="userID"></param>

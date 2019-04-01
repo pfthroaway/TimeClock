@@ -1,6 +1,7 @@
 ﻿using Extensions;
 using Extensions.DatabaseHelp;
 using Extensions.DataTypeHelpers;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
@@ -46,6 +47,48 @@ namespace TimeClock.Classes.Database
             return ds.Tables[0].Rows.Count > 0 ? ds.Tables[0].Rows[0]["AdminPassword"].ToString() : "";
         }
 
+        #region Role Management
+
+        /// <summary>Adds a Role to the database.</summary>
+        /// <param name="newRole">Role to be added</param>
+        /// <returns>True if successful</returns>
+        public async Task<bool> AddNewRole(string newRole)
+        {
+            SQLiteCommand cmd = new SQLiteCommand
+            {
+                CommandText = "INSERT INTO Roles([Name]) VALUES(@newRole)"
+            };
+            cmd.Parameters.AddWithValue("@newRole", newRole);
+
+            return await SQLite.ExecuteCommand(_con, cmd);
+        }
+
+        /// <summary>Deletes a Role from the database.</summary>
+        /// <param name="deleteRole">Role to be deleted</param>
+        /// <returns>True if successful</returns>
+        public async Task<bool> DeleteRole(string deleteRole)
+        {
+            SQLiteCommand cmd = new SQLiteCommand { CommandText = "DELETE FROM Roles WHERE [Name] = @deleteRole" };
+            cmd.Parameters.AddWithValue("@deleteRole", deleteRole);
+
+            return await SQLite.ExecuteCommand(_con, cmd);
+        }
+
+        /// <summary>Modifies a Role in the database.</summary>
+        /// <param name="originalRole">Original Role</param>
+        /// <param name="modifyRole">Modified Role</param>
+        /// <returns>True if successful</returns>
+        public async Task<bool> ModifyRole(string originalRole, string modifyRole)
+        {
+            SQLiteCommand cmd = new SQLiteCommand { CommandText = "UPDATE Roles SET [Name] = @newRole WHERE [Name] = @oldRole" };
+            cmd.Parameters.AddWithValue("@newRole", modifyRole);
+            cmd.Parameters.AddWithValue("@newRole", originalRole);
+
+            return await SQLite.ExecuteCommand(_con, cmd);
+        }
+
+        #endregion Role Management
+
         #endregion Administrator Management
 
         #region Audit
@@ -60,12 +103,13 @@ namespace TimeClock.Classes.Database
         {
             SQLiteCommand cmd = new SQLiteCommand
             {
-                CommandText = "INSERT INTO Audit([Editor], [Action], [OriginalItem], [AlteredItem]) VALUES(@editor, @action, @originalItem, @alteredItem)"
+                CommandText = "INSERT INTO Audit([Editor], [Action], [OriginalItem], [AlteredItem],[Time]) VALUES(@editor, @action, @originalItem, @alteredItem, @time)"
             };
             cmd.Parameters.AddWithValue("@editor", editor);
             cmd.Parameters.AddWithValue("@action", action);
             cmd.Parameters.AddWithValue("@originalItem", originalItem);
             cmd.Parameters.AddWithValue("@alteredItem", alteredItem);
+            cmd.Parameters.AddWithValue("@time", DateTime.UtcNow);
 
             return await SQLite.ExecuteCommand(_con, cmd);
         }
@@ -97,6 +141,21 @@ namespace TimeClock.Classes.Database
                 currentlyLoggedIn.AddRange(from DataRow dr in ds.Tables[0].Rows select new Shift(Int32Helper.Parse(dr["ID"]), dr["Role"].ToString(), DateTimeHelper.Parse(dr["TimeIn"].ToString())));
             }
             return currentlyLoggedIn;
+        }
+
+        /// <summary>Loads all Roles from the database.</summary>
+        /// <returns>Returns the list of Roles</returns>
+        public async Task<List<string>> LoadRoles()
+        {
+            List<string> allRoles = new List<string>();
+            DataSet ds = await SQLite.FillDataSet(_con, "SELECT * FROM Roles");
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                allRoles.AddRange(from DataRow dr in ds.Tables[0].Rows select dr["Name"].ToString());
+                //foreach (DataRow dr in ds.Tables[0].Rows)
+                //allRoles.Add(dr["Role"].ToString());
+            }
+            return allRoles;
         }
 
         /// <summary>Loads all the selected User's Shifts from the database.</summary>

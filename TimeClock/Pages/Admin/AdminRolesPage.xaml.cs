@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using TimeClock.Classes;
 
 namespace TimeClock.Pages.Admin
@@ -20,7 +9,7 @@ namespace TimeClock.Pages.Admin
     /// <summary>Interaction logic for AdminRoles.xaml</summary>
     public partial class AdminRolesPage : INotifyPropertyChanged
     {
-        private List<string> _allRoles = new List<string>();
+        private ObservableCollection<string> _allRoles = new ObservableCollection<string>();
 
         #region Data-Binding
 
@@ -31,8 +20,8 @@ namespace TimeClock.Pages.Admin
         /// <summary>Updates the data binding for this Page.</summary>
         private void UpdateBindings()
         {
-            LstRoles.Items.Clear();
-            _allRoles = AppState.AllRoles;
+            _allRoles.Clear();
+            _allRoles = new ObservableCollection<string>(AppState.AllRoles);
             LstRoles.ItemsSource = _allRoles;
             LstRoles.Items.Refresh();
         }
@@ -42,39 +31,43 @@ namespace TimeClock.Pages.Admin
         /// <summary>Checks which Buttons should be enabled.</summary>
         private void CheckButtons()
         {
-            BtnNewRole.IsEnabled = TxtNewRole.Text.Length > 0;
             BtnDeleteRole.IsEnabled = LstRoles.SelectedIndex >= 0;
             BtnModifyRole.IsEnabled = LstRoles.SelectedIndex >= 0;
         }
 
         #region Click
 
-        private void BtnNewRole_Click(object sender, RoutedEventArgs e)
+        private async void BtnNewRole_Click(object sender, RoutedEventArgs e)
         {
-            string newRole = AppState.DisplayInputNotification("What name would you like your new role to be?", "Time Clock");
+            string newRole = AppState.DisplayInputNotification("What name would you like your new role to have?", "Time Clock");
             if (newRole.Length > 0)
             {
-                AppState.AllRoles.Add(newRole);
-                AppState.AllRoles.Sort();
+                if (!AppState.AllRoles.Contains(newRole))
+                {
+                    await AppState.AddNewRole(newRole);
+                    UpdateBindings();
+                }
+                else
+                    AppState.DisplayNotification("That role already exists.", "Time Clock");
+            }
+        }
+
+        private async void BtnDeleteRole_Click(object sender, RoutedEventArgs e)
+        {
+            if (AppState.YesNoNotification("Are you sure you want to delete this role? This action cannot be undone.", "Time Clock"))
+            {
+                await AppState.DeleteRole(LstRoles.SelectedItem.ToString());
                 UpdateBindings();
             }
         }
 
-        private void BtnDeleteRole_Click(object sender, RoutedEventArgs e)
-        {
-            if (AppState.YesNoNotification("Are you sure you want to delete this role? This action cannot be undone.", "Time Clock"))
-                AppState.AllRoles.RemoveAt(LstRoles.SelectedIndex);
-        }
-
-        private void BtnModifyRole_Click(object sender, RoutedEventArgs e)
+        private async void BtnModifyRole_Click(object sender, RoutedEventArgs e)
         {
             string originalRole = LstRoles.SelectedItem.ToString();
             string modifyRole = AppState.DisplayInputNotification("What role would you like to change this name to be?", "Time Clock", originalRole);
             if (modifyRole.Length > 0 && modifyRole != originalRole)
             {
-                AppState.AllRoles.Remove(originalRole);
-                AppState.AllRoles.Add(modifyRole);
-                AppState.AllRoles.Sort();
+                await AppState.ModifyRole(originalRole, modifyRole);
                 UpdateBindings();
             }
         }
@@ -93,6 +86,7 @@ namespace TimeClock.Pages.Admin
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            UpdateBindings();
         }
 
         #endregion Page Manipulation Methods

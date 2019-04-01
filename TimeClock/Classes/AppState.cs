@@ -52,6 +52,41 @@ namespace TimeClock.Classes
             return false;
         }
 
+        #region Role Management
+
+        /// <summary>Adds a Role to the database.</summary>
+        /// <param name="newRole">Role to be added</param>
+        /// <returns>True if successful</returns>
+        internal static async Task<bool> AddNewRole(string newRole)
+        {
+            AllRoles.Add(newRole);
+            AllRoles.Sort();
+            return await DatabaseInteraction.AddNewRole(newRole);
+        }
+
+        /// <summary>Deletes a Role from the database.</summary>
+        /// <param name="deleteRole">Role to be deleted</param>
+        /// <returns>True if successful</returns>
+        internal static async Task<bool> DeleteRole(string deleteRole)
+        {
+            AllRoles.Remove(deleteRole);
+            return await DatabaseInteraction.DeleteRole(deleteRole);
+        }
+
+        /// <summary>Modifies a Role in the database.</summary>
+        /// <param name="originalRole">Original Role</param>
+        /// <param name="modifyRole">Modified Role</param>
+        /// <returns>True if successful</returns>
+        internal static async Task<bool> ModifyRole(string originalRole, string modifyRole)
+        {
+            AppState.AllRoles.Remove(originalRole);
+            AppState.AllRoles.Add(modifyRole);
+            AppState.AllRoles.Sort();
+            return await DatabaseInteraction.ModifyRole(originalRole, modifyRole);
+        }
+
+        #endregion Role Management
+
         #endregion Administrator Management
 
         #region Load
@@ -65,6 +100,7 @@ namespace TimeClock.Classes
         {
             DatabaseInteraction.VerifyDatabaseIntegrity();
             AdminPassword = await DatabaseInteraction.LoadAdminPassword();
+            AllRoles = new List<string>(await DatabaseInteraction.LoadRoles());
         }
 
         /// <summary>Loads a User from the database.</summary>
