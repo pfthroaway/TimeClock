@@ -57,8 +57,12 @@ namespace TimeClock.Pages.Admin
         {
         }
 
-        private void BtnModifyUser_Click(object sender, RoutedEventArgs e) => AppState.Navigate(
-            new AdminModifyUserPage { SelectedUser = _selectedUser });
+        private void BtnModifyUser_Click(object sender, RoutedEventArgs e)
+        {
+            AdminManageUserPage manageUserPage = new AdminManageUserPage { OriginalUser = _selectedUser, SelectedUser = new User(_selectedUser) };
+            AppState.Navigate(manageUserPage);
+            manageUserPage.Reset();
+        }
 
         private void LVUsersColumnHeader_Click(object sender, RoutedEventArgs e) => _sort = Functions.ListViewColumnHeaderClick(sender, _sort, LVUsers, "#CCCCCC");
 

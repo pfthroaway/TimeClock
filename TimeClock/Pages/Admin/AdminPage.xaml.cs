@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Windows;
 using TimeClock.Classes;
 using TimeClock.Classes.Entities;
-using TimeClock.Pages.Users;
 
 namespace TimeClock.Pages.Admin
 {
@@ -14,7 +13,7 @@ namespace TimeClock.Pages.Admin
 
         private void BtnManageRoles_Click(object sender, RoutedEventArgs e) => AppState.Navigate(new AdminRolesPage());
 
-        private void BtnNewUser_Click(object sender, RoutedEventArgs e) => AppState.Navigate(new NewUserPage());
+        private void BtnNewUser_Click(object sender, RoutedEventArgs e) => AppState.Navigate(new AdminManageUserPage { OriginalUser = new User(), SelectedUser = new User() });
 
         private void BtnViewUsers_Click(object sender, RoutedEventArgs e) => AppState.Navigate(new AdminUsersPage());
 

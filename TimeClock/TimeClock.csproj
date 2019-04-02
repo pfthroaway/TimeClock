@@ -86,8 +86,11 @@
     <Compile Include="Pages\Admin\AdminChangePasswordPage.xaml.cs">
       <DependentUpon>AdminChangePasswordPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Admin\AdminModifyUserPage.xaml.cs">
-      <DependentUpon>AdminModifyUserPage.xaml</DependentUpon>
+    <Compile Include="Pages\Admin\AdminManageUserRolesPage.xaml.cs">
+      <DependentUpon>AdminManageUserRolesPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Admin\AdminManageUserPage.xaml.cs">
+      <DependentUpon>AdminManageUserPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Admin\AdminRolesPage.xaml.cs">
       <DependentUpon>AdminRolesPage.xaml</DependentUpon>
@@ -120,7 +123,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Admin\AdminModifyUserPage.xaml">
+    <Page Include="Pages\Admin\AdminManageUserRolesPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Admin\AdminManageUserPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
