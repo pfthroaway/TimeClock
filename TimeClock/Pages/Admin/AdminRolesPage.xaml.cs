@@ -39,7 +39,7 @@ namespace TimeClock.Pages.Admin
 
         private async void BtnNewRole_Click(object sender, RoutedEventArgs e)
         {
-            string newRole = AppState.DisplayInputNotification("What name would you like your new role to have?", "Time Clock");
+            string newRole = AppState.InputDialog("What name would you like your new role to have?", "Time Clock");
             if (newRole.Length > 0)
             {
                 if (!AppState.AllRoles.Contains(newRole))
@@ -64,7 +64,7 @@ namespace TimeClock.Pages.Admin
         private async void BtnModifyRole_Click(object sender, RoutedEventArgs e)
         {
             string originalRole = LstRoles.SelectedItem.ToString();
-            string modifyRole = AppState.DisplayInputNotification("What role would you like to change this name to be?", "Time Clock", originalRole);
+            string modifyRole = AppState.InputDialog("What role would you like to change this name to be?", "Time Clock", originalRole);
             if (modifyRole.Length > 0 && modifyRole != originalRole)
             {
                 await AppState.ModifyRole(originalRole, modifyRole);

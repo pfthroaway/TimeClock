@@ -131,7 +131,7 @@ namespace TimeClock.Classes
         /// <param name="message">Message to be displayed</param>
         /// <param name="title">Title of the <see cref="InputNotification"/> window</param>
         /// <param name="defaultText">Text to be displayed in the TxtInput TextBox by default.</param>
-        internal static string DisplayInputNotification(string message, string title, string defaultText = "")
+        internal static string InputDialog(string message, string title, string defaultText = "")
         {
             TextBox txtInput = new TextBox();
             InputNotification newIn = new InputNotification(message, title, MainWindow, defaultText);

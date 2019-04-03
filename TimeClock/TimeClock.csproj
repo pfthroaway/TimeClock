@@ -104,9 +104,6 @@
     <Compile Include="Pages\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Users\NewUserPage.xaml.cs">
-      <DependentUpon>NewUserPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Classes\Entities\Shift.cs" />
     <Compile Include="Classes\AppState.cs" />
     <Compile Include="Pages\Users\TimeClockPage.xaml.cs">
@@ -166,10 +163,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Pages\Users\NewUserPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Pages\Users\TimeClockPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

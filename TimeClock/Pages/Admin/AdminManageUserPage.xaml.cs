@@ -55,18 +55,23 @@ namespace TimeClock.Pages.Admin
             User checkUser = await AppState.LoadUser(TxtUsername.Text);
             if (checkUser == new User() || checkUser == null)
             {
-                SelectedUser.Username = TxtUsername.Text.Trim();
-                SelectedUser.FirstName = TxtFirstName.Text.Trim();
-                SelectedUser.LastName = TxtLastName.Text.Trim();
-                SelectedUser.Password = PBKDF2.HashPassword(PswdPassword.Password.Trim());
-
-                if (SelectedUser.Roles.ToList().Count > 0)
+                if (PswdPassword.Password.Length >= 4 && PswdPassword.Password == PswdConfirm.Password)
                 {
-                    if (await AppState.NewUser(SelectedUser))
-                        AppState.GoBack();
+                    SelectedUser.Username = TxtUsername.Text.Trim();
+                    SelectedUser.FirstName = TxtFirstName.Text.Trim();
+                    SelectedUser.LastName = TxtLastName.Text.Trim();
+                    SelectedUser.Password = PBKDF2.HashPassword(PswdPassword.Password.Trim());
+
+                    if (SelectedUser.Roles.ToList().Count > 0)
+                    {
+                        if (await AppState.NewUser(SelectedUser))
+                            AppState.GoBack();
+                    }
+                    else
+                        AppState.DisplayNotification("There are no roles assigned to this User.", "Time Clock");
                 }
                 else
-                    AppState.DisplayNotification("There are no roles assigned to this User.", "Time Clock");
+                    AppState.DisplayNotification("Please ensure the passwords match and are at least 4 characters in length.", "Time Clock");
             }
             else
                 AppState.DisplayNotification("This username has already been taken.", "Time Clock");

@@ -11,7 +11,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <ListView Grid.Row="0" Name="LVShifts" ScrollViewer.VerticalScrollBarVisibility="Visible" Height="525" MinWidth="675" MaxWidth="675" FontFamily="Lucida Console">
+        <ListView Grid.Row="0" Name="LVShifts" ScrollViewer.VerticalScrollBarVisibility="Visible" Height="525" MinWidth="675" MaxWidth="815" FontFamily="Lucida Console">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Width="250" DisplayMemberBinding="{Binding ShiftStartToString}">
@@ -27,6 +27,11 @@
                     <GridViewColumn Width="140" DisplayMemberBinding="{Binding ShiftLengthToString}">
                         <GridViewColumn.Header>
                             <GridViewColumnHeader MaxWidth="140" Tag="ShiftLength" Click="LVShiftsColumnHeader_Click">Shift Length</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn Width="140" DisplayMemberBinding="{Binding Role}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader MaxWidth="140" Tag="Role" Click="LVShiftsColumnHeader_Click">Role</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
                 </GridView>

@@ -17,13 +17,17 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <TextBlock x:Name="TxtName" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Path=Names,Mode=OneWay}" Margin="0,0,0,10" />
         <TextBlock x:Name="TxtStatus" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Path=LoggedInText,Mode=OneWay}" Margin="0,0,0,10" />
-        <ComboBox x:Name="CmbRoles" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding}" SelectionChanged="CmbRoles_SelectionChanged" Margin="0,0,0,10" />
-        <Button x:Name="BtnInOut" Grid.Column="0" Grid.Row="3" Width="125" Click="BtnInOut_Click" Content="_IN" IsDefault="True" Margin="0,0,10,10" />
-        <Button x:Name="BtnChangePassword" Grid.Column="1" Grid.Row="3" Width="165" Click="BtnChangePassword_Click" Content="_Change Password" Margin="10,0,0,10" />
-        <Button x:Name="BtnLog" Grid.Column="0" Grid.Row="4" Width="125" Click="BtnLog_Click" Content="_Log" Margin="0,0,10,0" />
-        <Button x:Name="BtnBack" Grid.Column="1" Grid.Row="4" Width="125" Click="BtnBack_Click" Content="_Back" IsCancel="True" Margin="10,0,0,0" />
+        <TextBlock Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Text="{Binding Path=TotalHoursTodayToStringWithText}" Margin="0,0,0,10" />
+        <TextBlock Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Text="{Binding Path=ThisWeekTotalHoursToStringWithText}" Margin="0,0,0,10" />
+        <ComboBox x:Name="CmbRoles" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" ItemsSource="{Binding}" SelectionChanged="CmbRoles_SelectionChanged" Margin="0,0,0,10" />
+        <Button x:Name="BtnInOut" Grid.Column="0" Grid.Row="5" Width="165" Click="BtnInOut_Click" Content="_IN" IsDefault="True" Margin="0,0,10,10" />
+        <Button x:Name="BtnChangePassword" Grid.Column="1" Grid.Row="5" Width="165" Click="BtnChangePassword_Click" Content="_Change Password" Margin="0,0,0,10" />
+        <Button x:Name="BtnLog" Grid.Column="0" Grid.Row="6" Width="165" Click="BtnLog_Click" Content="_Log" Margin="0,0,10,0" />
+        <Button x:Name="BtnBack" Grid.Column="1" Grid.Row="6" Width="165" Click="BtnBack_Click" Content="_Back" IsCancel="True" />
     </Grid>
 </Page>

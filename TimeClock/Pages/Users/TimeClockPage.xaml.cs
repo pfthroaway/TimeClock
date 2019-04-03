@@ -17,6 +17,8 @@ namespace TimeClock.Pages.Users
 
         #endregion Data-Binding
 
+        //TODO Set up a way to constantly update this screen, possibly using a DispatchTimer like in my Productivity app.
+
         /// <summary>Checks information regarding the In/Out button.</summary>
         private void CheckButton()
         {

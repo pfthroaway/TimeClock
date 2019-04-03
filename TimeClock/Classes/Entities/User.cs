@@ -78,6 +78,24 @@ namespace TimeClock.Classes.Entities
         /// <summary>List of roles a <see cref="User"/> has available, formatted.</summary>
         public string RolesToString => string.Join(", ", Roles);
 
+        /// <summary>Total hours worked today.</summary>
+        public TimeSpan TotalHoursToday => new TimeSpan(Shifts.Where(shift => shift.ShiftStart > DateTime.Today).ToList().Sum(shift => shift.ShiftLength.Ticks));
+
+        /// <summary>Total hours worked this week.</summary>
+        public TimeSpan ThisWeekTotalHours => new TimeSpan(Shifts.Where(shift => shift.ShiftStart > DateTime.Now.StartOfWeek(DayOfWeek.Sunday)).ToList().Sum(shift => shift.ShiftLength.Ticks));
+
+        /// <summary>Total hours worked today, formatted.</summary>
+        public string TotalHoursTodayToString => TotalHoursToday.ToString(@"hh\:mm\:ss");
+
+        /// <summary>Total hours worked this week, formatted.</summary>
+        public string TotalHoursTodayToStringWithText => $"Today: {TotalHoursTodayToString}";
+
+        /// <summary>Total hours worked today, formatted with preceding text.</summary>
+        public string ThisWeekTotalHoursToString => ThisWeekTotalHours.ToString(@"hh\:mm\:ss");
+
+        /// <summary>Total hours worked this week, formatted with preceding text.</summary>
+        public string ThisWeekTotalHoursToStringWithText => $"This Week: {ThisWeekTotalHoursToString}";
+
         #endregion Helper Properties
 
         #region Shift Manipulation
@@ -172,7 +190,16 @@ namespace TimeClock.Classes.Entities
         {
             if (ReferenceEquals(null, left) && ReferenceEquals(null, right)) return true;
             if (ReferenceEquals(null, left) ^ ReferenceEquals(null, right)) return false;
-            return left.ID == right.ID && string.Equals(left.Username, right.Username, StringComparison.OrdinalIgnoreCase) && string.Equals(left.FirstName, right.FirstName, StringComparison.OrdinalIgnoreCase) && string.Equals(left.LastName, right.LastName, StringComparison.OrdinalIgnoreCase) && string.Equals(left.Password, right.Password, StringComparison.OrdinalIgnoreCase) && left.LoggedIn == right.LoggedIn && !left.Roles.Except(right.Roles).Any() && !left.Shifts.Except(right.Shifts).Any();
+            return left.ID == right.ID
+                && string.Equals(left.Username, right.Username, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(left.FirstName, right.FirstName, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(left.LastName, right.LastName, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(left.Password, right.Password, StringComparison.OrdinalIgnoreCase)
+                && left.LoggedIn == right.LoggedIn
+                && !left.Roles.Except(right.Roles).Any()
+                && !right.Roles.Except(left.Roles).Any()
+                && !left.Shifts.Except(right.Shifts).Any()
+                && !right.Shifts.Except(left.Shifts).Any();
         }
 
         public override bool Equals(object obj) => Equals(this, obj as User);

@@ -18,6 +18,16 @@ namespace Extensions
                 list.AddRange(currentList);
         }
 
+        /// <summary>Determines the starting day of a given week.</summary>
+        /// <param name="dt">Date used to determine the first day of the week</param>
+        /// <param name="startOfWeek">Day of the week chosen to start the week</param>
+        /// <returns>The starting day of a given week</returns>
+        public static DateTime StartOfWeek(this DateTime dt, DayOfWeek startOfWeek)
+        {
+            int diff = (7 + (dt.DayOfWeek - startOfWeek)) % 7;
+            return dt.AddDays(-1 * diff).Date;
+        }
+
         /// <summary>Determines if this character is a comma.</summary>
         /// <param name="c">Character to be evaluated</param>
         /// <returns>Returns true if character is a comma</returns>
