@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Extensions;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using TimeClock.Classes;
 using TimeClock.Classes.Entities;
@@ -51,7 +54,17 @@ namespace TimeClock.Pages.Users
                     AppState.CurrentUser.LoggedIn = false;
                 }
             }
-
+            List<Shift> allShifts = new List<Shift>(AppState.CurrentUser.Shifts);
+            TimeSpan total = new TimeSpan();
+            foreach (Shift shift in allShifts)
+            {
+                DateTime startOfWeek = DateTime.Now.StartOfWeek(DayOfWeek.Sunday);
+                if (shift.ShiftStart >= startOfWeek)
+                {
+                    total.Add(shift.ShiftLength);
+                }
+            }
+            TimeSpan ts = new TimeSpan(allShifts.Where(shift => shift.ShiftStart >= DateTime.Now.StartOfWeek(DayOfWeek.Sunday)).ToList().Sum(shift => shift.ShiftLength.Ticks));
             BtnInOut.IsEnabled = true;
             CheckButton();
         }
