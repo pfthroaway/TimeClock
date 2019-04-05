@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Globalization;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Extensions.Encryption
@@ -13,9 +14,9 @@ namespace Extensions.Encryption
             StringBuilder strOutput = new StringBuilder(arrayInput.Length);
 
             foreach (byte input in arrayInput)
-                strOutput.Append(input.ToString("X2"));
+                strOutput.Append(input.ToString("X2", new CultureInfo("en-US")));
 
-            return strOutput.ToString().ToLower();
+            return strOutput.ToString().ToLower(new CultureInfo("en-US"));
         }
 
         /// <summary>Hashes text with MD5 encryption.</summary>

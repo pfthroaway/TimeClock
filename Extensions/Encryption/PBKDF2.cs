@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Security.Cryptography;
 
 namespace Extensions.Encryption
@@ -34,7 +35,7 @@ namespace Extensions.Encryption
         {
             char[] delimiter = { ':' };
             string[] split = correctHash.Split(delimiter);
-            int iterations = int.Parse(split[IterationIndex]);
+            int iterations = int.Parse(split[IterationIndex], new CultureInfo("en-US"));
             byte[] salt = Convert.FromBase64String(split[SaltIndex]);
             byte[] hash = Convert.FromBase64String(split[Pbkdf2Index]);
 

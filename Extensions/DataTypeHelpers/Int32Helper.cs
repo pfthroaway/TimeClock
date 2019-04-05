@@ -22,9 +22,9 @@ namespace Extensions.DataTypeHelpers
             {
                 temp = (int)dcml;
             }
-            catch (Exception e)
+            catch (InvalidCastException ex)
             {
-                new Notification(e.Message, "Error Parsing Integer", NotificationButtons.OK).ShowDialog();
+                new Notification(ex.Message, "Error Parsing Integer", NotificationButton.OK).ShowDialog();
             }
 
             return temp;
@@ -40,9 +40,9 @@ namespace Extensions.DataTypeHelpers
             {
                 temp = (int)dbl;
             }
-            catch (Exception e)
+            catch (InvalidCastException ex)
             {
-                new Notification(e.Message, "Error Parsing Integer", NotificationButtons.OK).ShowDialog();
+                new Notification(ex.Message, "Error Parsing Integer", NotificationButton.OK).ShowDialog();
             }
             return temp;
         }
@@ -55,11 +55,15 @@ namespace Extensions.DataTypeHelpers
             int temp = 0;
             try
             {
-                temp = Convert.ToInt32(enumer);
+                temp = Convert.ToInt32(enumer, new CultureInfo("en-US"));
             }
-            catch (Exception e)
+            catch (FormatException ex)
             {
-                new Notification(e.Message, "Error Parsing Integer", NotificationButtons.OK).ShowDialog();
+                new Notification(ex.Message, "Error Parsing Integer", NotificationButton.OK).ShowDialog();
+            }
+            catch (InvalidCastException ex)
+            {
+                new Notification(ex.Message, "Error Parsing Integer", NotificationButton.OK).ShowDialog();
             }
             return temp;
         }

@@ -142,7 +142,7 @@ namespace TimeClock.Classes
         /// <param name="message">Message to be displayed</param>
         /// <param name="title">Title of the Notification window</param>
         internal static void DisplayNotification(string message, string title) => Application.Current.Dispatcher.Invoke(
-            () => new Notification(message, title, NotificationButtons.OK, MainWindow).ShowDialog());
+            () => new Notification(message, title, NotificationButton.OK, MainWindow).ShowDialog());
 
         /// <summary>Displays a new Notification in a thread-safe way and retrieves a boolean result upon its closing.</summary>
         /// <param name="message">Message to be displayed</param>
@@ -153,7 +153,7 @@ namespace TimeClock.Classes
             bool result = false;
             Application.Current.Dispatcher.Invoke(delegate
             {
-                if (new Notification(message, title, NotificationButtons.YesNo, MainWindow).ShowDialog() == true)
+                if (new Notification(message, title, NotificationButton.YesNo, MainWindow).ShowDialog() == true)
                     result = true;
             });
             return result;

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 
 namespace TimeClock.Classes.Entities
@@ -11,6 +12,8 @@ namespace TimeClock.Classes.Entities
     {
         private int _id;
         private string _username, _firstName, _lastName, _password;
+        private readonly string format = @"hh\:mm\:ss";
+        private readonly CultureInfo culture = new CultureInfo("en-US");
         private bool _loggedIn;
         private List<string> _roles = new List<string>();
         private List<Shift> _shifts = new List<Shift>();
@@ -81,17 +84,18 @@ namespace TimeClock.Classes.Entities
         /// <summary>Total hours worked today.</summary>
         public TimeSpan TotalHoursToday => new TimeSpan(Shifts.Where(shift => shift.ShiftStart > DateTime.Today).ToList().Sum(shift => shift.ShiftLength.Ticks));
 
-        /// <summary>Total hours worked this week.</summary>
-        public TimeSpan ThisWeekTotalHours => new TimeSpan(Shifts.Where(shift => shift.ShiftStart > DateTime.Now.StartOfWeek(DayOfWeek.Sunday)).ToList().Sum(shift => shift.ShiftLength.Ticks));
-
         /// <summary>Total hours worked today, formatted.</summary>
-        public string TotalHoursTodayToString => TotalHoursToday.ToString(@"hh\:mm\:ss");
+        public string TotalHoursTodayToString => TotalHoursToday.ToString(format, culture);
 
         /// <summary>Total hours worked this week, formatted.</summary>
         public string TotalHoursTodayToStringWithText => $"Today: {TotalHoursTodayToString}";
 
+        /// <summary>Total hours worked this week.</summary>
+        public TimeSpan ThisWeekTotalHours => new TimeSpan(Shifts.Where(shift => shift.ShiftStart >= DateTime.Now.StartOfWeek(DayOfWeek.Sunday)).ToList().Sum(shift => shift.ShiftLength.Ticks));
+
+        //TODO Find out why total week hours isn't calculating correctly.
         /// <summary>Total hours worked today, formatted with preceding text.</summary>
-        public string ThisWeekTotalHoursToString => ThisWeekTotalHours.ToString(@"hh\:mm\:ss");
+        public string ThisWeekTotalHoursToString => ThisWeekTotalHours.ToString(format, culture);
 
         /// <summary>Total hours worked this week, formatted with preceding text.</summary>
         public string ThisWeekTotalHoursToStringWithText => $"This Week: {ThisWeekTotalHoursToString}";
@@ -135,6 +139,12 @@ namespace TimeClock.Classes.Entities
             if (Shifts.Any())
                 _shifts = Shifts.OrderByDescending(shift => shift.ShiftStart).ToList();
             OnPropertyChanged("Shifts");
+            OnPropertyChanged("TotalHoursToday");
+            OnPropertyChanged("TotalHoursTodayToString");
+            OnPropertyChanged("TotalHoursTodayToStringWithText");
+            OnPropertyChanged("ThisWeekTotalHours");
+            OnPropertyChanged("ThisWeekTotalHoursToString");
+            OnPropertyChanged("ThisWeekTotalHoursToStringWithText");
         }
 
         #endregion Shift Manipulation

@@ -165,7 +165,7 @@
             <Setter.Value>
                 <ControlTemplate>
                     <TextBox x:Name="PART_TextBox"
-                             Text="{Binding SelectedDate, RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}, StringFormat=yyyy/MM/dd}" />
+                             Text="{Binding SelectedDate, RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}, StringFormat=yyyy-MM-dd}" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

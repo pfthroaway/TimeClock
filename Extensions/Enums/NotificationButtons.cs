@@ -1,6 +1,6 @@
 ﻿namespace Extensions.Enums
 {
-    public enum NotificationButtons
+    public enum NotificationButton
     {
         YesNo,
         OK

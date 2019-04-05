@@ -1,5 +1,6 @@
 ﻿using Extensions.Enums;
 using System;
+using System.Globalization;
 
 namespace Extensions.DataTypeHelpers
 {
@@ -19,11 +20,15 @@ namespace Extensions.DataTypeHelpers
             bool temp = false;
             try
             {
-                temp = Convert.ToBoolean(obj);
+                temp = Convert.ToBoolean(obj, new CultureInfo("en-US"));
             }
-            catch (Exception ex)
+            catch (FormatException ex)
             {
-                new Notification(ex.Message, "Error Parsing Boolean", NotificationButtons.OK).ShowDialog();
+                new Notification(ex.Message, "Error Parsing Boolean", NotificationButton.OK).ShowDialog();
+            }
+            catch (InvalidCastException ex)
+            {
+                new Notification(ex.Message, "Error Parsing Boolean", NotificationButton.OK).ShowDialog();
             }
             return temp;
         }
@@ -31,10 +36,6 @@ namespace Extensions.DataTypeHelpers
         /// <summary>Utilizes bool.TryParse to easily parse a Boolean.</summary>
         /// <param name="text">Text to be parsed</param>
         /// <returns>Parsed Boolean</returns>
-        public static bool Parse(string text)
-        {
-            bool.TryParse(text, out bool temp);
-            return temp;
-        }
+        public static bool Parse(string text) => bool.TryParse(text, out bool temp) && temp;
     }
 }

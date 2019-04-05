@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace TimeClock.Classes.Entities
 {
@@ -8,6 +9,10 @@ namespace TimeClock.Classes.Entities
     {
         private int _id;
         private string _role;
+        private readonly string fullDateFormat = @"yyyy-MM-dd hh\:mm\:ss tt";
+        private readonly string shiftWeekFormat = @"d\:hh\:mm\:ss";
+        private readonly string shiftDayFormat = @"\:mm\:ss";
+        private readonly CultureInfo culture = new CultureInfo("en-US");
         private DateTime _shiftStart, _shiftEnd;
         private bool _edited;
 
@@ -67,10 +72,10 @@ namespace TimeClock.Classes.Entities
         #region Helper Properties
 
         /// <summary>Time <see cref="Shift"/> started, formatted to string.</summary>
-        public string ShiftStartToString => ShiftStart.ToString(@"yyyy\/MM\/dd hh\:mm\:ss tt");
+        public string ShiftStartToString => ShiftStart.ToString(fullDateFormat, culture);
 
         /// <summary>Time <see cref="Shift"/> ended, formatted to string.</summary>
-        public string ShiftEndToString => ShiftEnd != DateTime.MinValue ? ShiftEnd.ToString(@"yyyy\/MM\/dd hh\:mm\:ss tt") : "";
+        public string ShiftEndToString => ShiftEnd != DateTime.MinValue ? ShiftEnd.ToString(fullDateFormat, culture) : "";
 
         /// <summary>Length of <see cref="Shift"/>.</summary>
         public TimeSpan ShiftLength => ShiftEnd != DateTime.MinValue ? ShiftEnd - ShiftStart : DateTime.Now - ShiftStart;
@@ -78,8 +83,8 @@ namespace TimeClock.Classes.Entities
         /// <summary>Length of <see cref="Shift"/>, formatted to string.</summary>
         public string ShiftLengthToString => ShiftEnd != DateTime.MinValue
             ? ShiftLength.Days > 0
-                ? ShiftLength.ToString(@"d\:hh\:mm\:ss")
-                : ShiftLength.ToString(@"hh\:mm\:ss")
+            ? ShiftLength.ToString(shiftWeekFormat, culture)
+            : ShiftLength.ToString(shiftDayFormat, culture)
             : "";
 
         #endregion Helper Properties

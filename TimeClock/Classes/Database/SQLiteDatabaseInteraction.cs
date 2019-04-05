@@ -35,14 +35,14 @@ namespace TimeClock.Classes.Database
             SQLiteCommand cmd = new SQLiteCommand { CommandText = "UPDATE Admin SET [AdminPassword] = @adminPassword" };
             cmd.Parameters.AddWithValue("@adminPassword", hashedAdminPassword);
 
-            return await SQLite.ExecuteCommand(_con, cmd);
+            return await SQLiteHelper.ExecuteCommand(_con, cmd);
         }
 
         /// <summary>Loads the administrator password from the database.</summary>
         /// <returns>Administrator password</returns>
         public async Task<string> LoadAdminPassword()
         {
-            DataSet ds = await SQLite.FillDataSet(_con, "SELECT * FROM Admin");
+            DataSet ds = await SQLiteHelper.FillDataSet(_con, "SELECT * FROM Admin");
 
             return ds.Tables[0].Rows.Count > 0 ? ds.Tables[0].Rows[0]["AdminPassword"].ToString() : "";
         }
@@ -60,7 +60,7 @@ namespace TimeClock.Classes.Database
             };
             cmd.Parameters.AddWithValue("@newRole", newRole);
 
-            return await SQLite.ExecuteCommand(_con, cmd);
+            return await SQLiteHelper.ExecuteCommand(_con, cmd);
         }
 
         /// <summary>Deletes a Role from the database.</summary>
@@ -68,10 +68,10 @@ namespace TimeClock.Classes.Database
         /// <returns>True if successful</returns>
         public async Task<bool> DeleteRole(string deleteRole)
         {
-            SQLiteCommand cmd = new SQLiteCommand { CommandText = "DELETE FROM Roles WHERE [Name] = @deleteRole" };
+            SQLiteCommand cmd = new SQLiteCommand { CommandText = "DELETE FROM Roles WHERE [Name] = @deleteRole; UPDATE Users SET Roles = REPLACE(Roles, @deleteRole, '') " };
             cmd.Parameters.AddWithValue("@deleteRole", deleteRole);
 
-            return await SQLite.ExecuteCommand(_con, cmd);
+            return await SQLiteHelper.ExecuteCommand(_con, cmd);
         }
 
         /// <summary>Modifies a Role in the database.</summary>
@@ -84,7 +84,7 @@ namespace TimeClock.Classes.Database
             cmd.Parameters.AddWithValue("@newRole", modifyRole);
             cmd.Parameters.AddWithValue("@newRole", originalRole);
 
-            return await SQLite.ExecuteCommand(_con, cmd);
+            return await SQLiteHelper.ExecuteCommand(_con, cmd);
         }
 
         #endregion Role Management
@@ -111,7 +111,7 @@ namespace TimeClock.Classes.Database
             cmd.Parameters.AddWithValue("@alteredItem", alteredItem);
             cmd.Parameters.AddWithValue("@time", DateTime.UtcNow);
 
-            return await SQLite.ExecuteCommand(_con, cmd);
+            return await SQLiteHelper.ExecuteCommand(_con, cmd);
         }
 
         #endregion Audit
@@ -122,7 +122,7 @@ namespace TimeClock.Classes.Database
         /// <returns>Next User ID value</returns>
         public async Task<int> GetNextUserIndex()
         {
-            DataSet ds = await SQLite.FillDataSet(_con, "SELECT * FROM SQLITE_SEQUENCE WHERE name = 'Users'");
+            DataSet ds = await SQLiteHelper.FillDataSet(_con, "SELECT * FROM SQLITE_SEQUENCE WHERE name = 'Users'");
 
             if (ds.Tables[0].Rows.Count > 0)
                 return Int32Helper.Parse(ds.Tables[0].Rows[0]["seq"]) + 1;
@@ -135,7 +135,7 @@ namespace TimeClock.Classes.Database
         {
             List<Shift> currentlyLoggedIn = new List<Shift>();
 
-            DataSet ds = await SQLite.FillDataSet(_con, "SELECT * FROM LoggedInUsers");
+            DataSet ds = await SQLiteHelper.FillDataSet(_con, "SELECT * FROM LoggedInUsers");
             if (ds.Tables[0].Rows.Count > 0)
             {
                 currentlyLoggedIn.AddRange(from DataRow dr in ds.Tables[0].Rows select new Shift(Int32Helper.Parse(dr["ID"]), dr["Role"].ToString(), DateTimeHelper.Parse(dr["TimeIn"].ToString())));
@@ -148,7 +148,7 @@ namespace TimeClock.Classes.Database
         public async Task<List<string>> LoadRoles()
         {
             List<string> allRoles = new List<string>();
-            DataSet ds = await SQLite.FillDataSet(_con, "SELECT * FROM Roles");
+            DataSet ds = await SQLiteHelper.FillDataSet(_con, "SELECT * FROM Roles");
             if (ds.Tables[0].Rows.Count > 0)
             {
                 allRoles.AddRange(from DataRow dr in ds.Tables[0].Rows select dr["Name"].ToString());
@@ -167,7 +167,7 @@ namespace TimeClock.Classes.Database
             SQLiteCommand cmd = new SQLiteCommand { CommandText = "SELECT * FROM Times WHERE [ID] = @id" };
             cmd.Parameters.AddWithValue("@id", userID);
 
-            DataSet ds = await SQLite.FillDataSet(_con, cmd);
+            DataSet ds = await SQLiteHelper.FillDataSet(_con, cmd);
 
             if (ds.Tables[0].Rows.Count > 0)
             {
@@ -177,20 +177,23 @@ namespace TimeClock.Classes.Database
             return userShifts.OrderByDescending(shift => shift.ShiftStart).ToList();
         }
 
+        /// <summary>Assigns a <see cref="User"/> based on a DataRow.</summary>
+        /// <param name="dr">DataRow to assign <see cref="User"/> from</param>
+        /// <returns><see cref="User"/></returns>
+        private async Task<User> LoadUserFromDataRow(DataRow dr) => new User(Int32Helper.Parse(dr["ID"]), dr["Username"].ToString(), dr["FirstName"].ToString(), dr["LastName"].ToString(), dr["Password"].ToString(), BoolHelper.Parse(dr["LoggedIn"]), dr["Roles"].ToString().Split(',').Select(str => str.Trim()).Where(str => !string.IsNullOrEmpty(str)).ToList(), await LoadShifts(Int32Helper.Parse(dr["ID"])));
+
         /// <summary>Loads a User from the database.</summary>
         /// <returns>User</returns>
         public async Task<User> LoadUser(string username)
         {
             SQLiteCommand cmd = new SQLiteCommand { CommandText = "SELECT * FROM Users WHERE [Username] = @name" };
             cmd.Parameters.AddWithValue("@name", username);
-            DataSet ds = await SQLite.FillDataSet(_con, cmd);
+            DataSet ds = await SQLiteHelper.FillDataSet(_con, cmd);
             User loadUser = new User();
             if (ds.Tables[0].Rows.Count > 0)
-            {
-                DataRow dr = ds.Tables[0].Rows[0];
+                loadUser = await LoadUserFromDataRow(ds.Tables[0].Rows[0]);
 
-                loadUser = new User(Int32Helper.Parse(dr["ID"]), dr["Username"].ToString(), dr["FirstName"].ToString(), dr["LastName"].ToString(), dr["Password"].ToString(), BoolHelper.Parse(dr["LoggedIn"]), dr["Roles"].ToString().Split(',').Select(str => str.Trim()).ToList(), await LoadShifts(Int32Helper.Parse(dr["ID"])));
-            }
+            //TODO Figure out deleting Roles. Should a Role be allowed to be deleted if there are Users with that Role?
             return loadUser;
         }
 
@@ -202,12 +205,12 @@ namespace TimeClock.Classes.Database
             SQLiteCommand cmd = new SQLiteCommand { CommandText = "SELECT * FROM Users" };
             if (loggedIn)
                 cmd.CommandText += " WHERE [LoggedIn] = 1";
-            DataSet ds = await SQLite.FillDataSet(_con, cmd);
+            DataSet ds = await SQLiteHelper.FillDataSet(_con, cmd);
 
             List<User> allUsers = new List<User>();
             if (ds.Tables[0].Rows.Count > 0)
                 foreach (DataRow dr in ds.Tables[0].Rows)
-                    allUsers.Add(new User(Int32Helper.Parse(dr["ID"]), dr["Username"].ToString(), dr["FirstName"].ToString(), dr["LastName"].ToString(), dr["Password"].ToString(), BoolHelper.Parse(dr["LoggedIn"]), dr["Roles"].ToString().Split(',').Select(str => str.Trim()).ToList(), await LoadShifts(Int32Helper.Parse(dr["ID"]))));
+                    allUsers.Add(await LoadUserFromDataRow(dr));
             return allUsers;
         }
 
@@ -226,7 +229,7 @@ namespace TimeClock.Classes.Database
             cmd.Parameters.AddWithValue("@edited", 0);
             cmd.Parameters.AddWithValue("@loggedIn", 1);
 
-            return await SQLite.ExecuteCommand(_con, cmd);
+            return await SQLiteHelper.ExecuteCommand(_con, cmd);
         }
 
         /// <summary>Logs out a User.</summary>
@@ -243,7 +246,7 @@ namespace TimeClock.Classes.Database
             cmd.Parameters.AddWithValue("@timeIn", logOutShift.ShiftStartToString);
             cmd.Parameters.AddWithValue("@loggedIn", 0);
             cmd.Parameters.AddWithValue("@id", logOutShift.ID);
-            return await SQLite.ExecuteCommand(_con, cmd);
+            return await SQLiteHelper.ExecuteCommand(_con, cmd);
         }
 
         #endregion Log In/Out
@@ -264,7 +267,7 @@ namespace TimeClock.Classes.Database
             cmd.Parameters.AddWithValue("@roles", newUser.RolesToString);
             cmd.Parameters.AddWithValue("@id", oldUser.ID);
 
-            return await SQLite.ExecuteCommand(_con, cmd);
+            return await SQLiteHelper.ExecuteCommand(_con, cmd);
         }
 
         /// <summary>Deletes a User and all their Shifts from the database.</summary>
@@ -283,7 +286,7 @@ namespace TimeClock.Classes.Database
                 }
                 cmd.CommandText += ";DELETE FROM Times WHERE [ID] = @id";
             }
-            return await SQLite.ExecuteCommand(_con, cmd);
+            return await SQLiteHelper.ExecuteCommand(_con, cmd);
         }
 
         /// <summary>Adds a new User to the database.</summary>
@@ -300,7 +303,7 @@ namespace TimeClock.Classes.Database
             cmd.Parameters.AddWithValue("@loggedIn", newUser.LoggedIn);
             cmd.Parameters.AddWithValue("@roles", newUser.RolesToString);
 
-            if (await SQLite.ExecuteCommand(_con, cmd))
+            if (await SQLiteHelper.ExecuteCommand(_con, cmd))
             {
                 AppState.DisplayNotification("New user added successfully.", "Time Clock");
                 success = true;

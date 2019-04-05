@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -69,7 +70,7 @@ namespace Extensions
         /// <summary>Formats DateTime.Now to my desired string format</summary>
         /// <param name="dt">DateTime</param>
         /// <returns>Formatted DateTime.Now</returns>
-        public static string NowToString(this DateTime dt) => DateTime.Now.ToString(@"yyyy\/MM\/dd hh\:mm\:ss tt");
+        public static string NowToString(this DateTime dt) => DateTime.Now.ToString("'yyyy':'MM':'dd' 'hh':'mm':'ss' tt", new CultureInfo("en-US"));
 
         /// <summary>Replaces an item in a List.</summary>
         /// <typeparam name="T">Type of object being replaced</typeparam>

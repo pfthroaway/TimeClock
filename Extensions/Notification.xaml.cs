@@ -18,10 +18,13 @@ namespace Extensions
                 ImgRed.Visibility = (Visibility)Convert.ToInt32(toggle);
                 ImgYellow.Visibility = (Visibility)Convert.ToInt32(!toggle);
             }
-            catch (Exception ex)
+            catch (FormatException ex)
             {
-                new Notification(ex.Message, "Error Converting Boolean to Enum.", NotificationButtons.OK, this)
-                    .ShowDialog();
+                new Notification(ex.Message, "Error Converting Boolean to Enum.", NotificationButton.OK).ShowDialog();
+            }
+            catch (InvalidCastException ex)
+            {
+                new Notification(ex.Message, "Error Converting Boolean to Enum.", NotificationButton.OK).ShowDialog();
             }
         }
 
@@ -49,12 +52,12 @@ namespace Extensions
         /// <param name="text">Text to be displayed.</param>
         /// <param name="windowName">Title to be displayed on the Window.</param>
         /// <param name="buttons">Determines which buttons should be displayed on the Window</param>
-        public Notification(string text, string windowName, NotificationButtons buttons)
+        public Notification(string text, string windowName, NotificationButton buttons)
         {
             InitializeComponent();
             Title = windowName;
             TxtPopup.Text = text;
-            YesNoButtons(buttons == NotificationButtons.OK);
+            YesNoButtons(buttons == NotificationButton.OK);
         }
 
         /// <summary>Creates a new instance of Notification.</summary>
@@ -62,13 +65,13 @@ namespace Extensions
         /// <param name="windowName">Title to be displayed on the Window.</param>
         /// <param name="buttons">Determines which buttons should be displayed on the Window</param>
         /// <param name="owner">Window owner</param>
-        public Notification(string text, string windowName, NotificationButtons buttons, Window owner)
+        public Notification(string text, string windowName, NotificationButton buttons, Window owner)
         {
             InitializeComponent();
             Title = windowName;
             Owner = owner;
             TxtPopup.Text = text;
-            YesNoButtons(buttons == NotificationButtons.OK);
+            YesNoButtons(buttons == NotificationButton.OK);
         }
 
         #endregion Window-Manipulation Methods
