@@ -90,14 +90,14 @@
     </ApplicationDefinition>
     <Compile Include="Classes\Database\IDatabaseInteraction.cs" />
     <Compile Include="Classes\Database\SQLiteDatabaseInteraction.cs" />
-    <Compile Include="Pages\Admin\AdminChangePasswordPage.xaml.cs">
-      <DependentUpon>AdminChangePasswordPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\Admin\AdminManageUserRolesPage.xaml.cs">
       <DependentUpon>AdminManageUserRolesPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Admin\AdminManageUserPage.xaml.cs">
       <DependentUpon>AdminManageUserPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Admin\AdminManageUserTimesPage.xaml.cs">
+      <DependentUpon>AdminManageUserTimesPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Admin\AdminRolesPage.xaml.cs">
       <DependentUpon>AdminRolesPage.xaml</DependentUpon>
@@ -113,25 +113,25 @@
     </Compile>
     <Compile Include="Classes\Entities\Shift.cs" />
     <Compile Include="Classes\AppState.cs" />
+    <Compile Include="Pages\Shared\ChangePasswordPage.xaml.cs">
+      <DependentUpon>ChangePasswordPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Users\TimeClockPage.xaml.cs">
       <DependentUpon>TimeClockPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Classes\Entities\User.cs" />
-    <Compile Include="Pages\Users\UserChangePasswordPage.xaml.cs">
-      <DependentUpon>UserChangePasswordPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\Users\UserLogPage.xaml.cs">
       <DependentUpon>UserLogPage.xaml</DependentUpon>
     </Compile>
-    <Page Include="Pages\Admin\AdminChangePasswordPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Pages\Admin\AdminManageUserRolesPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Admin\AdminManageUserPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Admin\AdminManageUserTimesPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -170,11 +170,11 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Pages\Users\TimeClockPage.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Pages\Shared\ChangePasswordPage.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\Users\UserChangePasswordPage.xaml">
+    <Page Include="Pages\Users\TimeClockPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -231,6 +231,7 @@
     <Analyzer Include="..\packages\Microsoft.NetFramework.Analyzers.2.9.1\analyzers\dotnet\cs\Microsoft.NetFramework.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.NetFramework.Analyzers.2.9.1\analyzers\dotnet\cs\Microsoft.NetFramework.CSharp.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

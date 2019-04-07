@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using TimeClock.Classes;
 using TimeClock.Classes.Entities;
+using TimeClock.Pages.Shared;
 
 namespace TimeClock.Pages.Users
 {
@@ -70,7 +71,7 @@ namespace TimeClock.Pages.Users
         }
 
         private void BtnChangePassword_Click(object sender, RoutedEventArgs e) => AppState.Navigate(
-            new UserChangePasswordPage());
+            new ChangePasswordPage());
 
         private void BtnLog_Click(object sender, RoutedEventArgs e) => AppState.Navigate(new UserLogPage());
 

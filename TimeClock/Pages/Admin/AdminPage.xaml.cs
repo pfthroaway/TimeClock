@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using TimeClock.Classes;
 using TimeClock.Classes.Entities;
+using TimeClock.Pages.Shared;
 
 namespace TimeClock.Pages.Admin
 {
@@ -30,7 +31,7 @@ namespace TimeClock.Pages.Admin
                 AppState.DisplayNotification("All users are currently logged out.", "Time Clock");
         }
 
-        private void BtnChangePassword_Click(object sender, RoutedEventArgs e) => AppState.Navigate(new AdminChangePasswordPage());
+        private void BtnChangePassword_Click(object sender, RoutedEventArgs e) => AppState.Navigate(new ChangePasswordPage { Admin = true });
 
         private void BtnBack_Click(object sender, RoutedEventArgs e) => ClosePage();
 
