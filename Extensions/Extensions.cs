@@ -29,6 +29,11 @@ namespace Extensions
             return dt.AddDays(-1 * diff).Date;
         }
 
+        /// <summary>This method converts a <see cref="TimeSpan"/> to a readable string.</summary>
+        /// <param name="ts"><see cref="TimeSpan"/> to be converted.</param>
+        /// <returns>Custom formatted string</returns>
+        public static string ToCustomString(this TimeSpan ts) => ts.Days > 0 ? $"{ts.Days}:{ts.Hours}:{ts.Minutes}:{ts.Seconds}" : $"{ts.Hours}:{ts.Minutes}:{ts.Seconds}";
+
         /// <summary>Determines if this character is a comma.</summary>
         /// <param name="c">Character to be evaluated</param>
         /// <returns>Returns true if character is a comma</returns>

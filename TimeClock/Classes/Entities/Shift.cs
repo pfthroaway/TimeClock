@@ -10,8 +10,8 @@ namespace TimeClock.Classes.Entities
         private int _id;
         private string _role;
         private readonly string fullDateFormat = @"yyyy-MM-dd hh\:mm\:ss tt";
-        private readonly string shiftWeekFormat = @"d\:HH\:mm\:ss";
-        private readonly string shiftDayFormat = @"HH\:mm\:ss";
+        private readonly string shiftWeekFormat = "dd':'hh':'mm':'ss";
+        private readonly string shiftDayFormat = "hh':'mm':'ss";
         private readonly CultureInfo culture = new CultureInfo("en-US");
         private DateTime _shiftStart, _shiftEnd;
         private bool _edited;

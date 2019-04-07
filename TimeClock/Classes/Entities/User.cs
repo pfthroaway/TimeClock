@@ -93,7 +93,6 @@ namespace TimeClock.Classes.Entities
         /// <summary>Total hours worked this week.</summary>
         public TimeSpan ThisWeekTotalHours => new TimeSpan(Shifts.Where(shift => shift.ShiftStart >= DateTime.Now.StartOfWeek(DayOfWeek.Sunday)).ToList().Sum(shift => shift.ShiftLength.Ticks));
 
-        //TODO Find out why total week hours isn't calculating correctly.
         /// <summary>Total hours worked today, formatted with preceding text.</summary>
         public string ThisWeekTotalHoursToString => ThisWeekTotalHours.ToString(format, culture);
 
