@@ -13,14 +13,17 @@ namespace TimeClock.Pages
     {
         private async void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
-            User checkUser = await AppState.LoadUser(TxtUserID.Text.Trim());
+            User checkUser = await AppState.LoadUser(TxtUserID.Text.Trim()).ConfigureAwait(false);
             if (checkUser != new User() && PBKDF2.ValidatePassword(PswdPassword.Password.Trim(), checkUser.Password))
             {
-                AppState.CurrentUser = checkUser;
-                TxtUserID.Clear();
-                PswdPassword.Clear();
-                TxtUserID.Focus();
-                AppState.Navigate(new TimeClockPage());
+                Dispatcher.Invoke(() =>
+                {
+                    AppState.CurrentUser = checkUser;
+                    TxtUserID.Clear();
+                    PswdPassword.Clear();
+                    TxtUserID.Focus();
+                    AppState.Navigate(new TimeClockPage());
+                });
             }
             else
                 AppState.DisplayNotification("Invalid login.", "Time Clock");

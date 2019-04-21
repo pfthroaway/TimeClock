@@ -44,7 +44,7 @@ namespace TimeClock.Classes
         /// <param name="hashedAdminPassword">New hashed admin password</param>
         internal static async Task<bool> ChangeAdminPassword(string hashedAdminPassword)
         {
-            if (await DatabaseInteraction.ChangeAdminPassword(hashedAdminPassword))
+            if (await DatabaseInteraction.ChangeAdminPassword(hashedAdminPassword).ConfigureAwait(false))
             {
                 AdminPassword = hashedAdminPassword;
                 return true;
@@ -61,7 +61,7 @@ namespace TimeClock.Classes
         {
             AllRoles.Add(newRole);
             AllRoles.Sort();
-            return await DatabaseInteraction.AddNewRole(newRole);
+            return await DatabaseInteraction.AddNewRole(newRole).ConfigureAwait(false);
         }
 
         /// <summary>Deletes a Role from the database.</summary>
@@ -70,7 +70,7 @@ namespace TimeClock.Classes
         internal static async Task<bool> DeleteRole(string deleteRole)
         {
             AllRoles.Remove(deleteRole);
-            return await DatabaseInteraction.DeleteRole(deleteRole);
+            return await DatabaseInteraction.DeleteRole(deleteRole).ConfigureAwait(false);
         }
 
         /// <summary>Modifies a Role in the database.</summary>
@@ -82,7 +82,7 @@ namespace TimeClock.Classes
             AppState.AllRoles.Remove(originalRole);
             AppState.AllRoles.Add(modifyRole);
             AppState.AllRoles.Sort();
-            return await DatabaseInteraction.ModifyRole(originalRole, modifyRole);
+            return await DatabaseInteraction.ModifyRole(originalRole, modifyRole).ConfigureAwait(false);
         }
 
         #endregion Role Management
@@ -93,23 +93,23 @@ namespace TimeClock.Classes
 
         /// <summary>Gets the next User ID autoincrement value in the database for the Users table.</summary>
         /// <returns>Next User ID value</returns>
-        public static async Task<int> GetNextUserIndex() => await DatabaseInteraction.GetNextUserIndex();
+        public static async Task<int> GetNextUserIndex() => await DatabaseInteraction.GetNextUserIndex().ConfigureAwait(false);
 
         /// <summary>Loads all required items from the database on application load.</summary>
         internal static async Task LoadAll()
         {
             DatabaseInteraction.VerifyDatabaseIntegrity();
-            AdminPassword = await DatabaseInteraction.LoadAdminPassword();
-            AllRoles = new List<string>(await DatabaseInteraction.LoadRoles());
+            AdminPassword = await DatabaseInteraction.LoadAdminPassword().ConfigureAwait(false);
+            AllRoles = new List<string>(await DatabaseInteraction.LoadRoles().ConfigureAwait(false));
         }
 
         /// <summary>Loads a User from the database.</summary>
         /// <returns>User</returns>
-        public static async Task<User> LoadUser(string username) => await DatabaseInteraction.LoadUser(username);
+        public static async Task<User> LoadUser(string username) => await DatabaseInteraction.LoadUser(username).ConfigureAwait(false);
 
         /// <summary>Loads all Users from the database.</summary>
         /// <returns>All Users</returns>
-        public static async Task<List<User>> LoadUsers(bool loggedIn = false) => await DatabaseInteraction.LoadUsers(loggedIn);
+        public static async Task<List<User>> LoadUsers(bool loggedIn = false) => await DatabaseInteraction.LoadUsers(loggedIn).ConfigureAwait(false);
 
         #endregion Load
 
@@ -117,11 +117,11 @@ namespace TimeClock.Classes
 
         /// <summary>Logs in a User.</summary>
         /// <param name="loginShift">Shift started by User</param>
-        internal static async Task<bool> LogIn(Shift loginShift) => await DatabaseInteraction.LogIn(loginShift);
+        internal static async Task<bool> LogIn(Shift loginShift) => await DatabaseInteraction.LogIn(loginShift).ConfigureAwait(false);
 
         /// <summary>Logs out a User.</summary>
         /// <param name="logOutShift">Shift to be created on logout</param>
-        internal static async Task<bool> LogOut(Shift logOutShift) => await DatabaseInteraction.LogOut(logOutShift);
+        internal static async Task<bool> LogOut(Shift logOutShift) => await DatabaseInteraction.LogOut(logOutShift).ConfigureAwait(false);
 
         #endregion Log In/Out
 
@@ -168,16 +168,16 @@ namespace TimeClock.Classes
         /// <param name="newUser">User with new details</param>
         /// <returns>True if successfully updated in the database</returns>
         internal static async Task<bool> ChangeUserDetails(User oldUser, User newUser) => await DatabaseInteraction
-            .ChangeUserDetails(oldUser, newUser);
+            .ChangeUserDetails(oldUser, newUser).ConfigureAwait(false);
 
         /// <summary>Deletes a User and all their Shifts from the database.</summary>
         /// <param name="user">User to be deleted</param>
         /// <returns>True if successful</returns>
-        public static async Task<bool> DeleteUser(User user) => await DatabaseInteraction.DeleteUser(user);
+        public static async Task<bool> DeleteUser(User user) => await DatabaseInteraction.DeleteUser(user).ConfigureAwait(false);
 
         /// <summary>Adds a new User to the database.</summary>
         /// <param name="newUser">User to be added to the database.</param>
-        internal static async Task<bool> NewUser(User newUser) => await DatabaseInteraction.NewUser(newUser);
+        internal static async Task<bool> NewUser(User newUser) => await DatabaseInteraction.NewUser(newUser).ConfigureAwait(false);
 
         #endregion User Management
     }

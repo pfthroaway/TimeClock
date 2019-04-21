@@ -40,7 +40,7 @@ namespace TimeClock.Pages.Users
             if (!AppState.CurrentUser.LoggedIn)
             {
                 Shift newShift = new Shift(AppState.CurrentUser.ID, CmbRoles.SelectedItem.ToString(), DateTime.Now);
-                if (await AppState.LogIn(newShift))
+                if (await AppState.LogIn(newShift).ConfigureAwait(false))
                 {
                     AppState.CurrentUser.AddShift(newShift);
                     AppState.CurrentUser.LoggedIn = true;
@@ -49,7 +49,7 @@ namespace TimeClock.Pages.Users
             else
             {
                 Shift currentShift = new Shift(AppState.CurrentUser.GetMostRecentShift()) { ShiftEnd = DateTime.Now };
-                if (await AppState.LogOut(currentShift))
+                if (await AppState.LogOut(currentShift).ConfigureAwait(false))
                 {
                     AppState.CurrentUser.ModifyShift(AppState.CurrentUser.GetMostRecentShift(), currentShift);
                     AppState.CurrentUser.LoggedIn = false;
@@ -66,8 +66,11 @@ namespace TimeClock.Pages.Users
                 }
             }
             TimeSpan ts = new TimeSpan(allShifts.Where(shift => shift.ShiftStart >= DateTime.Now.StartOfWeek(DayOfWeek.Sunday)).ToList().Sum(shift => shift.ShiftLength.Ticks));
-            BtnInOut.IsEnabled = true;
-            CheckButton();
+            Dispatcher.Invoke(() =>
+            {
+                BtnInOut.IsEnabled = true;
+                CheckButton();
+            });
         }
 
         private void BtnChangePassword_Click(object sender, RoutedEventArgs e) => AppState.Navigate(

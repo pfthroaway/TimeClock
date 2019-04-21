@@ -52,20 +52,22 @@ namespace TimeClock.Pages.Admin
         /// <summary>Adds a new <see cref="User"/> to the database.</summary>
         private async Task NewUser()
         {
-            User checkUser = await AppState.LoadUser(TxtUsername.Text);
+            User checkUser = await AppState.LoadUser(TxtUsername.Text).ConfigureAwait(false);
             if (checkUser == new User() || checkUser == null)
             {
                 if (PswdPassword.Password.Length >= 4 && PswdPassword.Password == PswdConfirm.Password)
                 {
-                    SelectedUser.Username = TxtUsername.Text.Trim();
-                    SelectedUser.FirstName = TxtFirstName.Text.Trim();
-                    SelectedUser.LastName = TxtLastName.Text.Trim();
-                    SelectedUser.Password = PBKDF2.HashPassword(PswdPassword.Password.Trim());
-
+                    Dispatcher.Invoke(() =>
+                    {
+                        SelectedUser.Username = TxtUsername.Text.Trim();
+                        SelectedUser.FirstName = TxtFirstName.Text.Trim();
+                        SelectedUser.LastName = TxtLastName.Text.Trim();
+                        SelectedUser.Password = PBKDF2.HashPassword(PswdPassword.Password.Trim());
+                    });
                     if (SelectedUser.Roles.ToList().Count > 0)
                     {
-                        if (await AppState.NewUser(SelectedUser))
-                            AppState.GoBack();
+                        if (await AppState.NewUser(SelectedUser).ConfigureAwait(false))
+                            Dispatcher.Invoke(() => AppState.GoBack());
                     }
                     else
                         AppState.DisplayNotification("There are no roles assigned to this User.", "Time Clock");
@@ -89,8 +91,8 @@ namespace TimeClock.Pages.Admin
             {
                 if (SelectedUser.Roles.ToList().Count > 0)
                 {
-                    if (await AppState.ChangeUserDetails(OriginalUser, SelectedUser))
-                        AppState.GoBack();
+                    if (await AppState.ChangeUserDetails(OriginalUser, SelectedUser).ConfigureAwait(false))
+                        Dispatcher.Invoke(() => AppState.GoBack());
                 }
                 else
                     AppState.DisplayNotification("There are no roles assigned to this User.", "Time Clock");
@@ -118,9 +120,9 @@ namespace TimeClock.Pages.Admin
             if (TxtUsername.Text.Length >= 4 && TxtFirstName.Text.Length >= 2 && TxtLastName.Text.Length >= 2 && ((PswdPassword.Password.Length == 0 && PswdConfirm.Password.Length == 0) || (PswdPassword.Password.Length >= 4 && PswdConfirm.Password.Length >= 4)) && PswdPassword.Password == PswdConfirm.Password)
             {
                 if (OriginalUser == null || OriginalUser == new User())
-                    await NewUser();
+                    await NewUser().ConfigureAwait(false);
                 else
-                    await ModifyUser();
+                    await ModifyUser().ConfigureAwait(false);
             }
             else if (PswdPassword.Password.Length != 0 && PswdConfirm.Password.Length != 0 && PswdPassword.Password.Length < 4 && PswdConfirm.Password.Length < 4)
                 AppState.DisplayNotification("Please ensure the new password is 4 or more characters in length.", "Time Clock");

@@ -40,7 +40,7 @@ namespace Extensions.DatabaseHelp
                 {
                     connection.Close();
                 }
-            });
+            }).ConfigureAwait(false);
             return ds;
         }
 
@@ -69,7 +69,7 @@ namespace Extensions.DatabaseHelp
                 {
                     connection.Close();
                 }
-            });
+            }).ConfigureAwait(false);
             return ds;
         }
 
@@ -109,7 +109,7 @@ namespace Extensions.DatabaseHelp
                     {
                         connection.Close();
                     }
-                });
+                }).ConfigureAwait(false);
             }
             else
             {

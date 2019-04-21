@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       mc:Ignorable="d"
       Style="{StaticResource PageStyle}"
-      Title="Login">
+      Title="Time Clock">
     <Grid x:Name="Grid" Margin="50">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />

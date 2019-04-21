@@ -18,7 +18,7 @@ namespace TimeClock.Pages.Shared
             bool success = false;
             if (PBKDF2.ValidatePassword(PswdCurrentPassword.Password, Admin ? AppState.AdminPassword : AppState.CurrentUser.Password) && PswdNewPassword.Password == PswdConfirmPassword.Password && PswdCurrentPassword.Password != PswdNewPassword.Password)
             {
-                if (Admin && await AppState.ChangeAdminPassword(PBKDF2.HashPassword(PswdNewPassword.Password)))
+                if (Admin && await AppState.ChangeAdminPassword(PBKDF2.HashPassword(PswdNewPassword.Password)).ConfigureAwait(false))
                 {
                     AppState.DisplayNotification("Successfully changed administrator password.", "Time Clock");
                     success = true;
@@ -26,7 +26,7 @@ namespace TimeClock.Pages.Shared
                 else if (!Admin)
                 {
                     User newUser = new User(AppState.CurrentUser) { Password = PBKDF2.HashPassword(PswdNewPassword.Password) };
-                    if (await AppState.ChangeUserDetails(AppState.CurrentUser, newUser))
+                    if (await AppState.ChangeUserDetails(AppState.CurrentUser, newUser).ConfigureAwait(false))
                     {
                         AppState.DisplayNotification("Successfully changed user password.", "Time Clock");
                         AppState.CurrentUser.Password = newUser.Password;

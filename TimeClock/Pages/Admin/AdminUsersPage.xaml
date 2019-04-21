@@ -6,18 +6,14 @@
       mc:Ignorable="d"
       Style="{StaticResource PageStyle}"
       Loaded="AdminUsersPage_OnLoaded"
-      Title="Admin All Users">
+      Title="Time Clock - Manage Users">
     <Grid x:Name="Grid" Margin="10">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <ListView x:Name="LVUsers" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Height="472" SelectionChanged="LVUsers_SelectionChanged" AlternationCount="2" SelectionMode="Single" ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,0,0,10">
+        <ListView x:Name="LVUsers" Grid.Row="0" Height="472" SelectionChanged="LVUsers_SelectionChanged" AlternationCount="2" SelectionMode="Single" ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,0,0,10">
             <ListView.View>
                 <GridView ScrollViewer.VerticalScrollBarVisibility="Visible">
                     <GridViewColumn Width="60" DisplayMemberBinding="{Binding Path=ID}">
@@ -38,11 +34,14 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button x:Name="BtnModifyUser" Grid.Column="0" Grid.Row="1" Width="175" Click="BtnModifyUser_Click" Content="_Modify User" IsEnabled="False" IsDefault="True" Margin="0,0,0,10" />
-        <Button x:Name="BtnDeleteUser" Grid.Column="1" Grid.Row="1" Width="175" Click="BtnDeleteUser_Click" Content="_Delete User" IsEnabled="False" Margin="0,0,0,10" />
-        <Button x:Name="BtnModifyTimes" Grid.Column="0" Grid.Row="2" Width="175" Click="BtnModifyTimes_Click" Content="Modify _Times" IsEnabled="False" Margin="0,0,0,10" />
-        <Button x:Name="BtnBack" Grid.Column="1" Grid.Row="2" Width="175" Click="BtnBack_Click" IsCancel="True">
-            <AccessText Text="_Back" />
-        </Button>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
+            <Button x:Name="BtnNewUser" Width="175" Content="_New User" Click="BtnNewUser_Click" Margin="0,0,10,0" />
+            <Button x:Name="BtnModifyUser" Width="175" Click="BtnModifyUser_Click" Content="_Modify User" IsEnabled="False" IsDefault="True" Margin="0,0,10,0" />
+            <Button x:Name="BtnDeleteUser" Width="175" Click="BtnDeleteUser_Click" Content="_Delete User" IsEnabled="False" />
+        </StackPanel>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button x:Name="BtnModifyTimes" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Width="175" Click="BtnModifyTimes_Click" Content="Modify _Times" IsEnabled="False" Margin="0,0,10,0" />
+            <Button x:Name="BtnBack" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Width="175" Content="_Back" Click="BtnBack_Click" IsCancel="True" />
+        </StackPanel>
     </Grid>
 </Page>

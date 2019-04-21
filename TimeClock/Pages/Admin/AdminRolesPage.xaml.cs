@@ -20,10 +20,12 @@ namespace TimeClock.Pages.Admin
         /// <summary>Updates the data binding for this Page.</summary>
         private void UpdateBindings()
         {
-            _allRoles.Clear();
-            _allRoles = new ObservableCollection<string>(AppState.AllRoles);
-            LstRoles.ItemsSource = _allRoles;
-            LstRoles.Items.Refresh();
+            Dispatcher.Invoke(() =>
+            {
+                _allRoles = new ObservableCollection<string>(AppState.AllRoles);
+                LstRoles.ItemsSource = _allRoles;
+                LstRoles.Items.Refresh();
+            });
         }
 
         #endregion Data-Binding
@@ -44,7 +46,7 @@ namespace TimeClock.Pages.Admin
             {
                 if (!AppState.AllRoles.Contains(newRole))
                 {
-                    await AppState.AddNewRole(newRole);
+                    await AppState.AddNewRole(newRole).ConfigureAwait(false);
                     UpdateBindings();
                 }
                 else
@@ -56,7 +58,7 @@ namespace TimeClock.Pages.Admin
         {
             if (AppState.YesNoNotification("Are you sure you want to delete this role? This action cannot be undone.", "Time Clock"))
             {
-                await AppState.DeleteRole(LstRoles.SelectedItem.ToString());
+                await AppState.DeleteRole(LstRoles.SelectedItem.ToString()).ConfigureAwait(false);
                 UpdateBindings();
             }
         }
@@ -67,7 +69,7 @@ namespace TimeClock.Pages.Admin
             string modifyRole = AppState.InputDialog("What role would you like to change this name to be?", "Time Clock", originalRole);
             if (modifyRole.Length > 0 && modifyRole != originalRole)
             {
-                await AppState.ModifyRole(originalRole, modifyRole);
+                await AppState.ModifyRole(originalRole, modifyRole).ConfigureAwait(false);
                 UpdateBindings();
             }
         }

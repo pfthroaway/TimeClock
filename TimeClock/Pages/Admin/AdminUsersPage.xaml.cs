@@ -22,9 +22,12 @@ namespace TimeClock.Pages.Admin
         /// <summary>Refreshes the LVUsers's ItemSource.</summary>
         internal async Task RefreshItemsSource()
         {
-            _allUsers = await AppState.LoadUsers();
-            LVUsers.ItemsSource = _allUsers;
-            LVUsers.Items.Refresh();
+            _allUsers = await AppState.LoadUsers().ConfigureAwait(false);
+            Dispatcher.Invoke(() =>
+           {
+               LVUsers.ItemsSource = _allUsers;
+               LVUsers.Items.Refresh();
+           });
         }
 
         /// <summary>Toggles the buttons.</summary>
@@ -48,8 +51,8 @@ namespace TimeClock.Pages.Admin
             message += " This action cannot be undone.";
             if (AppState.YesNoNotification(message, "Time Clock"))
             {
-                await AppState.DeleteUser(_selectedUser);
-                await RefreshItemsSource();
+                await AppState.DeleteUser(_selectedUser).ConfigureAwait(false);
+                await RefreshItemsSource().ConfigureAwait(false);
             }
         }
 
@@ -63,6 +66,8 @@ namespace TimeClock.Pages.Admin
             AppState.Navigate(manageUserPage);
             manageUserPage.Reset();
         }
+
+        private void BtnNewUser_Click(object sender, RoutedEventArgs e) => AppState.Navigate(new AdminManageUserPage { OriginalUser = new User(), SelectedUser = new User() });
 
         private void LVUsersColumnHeader_Click(object sender, RoutedEventArgs e) => _sort = Functions.ListViewColumnHeaderClick(sender, _sort, LVUsers, "#CCCCCC");
 
@@ -81,7 +86,7 @@ namespace TimeClock.Pages.Admin
 
         public AdminUsersPage() => InitializeComponent();
 
-        private async void AdminUsersPage_OnLoaded(object sender, RoutedEventArgs e) => await RefreshItemsSource();
+        private async void AdminUsersPage_OnLoaded(object sender, RoutedEventArgs e) => await RefreshItemsSource().ConfigureAwait(false);
 
         #endregion Page-Manipulation Methods
     }

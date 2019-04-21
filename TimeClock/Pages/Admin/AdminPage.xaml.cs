@@ -14,17 +14,15 @@ namespace TimeClock.Pages.Admin
 
         private void BtnManageRoles_Click(object sender, RoutedEventArgs e) => AppState.Navigate(new AdminRolesPage());
 
-        private void BtnNewUser_Click(object sender, RoutedEventArgs e) => AppState.Navigate(new AdminManageUserPage { OriginalUser = new User(), SelectedUser = new User() });
-
-        private void BtnViewUsers_Click(object sender, RoutedEventArgs e) => AppState.Navigate(new AdminUsersPage());
+        private void BtnManageUsers_Click(object sender, RoutedEventArgs e) => AppState.Navigate(new AdminUsersPage());
 
         private async void BtnLogOutAll_Click(object sender, RoutedEventArgs e)
         {
-            List<User> loggedInUsers = await AppState.LoadUsers(true);
+            List<User> loggedInUsers = await AppState.LoadUsers(true).ConfigureAwait(false);
             if (loggedInUsers.Count > 0)
             {
                 foreach (User user in loggedInUsers)
-                    await AppState.LogOut(new Shift(user.GetMostRecentShift()) { ShiftEnd = DateTime.Now });
+                    await AppState.LogOut(new Shift(user.GetMostRecentShift()) { ShiftEnd = DateTime.Now }).ConfigureAwait(false);
                 AppState.DisplayNotification("All users now logged out.", "Time Clock");
             }
             else
