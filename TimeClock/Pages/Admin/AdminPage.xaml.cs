@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using TimeClock.Classes;
 using TimeClock.Classes.Entities;
-using TimeClock.Pages.Shared;
+using TimeClock.Pages.SharedPages;
 
 namespace TimeClock.Pages.Admin
 {
@@ -21,9 +22,13 @@ namespace TimeClock.Pages.Admin
             List<User> loggedInUsers = await AppState.LoadUsers(true).ConfigureAwait(false);
             if (loggedInUsers.Count > 0)
             {
+                List<string> users = new List<string>(loggedInUsers.Count);
                 foreach (User user in loggedInUsers)
+                {
+                    users.Add(user.Names);
                     await AppState.LogOut(new Shift(user.GetMostRecentShift()) { ShiftEnd = DateTime.Now }).ConfigureAwait(false);
-                AppState.DisplayNotification("All users now logged out.", "Time Clock");
+                }
+                AppState.DisplayNotification($"Users\n{string.Join("\n",users)}\nnow logged out.", "Time Clock");
             }
             else
                 AppState.DisplayNotification("All users are currently logged out.", "Time Clock");

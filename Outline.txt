@@ -1,0 +1,23 @@
+Application Administrator:
+    - Creates and modifies companies:
+        - Company name/pay periods
+        - Creates company administators
+
+Company Administrator:
+    - Creates and modifies users:
+        - Username/First/Last/SSN/Password/etc
+        - Roles and pay rates
+        - Taxes
+        - Modifies Times
+    - Creates and modifies roles
+    - Review audit log of changes made to users and times
+
+User:
+    - Logs in and out
+    - Can change Password
+    - Requests changes to user/roles/times to Administrator
+    - Review clock in/out log
+
+Timesheet Logs
+    - Available for current pay period, week, month, all
+    - Displays date and time of logins, role, pay rate, total pay for shift

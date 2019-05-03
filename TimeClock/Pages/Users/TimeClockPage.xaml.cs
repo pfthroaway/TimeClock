@@ -6,7 +6,7 @@ using System.Linq;
 using System.Windows;
 using TimeClock.Classes;
 using TimeClock.Classes.Entities;
-using TimeClock.Pages.Shared;
+using TimeClock.Pages.SharedPages;
 
 namespace TimeClock.Pages.Users
 {
