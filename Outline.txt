@@ -17,6 +17,12 @@ User:
     - Can change Password
     - Requests changes to user/roles/times to Administrator
     - Review clock in/out log
+    - Review paystubs
+    - Modify tax stuff
+    - Direct deposit
+    - Modify user address/Submit W-4
+    - Submit/Review PTO
+    - Submit change request for time in/out
 
 Timesheet Logs
     - Available for current pay period, week, month, all
