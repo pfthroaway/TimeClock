@@ -1,4 +1,5 @@
 ﻿using Extensions;
+using Extensions.DataTypeHelpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -82,7 +83,16 @@ namespace TimeClock.Classes.Entities
         public string RolesToString => string.Join(", ", Roles);
 
         /// <summary>Total hours worked today.</summary>
-        public TimeSpan TotalHoursToday => new TimeSpan(Shifts.Where(shift => shift.ShiftStart > DateTime.Today).ToList().Sum(shift => shift.ShiftLength.Ticks));
+        public TimeSpan TotalHoursToday
+        {
+            get
+            {
+                List<Shift> shifts = new List<Shift>(Shifts.Where(shift => shift.ShiftStart > DateTime.Today).ToList());
+                return shifts.Count > 0 ? new TimeSpan(shifts.Sum(shift => shift.ShiftLength.Ticks)) : LoggedIn ? DateTime.Now - GetMostRecentShift().ShiftStart : new TimeSpan();
+            }
+        }
+
+        // => LoggedIn ? new TimeSpan(Shifts.Where(shift => shift.ShiftStart > DateTime.Today).ToList().Sum(shift => shift.ShiftLength.Ticks));
 
         /// <summary>Total hours worked today, formatted.</summary>
         public string TotalHoursTodayToString => TotalHoursToday.ToString(format, culture);
@@ -91,10 +101,17 @@ namespace TimeClock.Classes.Entities
         public string TotalHoursTodayToStringWithText => $"Today: {TotalHoursTodayToString}";
 
         /// <summary>Total hours worked this week.</summary>
-        public TimeSpan ThisWeekTotalHours => new TimeSpan(Shifts.Where(shift => shift.ShiftStart >= DateTime.Now.StartOfWeek(DayOfWeek.Sunday)).ToList().Sum(shift => shift.ShiftLength.Ticks));
+        public TimeSpan ThisWeekTotalHours
+        {
+            get
+            {
+                List<Shift> shifts = new List<Shift>(Shifts.Where(shift => shift.ShiftStart >= DateTime.Now.StartOfWeek(DayOfWeek.Sunday)).ToList());
+                return shifts.Count > 0 ? new TimeSpan(shifts.Sum(shift => shift.ShiftLength.Ticks)) : LoggedIn ? DateTime.Now - GetMostRecentShift().ShiftStart : new TimeSpan();
+            }
+        }
 
         /// <summary>Total hours worked today, formatted with preceding text.</summary>
-        public string ThisWeekTotalHoursToString => ThisWeekTotalHours.ToString(format, culture);
+        public string ThisWeekTotalHoursToString => $"{Int32Helper.Parse(ThisWeekTotalHours.TotalHours).ToString(culture).PadLeft(2, '0')}:{ThisWeekTotalHours.Minutes.ToString(culture).PadLeft(2, '0')}:{ThisWeekTotalHours.Seconds.ToString(culture).PadLeft(2, '0')}";
 
         /// <summary>Total hours worked this week, formatted with preceding text.</summary>
         public string ThisWeekTotalHoursToStringWithText => $"This Week: {ThisWeekTotalHoursToString}";
@@ -137,13 +154,7 @@ namespace TimeClock.Classes.Entities
         {
             if (Shifts.Any())
                 _shifts = Shifts.OrderByDescending(shift => shift.ShiftStart).ToList();
-            OnPropertyChanged("Shifts");
-            OnPropertyChanged("TotalHoursToday");
-            OnPropertyChanged("TotalHoursTodayToString");
-            OnPropertyChanged("TotalHoursTodayToStringWithText");
-            OnPropertyChanged("ThisWeekTotalHours");
-            OnPropertyChanged("ThisWeekTotalHoursToString");
-            OnPropertyChanged("ThisWeekTotalHoursToStringWithText");
+            UpdateBindings();
         }
 
         #endregion Shift Manipulation
@@ -178,7 +189,7 @@ namespace TimeClock.Classes.Entities
         /// <summary>Updates a <see cref="User"/>'s roles.</summary>
         private void UpdateRoles()
         {
-            if (_roles.Any())
+            if (_roles.Count > 0)
                 _roles = _roles.OrderBy(role => role).ToList();
             OnPropertyChanged("Roles");
         }
@@ -190,6 +201,18 @@ namespace TimeClock.Classes.Entities
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+
+        /// <summary>Updates bindings.</summary>
+        internal void UpdateBindings()
+        {
+            OnPropertyChanged("Shifts");
+            OnPropertyChanged("TotalHoursToday");
+            OnPropertyChanged("TotalHoursTodayToString");
+            OnPropertyChanged("TotalHoursTodayToStringWithText");
+            OnPropertyChanged("ThisWeekTotalHours");
+            OnPropertyChanged("ThisWeekTotalHoursToString");
+            OnPropertyChanged("ThisWeekTotalHoursToStringWithText");
+        }
 
         #endregion Data-Binding
 

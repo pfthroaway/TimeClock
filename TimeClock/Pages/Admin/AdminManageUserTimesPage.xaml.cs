@@ -22,6 +22,7 @@ namespace TimeClock.Pages.Admin
     {
         //TODO Implement managing times
         //TODO Turn this application into a fully-featured HR nightmare, with payroll calculations and everything else.
+        //TODO Maybe combine managing all user stuff into a tabbed interface.
         public AdminManageUserTimesPage()
         {
             InitializeComponent();

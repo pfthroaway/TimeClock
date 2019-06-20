@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Threading;
 using TimeClock.Classes;
 using TimeClock.Classes.Entities;
 using TimeClock.Pages.SharedPages;
@@ -13,6 +14,8 @@ namespace TimeClock.Pages.Users
     /// <summary>Interaction logic for TimeClockPage.xaml</summary>
     public partial class TimeClockPage : INotifyPropertyChanged
     {
+        private readonly DispatcherTimer _timer = new DispatcherTimer();
+
         #region Data-Binding
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -20,8 +23,6 @@ namespace TimeClock.Pages.Users
         private void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
 
         #endregion Data-Binding
-
-        //TODO Set up a way to constantly update this screen, possibly using a DispatchTimer like in my Productivity app.
 
         /// <summary>Checks information regarding the In/Out button.</summary>
         private void CheckButton()
@@ -45,15 +46,17 @@ namespace TimeClock.Pages.Users
                     AppState.CurrentUser.AddShift(newShift);
                     AppState.CurrentUser.LoggedIn = true;
                 }
+                _timer.Start();
             }
             else
             {
                 Shift currentShift = new Shift(AppState.CurrentUser.GetMostRecentShift()) { ShiftEnd = DateTime.Now };
-                if (await AppState.LogOut(currentShift).ConfigureAwait(false))
+                if (currentShift.ShiftLength > new TimeSpan(0, 0, 1) && await AppState.LogOut(currentShift).ConfigureAwait(false))
                 {
                     AppState.CurrentUser.ModifyShift(AppState.CurrentUser.GetMostRecentShift(), currentShift);
                     AppState.CurrentUser.LoggedIn = false;
                 }
+                _timer.Stop();
             }
             List<Shift> allShifts = new List<Shift>(AppState.CurrentUser.Shifts);
             TimeSpan total = new TimeSpan();
@@ -82,6 +85,8 @@ namespace TimeClock.Pages.Users
 
         #endregion Button-Click Methods
 
+        private void Timer_Tick(object sender, EventArgs e) => AppState.CurrentUser.UpdateBindings();
+
         #region Page-Manipulation Methods
 
         /// <summary>Closes the Page.</summary>
@@ -94,6 +99,10 @@ namespace TimeClock.Pages.Users
             CmbRoles.ItemsSource = AppState.CurrentUser.Roles;
             CmbRoles.SelectedIndex = 0;
             CheckButton();
+            _timer.Tick += Timer_Tick;
+            _timer.Interval = new TimeSpan(0, 0, 1);
+            if (AppState.CurrentUser.LoggedIn)
+                _timer.Start();
         }
 
         private void CmbRoles_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e) => CheckButton();
