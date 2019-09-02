@@ -8,7 +8,7 @@ namespace Extensions.DataTypeHelpers
         /// <summary>Utilizes double.TryParse to easily parse a Double.</summary>
         /// <param name="obj">Object to be parsed</param>
         /// <returns>Parsed Double</returns>
-        public static double Parse(object obj) => Parse(obj.ToString());
+        public static double Parse(object value) => Parse(value.ToString());
 
         /// <summary>Utilizes double.TryParse to easily parse a Double.</summary>
         /// <param name="text">Text to be parsed</param>

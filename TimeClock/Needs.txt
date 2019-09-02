@@ -1,0 +1,39 @@
+Organization:
+Database:
+ID,
+Users
+Application:
+ID,
+Users
+
+Role:
+Database:
+Name,
+Starting Pay Rate
+Application:
+Name,
+User's Current Pay Rate For That Role
+
+Users:
+Database
+ID,
+Name,
+Password,
+Roles,
+Shifts
+
+Shift:
+Database:
+ID of User,
+Role,
+Start,
+End,
+Modified
+Application:
+ID of User,
+Role,
+Start,
+End,
+Modified,
+Length,
+Total Pay,

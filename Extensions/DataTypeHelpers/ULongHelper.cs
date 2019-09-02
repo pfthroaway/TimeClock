@@ -8,7 +8,7 @@ namespace ExtensionsCore.DataTypeHelpers
         /// <summary>Utilizes ulong.TryParse to easily parse an Integer.</summary>
         /// <param name="obj">Object to be parsed</param>
         /// <returns>Parsed integer</returns>
-        public static ulong Parse(object obj) => Parse(obj.ToString());
+        public static ulong Parse(object value) => Parse(value.ToString());
 
         /// <summary>Utilizes ulong.TryParse to easily parse an Integer.</summary>
         /// <param name="text">Text to be parsed</param>

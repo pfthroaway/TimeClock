@@ -15,12 +15,12 @@ namespace Extensions.DataTypeHelpers
         /// <summary>Utilizes Convert.ToBoolean to easily parse a Boolean.</summary>
         /// <param name="obj">Object to be parsed</param>
         /// <returns>Parsed Boolean</returns>
-        public static bool Parse(object obj)
+        public static bool Parse(object value)
         {
             bool temp = false;
             try
             {
-                temp = Convert.ToBoolean(obj, new CultureInfo("en-US"));
+                temp = Convert.ToBoolean(value, new CultureInfo("en-US"));
             }
             catch (FormatException ex)
             {
