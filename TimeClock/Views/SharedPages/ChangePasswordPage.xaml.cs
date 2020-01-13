@@ -4,7 +4,7 @@ using System.Windows;
 using TimeClock.Classes;
 using TimeClock.Classes.Entities;
 
-namespace TimeClock.Pages.SharedPages
+namespace TimeClock.Views.SharedPages
 {
     /// <summary>Interaction logic for AdminChangePasswordPage.xaml</summary>
     public partial class ChangePasswordPage

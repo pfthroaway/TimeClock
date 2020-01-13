@@ -3,7 +3,7 @@ using Extensions.Encryption;
 using System.Windows;
 using TimeClock.Classes;
 
-namespace TimeClock.Pages.Admin
+namespace TimeClock.Views.Admin
 {
     /// <summary>Interaction logic for AdminPasswordPage.xaml</summary>
     public partial class AdminPasswordPage

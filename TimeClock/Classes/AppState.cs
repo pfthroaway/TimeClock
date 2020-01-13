@@ -1,12 +1,13 @@
 ﻿using Extensions;
 using Extensions.Enums;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using TimeClock.Classes.Database;
 using TimeClock.Classes.Entities;
-using TimeClock.Pages;
+using TimeClock.Views;
 
 namespace TimeClock.Classes
 {
@@ -91,6 +92,14 @@ namespace TimeClock.Classes
 
         #region Load
 
+        /// <summary>Handles verification of required files.</summary>
+        internal static void FileManagement()
+        {
+            if (!Directory.Exists(AppData.Location))
+                Directory.CreateDirectory(AppData.Location);
+            DatabaseInteraction.VerifyDatabaseIntegrity();
+        }
+
         /// <summary>Gets the next User ID autoincrement value in the database for the Users table.</summary>
         /// <returns>Next User ID value</returns>
         public static async Task<int> GetNextUserIndex() => await DatabaseInteraction.GetNextUserIndex().ConfigureAwait(false);
@@ -98,7 +107,7 @@ namespace TimeClock.Classes
         /// <summary>Loads all required items from the database on application load.</summary>
         internal static async Task LoadAll()
         {
-            DatabaseInteraction.VerifyDatabaseIntegrity();
+            FileManagement();
             AdminPassword = await DatabaseInteraction.LoadAdminPassword().ConfigureAwait(false);
             AllRoles = new List<string>(await DatabaseInteraction.LoadRoles().ConfigureAwait(false));
         }

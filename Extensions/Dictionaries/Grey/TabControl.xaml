@@ -77,9 +77,9 @@
                      TargetType="{x:Type ScrollBar}">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition MaxHeight="24" />
+                <RowDefinition MaxHeight="36" />
                 <RowDefinition Height="0.00001*" />
-                <RowDefinition MaxHeight="24" />
+                <RowDefinition MaxHeight="36" />
             </Grid.RowDefinitions>
             <Border
                 Grid.RowSpan="3"
@@ -88,7 +88,7 @@
             <RepeatButton
                 Grid.Row="0"
                 Style="{StaticResource ScrollBarLineButton}"
-                Height="24"
+                Height="36"
                 Command="ScrollBar.LineUpCommand"
                 Content="M 0 4 L 8 4 L 4 0 Z" />
             <Track
@@ -116,7 +116,7 @@
             <RepeatButton
                 Grid.Row="2"
                 Style="{StaticResource ScrollBarLineButton}"
-                Height="24"
+                Height="36"
                 Command="ScrollBar.LineDownCommand"
                 Content="M 0 0 L 4 4 L 8 0 Z" />
         </Grid>
@@ -126,9 +126,9 @@
                      TargetType="{x:Type ScrollBar}">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition MaxWidth="24" />
+                <ColumnDefinition MaxWidth="36" />
                 <ColumnDefinition Width="0.00001*" />
-                <ColumnDefinition MaxWidth="24" />
+                <ColumnDefinition MaxWidth="36" />
             </Grid.ColumnDefinitions>
             <Border
                 Grid.ColumnSpan="3"
@@ -137,7 +137,7 @@
             <RepeatButton
                 Grid.Column="0"
                 Style="{StaticResource ScrollBarLineButton}"
-                Width="24"
+                Width="36"
                 Command="ScrollBar.LineLeftCommand"
                 Content="M 4 0 L 4 8 L 0 4 Z" />
             <Track
@@ -165,7 +165,7 @@
             <RepeatButton
                 Grid.Column="2"
                 Style="{StaticResource ScrollBarLineButton}"
-                Width="24"
+                Width="36"
                 Command="ScrollBar.LineRightCommand"
                 Content="M 0 0 L 4 4 L 0 8 Z" />
         </Grid>
@@ -178,12 +178,12 @@
         <Style.Triggers>
             <Trigger Property="Orientation" Value="Horizontal">
                 <Setter Property="Width" Value="Auto" />
-                <Setter Property="Height" Value="24" />
+                <Setter Property="Height" Value="36" />
                 <Setter Property="Template"
                         Value="{StaticResource HorizontalScrollBar}" />
             </Trigger>
             <Trigger Property="Orientation" Value="Vertical">
-                <Setter Property="Width" Value="24" />
+                <Setter Property="Width" Value="36" />
                 <Setter Property="Height" Value="Auto" />
                 <Setter Property="Template"
                         Value="{StaticResource VerticalScrollBar}" />
@@ -255,13 +255,13 @@
                             <Setter Property="Foreground" Value="#CCCCCC" />
                             <Setter TargetName="Border" Property="Background" Value="#2F3136" />
                             <Setter TargetName="Border" Property="BorderBrush" Value="#CCCCCC" />
-                            <Setter Property="Height" Value="40" />
+                            <Setter Property="Height" Value="60" />
                         </Trigger>
                         <Trigger Property="IsSelected" Value="False">
                             <Setter Property="Foreground" Value="#2F3136" />
                             <Setter TargetName="Border" Property="Background" Value="#CCCCCC" />
                             <Setter TargetName="Border" Property="BorderBrush" Value="Black" />
-                            <Setter Property="Height" Value="30" />
+                            <Setter Property="Height" Value="50" />
                             <Setter Property="VerticalAlignment" Value="Bottom" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">

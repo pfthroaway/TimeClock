@@ -1,11 +1,10 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Globalization;
 
 namespace TimeClock.Classes.Entities
 {
     /// <summary>Represents a shift that was started or worked.</summary>
-    internal class Shift : INotifyPropertyChanged
+    internal class Shift : BaseINPC
     {
         private int _id;
         private string _role;
@@ -22,7 +21,7 @@ namespace TimeClock.Classes.Entities
         public int ID
         {
             get => _id;
-            private set { _id = value; OnPropertyChanged("ID"); }
+            private set { _id = value; NotifyPropertyChanged(nameof(ID)); }
         }
 
         /// <summary>The <see cref="User"/>'s role this <see cref="Shift"/>.</summary>
@@ -32,7 +31,7 @@ namespace TimeClock.Classes.Entities
             set
             {
                 _role = value;
-                OnPropertyChanged("Role");
+                NotifyPropertyChanged(nameof(Role));
             }
         }
 
@@ -40,7 +39,7 @@ namespace TimeClock.Classes.Entities
         public DateTime ShiftStart
         {
             get => _shiftStart;
-            private set { _shiftStart = value; OnPropertyChanged("ShiftStart"); OnPropertyChanged("ShiftLength"); OnPropertyChanged("ShiftLengthToString"); }
+            private set { _shiftStart = value; NotifyPropertyChanged(nameof(ShiftStart), nameof(ShiftLength), nameof(ShiftLengthToString)); }
         }
 
         /// <summary>Time <see cref="Shift"/> ended.</summary>
@@ -50,9 +49,7 @@ namespace TimeClock.Classes.Entities
             set
             {
                 _shiftEnd = value;
-                OnPropertyChanged("ShiftEnd");
-                OnPropertyChanged("ShiftLength");
-                OnPropertyChanged("ShiftLengthToString");
+                NotifyPropertyChanged(nameof(ShiftEnd), nameof(ShiftLength), nameof(ShiftLengthToString));
             }
         }
 
@@ -63,7 +60,7 @@ namespace TimeClock.Classes.Entities
             set
             {
                 _edited = value;
-                OnPropertyChanged("Edited");
+                NotifyPropertyChanged(nameof(Edited));
             }
         }
 
@@ -88,17 +85,6 @@ namespace TimeClock.Classes.Entities
             : "";
 
         #endregion Helper Properties
-
-        #region Data-Binding
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged(string property)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
-
-        #endregion Data-Binding
 
         #region Override Operators
 

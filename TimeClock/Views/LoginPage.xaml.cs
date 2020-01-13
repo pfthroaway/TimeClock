@@ -4,9 +4,9 @@ using System.Windows;
 using System.Windows.Input;
 using TimeClock.Classes;
 using TimeClock.Classes.Entities;
-using TimeClock.Pages.Users;
+using TimeClock.Views.Users;
 
-namespace TimeClock.Pages
+namespace TimeClock.Views
 {
     /// <summary>Interaction logic for LoginPage.xaml</summary>
     public partial class LoginPage

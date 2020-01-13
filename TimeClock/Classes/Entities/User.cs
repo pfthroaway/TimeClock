@@ -2,14 +2,13 @@
 using Extensions.DataTypeHelpers;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 
 namespace TimeClock.Classes.Entities
 {
     /// <summary>Represents someone who uses the Time Clock.</summary>
-    internal class User : INotifyPropertyChanged, IEquatable<User>
+    internal class User : BaseINPC
     {
         private int _id;
         private string _username, _firstName, _lastName, _password;
@@ -25,42 +24,42 @@ namespace TimeClock.Classes.Entities
         public int ID
         {
             get => _id;
-            set { _id = value; OnPropertyChanged("ID"); }
+            set { _id = value; NotifyPropertyChanged(nameof(ID)); }
         }
 
         /// <summary><see cref="User"/>'s username</summary>
         public string Username
         {
             get => _username;
-            set { _username = value; OnPropertyChanged("Username"); }
+            set { _username = value; NotifyPropertyChanged(nameof(Username)); }
         }
 
         /// <summary><see cref="User"/>'s first name</summary>
         public string FirstName
         {
             get => _firstName;
-            set { _firstName = value; OnPropertyChanged("FirstName"); OnPropertyChanged("Names"); }
+            set { _firstName = value; NotifyPropertyChanged(nameof(FirstName), nameof(Names)); }
         }
 
         /// <summary><see cref="User"/>'s last name</summary>
         public string LastName
         {
             get => _lastName;
-            set { _lastName = value; OnPropertyChanged("LastName"); OnPropertyChanged("Names"); }
+            set { _lastName = value; NotifyPropertyChanged(nameof(LastName), nameof(Names)); }
         }
 
         /// <summary><see cref="User"/>'s Password</summary>
         public string Password
         {
             get => _password;
-            set { _password = value; OnPropertyChanged("Password"); }
+            set { _password = value; NotifyPropertyChanged(nameof(Password)); }
         }
 
         /// <summary>Is <see cref="User"/> logged in?</summary>
         public bool LoggedIn
         {
             get => _loggedIn;
-            set { _loggedIn = value; OnPropertyChanged("LoggedIn"); OnPropertyChanged("LoggedInText"); }
+            set { _loggedIn = value; NotifyPropertyChanged(nameof(LoggedIn), nameof(LoggedInText)); }
         }
 
         /// <summary>List of roles a <see cref="User"/> has available.</summary>
@@ -191,30 +190,22 @@ namespace TimeClock.Classes.Entities
         {
             if (_roles.Count > 0)
                 _roles = _roles.OrderBy(role => role).ToList();
-            OnPropertyChanged("Roles");
+            NotifyPropertyChanged("Roles");
         }
 
         #endregion Role Manipulation
 
-        #region Data-Binding
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-
         /// <summary>Updates bindings.</summary>
         internal void UpdateBindings()
         {
-            OnPropertyChanged("Shifts");
-            OnPropertyChanged("TotalHoursToday");
-            OnPropertyChanged("TotalHoursTodayToString");
-            OnPropertyChanged("TotalHoursTodayToStringWithText");
-            OnPropertyChanged("ThisWeekTotalHours");
-            OnPropertyChanged("ThisWeekTotalHoursToString");
-            OnPropertyChanged("ThisWeekTotalHoursToStringWithText");
+            NotifyPropertyChanged("Shifts");
+            NotifyPropertyChanged("TotalHoursToday");
+            NotifyPropertyChanged("TotalHoursTodayToString");
+            NotifyPropertyChanged("TotalHoursTodayToStringWithText");
+            NotifyPropertyChanged("ThisWeekTotalHours");
+            NotifyPropertyChanged("ThisWeekTotalHoursToString");
+            NotifyPropertyChanged("ThisWeekTotalHoursToStringWithText");
         }
-
-        #endregion Data-Binding
 
         #region Override Operators
 

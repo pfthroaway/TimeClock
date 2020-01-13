@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Windows;
 using TimeClock.Classes;
 
-namespace TimeClock.Pages.Users
+namespace TimeClock.Views.Users
 {
     /// <summary>Interaction logic for UserLogPage.xaml</summary>
     public partial class UserLogPage : INotifyPropertyChanged
@@ -13,7 +13,7 @@ namespace TimeClock.Pages.Users
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void OnPropertyChanged(string property)
+        private void NotifyPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }

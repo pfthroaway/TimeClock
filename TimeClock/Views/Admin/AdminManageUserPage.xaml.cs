@@ -9,7 +9,7 @@ using System.Windows.Input;
 using TimeClock.Classes;
 using TimeClock.Classes.Entities;
 
-namespace TimeClock.Pages.Admin
+namespace TimeClock.Views.Admin
 {
     /// <summary>Interaction logic for AdminModifyUserPage.xaml</summary>
     public partial class AdminManageUserPage

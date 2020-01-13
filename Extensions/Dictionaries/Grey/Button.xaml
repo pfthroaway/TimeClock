@@ -16,7 +16,7 @@
         <Setter Property="BorderBrush" Value="#999999" />
         <Setter Property="Foreground" Value="#CCCCCC" />
         <Setter Property="BorderThickness" Value="2" />
-        <Setter Property="Height" Value="40" />
+        <Setter Property="Height" Value="50" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Padding" Value="1" />

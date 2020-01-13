@@ -6,7 +6,9 @@
         <Setter Property="Background" Value="#1E2124" />
         <Setter Property="Foreground" Value="#CCCCCC" />
         <Setter Property="FontFamily" Value="Segoe UI Semibold" />
-        <Setter Property="FontSize" Value="17" />
+        <Setter Property="FontSize" Value="28" />
+        <Setter Property="Height" Value="1036" />
+        <Setter Property="Width" Value="1900" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Page}">

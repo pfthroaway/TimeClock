@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -15,15 +16,14 @@ namespace TimeClock.Classes.Database
     /// <summary>Represents database interaction covered by SQLite.</summary>
     internal class SQLiteDatabaseInteraction : IDatabaseInteraction
     {
-        private readonly string _con = $"Data Source = {_DATABASENAME}; foreign keys = TRUE; Version = 3";
-
-        // ReSharper disable once InconsistentNaming
         private const string _DATABASENAME = "TimeClock.sqlite";
+        private readonly string _con = $"Data Source={UsersDatabaseLocation}; foreign keys = TRUE; Version = 3;";
+        private static readonly string UsersDatabaseLocation = Path.Combine(AppData.Location, _DATABASENAME);
 
         /// <summary>Verifies that the requested database exists and that its file size is greater than zero. If not, it extracts the embedded database file to the local output folder.</summary>
         /// <returns>Returns true once the database has been validated</returns>
         public void VerifyDatabaseIntegrity() => Functions.VerifyFileIntegrity(Assembly.GetExecutingAssembly()
-            .GetManifestResourceStream($"TimeClock.{_DATABASENAME}"), _DATABASENAME);
+            .GetManifestResourceStream($"TimeClock.{_DATABASENAME}"), _DATABASENAME, AppData.Location);
 
         #region Administrator Management
 

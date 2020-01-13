@@ -1,0 +1,26 @@
+﻿<Page x:Class="TimeClock.Views.Admin.AdminRolesPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      mc:Ignorable="d"
+      Style="{StaticResource PageStyle}"
+      Title="Time Clock - Roles"
+      Loaded="Page_Loaded">
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <ListBox x:Name="LstRoles" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Height="300" Width="410" ItemsSource="{Binding}" SelectionChanged="LstRoles_SelectionChanged" Margin="0,0,0,10" />
+        <Button x:Name="BtnNewRole" Grid.Column="0" Grid.Row="1" Width="200" Content="_New Role" Click="BtnNewRole_Click" Margin="0,0,10,10" />
+        <Button x:Name="BtnDeleteRole" Grid.Column="1" Grid.Row="1" Width="200" Content="_Delete Role" Click="BtnDeleteRole_Click" IsEnabled="False" Margin="0,0,0,10" />
+        <Button x:Name="BtnModifyRole" Grid.Column="0" Grid.Row="2" Width="200" Content="_Modify Role" Click="BtnModifyRole_Click" IsEnabled="False" Margin="0,0,10,0" />
+        <Button x:Name="BtnBack" Grid.Column="1" Grid.Row="2" Width="200" Content="_Back" Click="BtnBack_Click" IsCancel="False" />
+    </Grid>
+</Page>

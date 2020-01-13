@@ -17,11 +17,11 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <TextBlock x:Name="TxtPopup" Grid.Row="0" Width="400" Margin="0,0,0,10" />
-        <TextBox x:Name="TxtInput" x:FieldModifier="public" Grid.Row="1" Width="400" TextChanged="TxtInput_TextChanged" Margin="0,0,0,10" />
+        <TextBlock x:Name="TxtPopup" Grid.Row="0" Width="800" TextAlignment="Center" TextWrapping="Wrap" Margin="0,0,0,10" />
+        <TextBox x:Name="TxtInput" x:FieldModifier="public" Grid.Row="1" Width="410" TextChanged="TxtInput_TextChanged" Margin="0,0,0,10" />
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button x:Name="BtnSubmit" Width="100" Content="_Submit" IsDefault="True" IsEnabled="False" Click="BtnSubmit_Click" Margin="0,0,30,0" />
-            <Button x:Name="BtnExit" Width="100" Content="_Exit" Click="BtnExit_Click" IsCancel="True" />
+            <Button x:Name="BtnSubmit" Width="200" Content="_Submit" IsDefault="True" IsEnabled="False" Click="BtnSubmit_Click" Margin="0,0,10,0" />
+            <Button x:Name="BtnExit" Width="200" Content="_Exit" Click="BtnExit_Click" IsCancel="True" />
         </StackPanel>
     </Grid>
 </Window>

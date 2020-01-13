@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using TimeClock.Classes;
 using TimeClock.Classes.Entities;
-using TimeClock.Pages.SharedPages;
+using TimeClock.Views.SharedPages;
 
-namespace TimeClock.Pages.Admin
+namespace TimeClock.Views.Admin
 {
     /// <summary>Interaction logic for AdminPage.xaml</summary>
     public partial class AdminPage

@@ -1,8 +1,8 @@
 ﻿using System.Windows;
 using TimeClock.Classes;
-using TimeClock.Pages.Admin;
+using TimeClock.Views.Admin;
 
-namespace TimeClock.Pages
+namespace TimeClock.Views
 {
     /// <summary>Interaction logic for MainWindow.xaml</summary>
     public partial class MainWindow

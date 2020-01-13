@@ -1,0 +1,42 @@
+﻿<Page x:Class="TimeClock.Views.Users.UserLogPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      Style="{StaticResource PageStyle}"
+      Title="User Log">
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <ListView Grid.Row="0" Name="LVShifts" ScrollViewer.VerticalScrollBarVisibility="Visible" Height="525" FontFamily="Lucida Console">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="400" DisplayMemberBinding="{Binding ShiftStartToString}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader MaxWidth="400" Tag="ShiftStart" Click="LVShiftsColumnHeader_Click">Shift Start</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn Width="400" DisplayMemberBinding="{Binding ShiftEndToString}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader MaxWidth="400" Tag="ShiftEnd" Click="LVShiftsColumnHeader_Click">Shift End</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn Width="225" DisplayMemberBinding="{Binding ShiftLengthToString}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader MaxWidth="225" Tag="ShiftLength" Click="LVShiftsColumnHeader_Click">Shift Length</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn Width="400" DisplayMemberBinding="{Binding Role}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader MaxWidth="400" Tag="Role" Click="LVShiftsColumnHeader_Click">Role</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Button x:Name="BtnBack" Grid.Row="1" Width="200" Content="_Back" Margin="0,10,0,0" IsCancel="True" IsDefault="True" Click="BtnBack_Click" />
+    </Grid>
+</Page>

@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using TimeClock.Classes;
 
-namespace TimeClock.Pages.Admin
+namespace TimeClock.Views.Admin
 {
     /// <summary>Interaction logic for AdminRoles.xaml</summary>
     public partial class AdminRolesPage : INotifyPropertyChanged
@@ -15,7 +15,7 @@ namespace TimeClock.Pages.Admin
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        private void NotifyPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
 
         /// <summary>Updates the data binding for this Page.</summary>
         private void UpdateBindings()

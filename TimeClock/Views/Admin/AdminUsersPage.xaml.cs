@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using TimeClock.Classes;
 using TimeClock.Classes.Entities;
 
-namespace TimeClock.Pages.Admin
+namespace TimeClock.Views.Admin
 {
     /// <summary>Interaction logic for AdminUsersPage.xaml</summary>
     public partial class AdminUsersPage

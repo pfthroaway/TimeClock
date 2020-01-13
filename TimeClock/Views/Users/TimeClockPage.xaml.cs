@@ -7,9 +7,9 @@ using System.Windows;
 using System.Windows.Threading;
 using TimeClock.Classes;
 using TimeClock.Classes.Entities;
-using TimeClock.Pages.SharedPages;
+using TimeClock.Views.SharedPages;
 
-namespace TimeClock.Pages.Users
+namespace TimeClock.Views.Users
 {
     /// <summary>Interaction logic for TimeClockPage.xaml</summary>
     public partial class TimeClockPage : INotifyPropertyChanged
@@ -20,7 +20,7 @@ namespace TimeClock.Pages.Users
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        private void NotifyPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
 
         #endregion Data-Binding
 
