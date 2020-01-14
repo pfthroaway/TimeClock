@@ -37,3 +37,10 @@ End,
 Modified,
 Length,
 Total Pay,
+
+Role History:
+Start Date at Role
+Start Pay
+Pay Increase Date
+Role End Date
+Ending Pay

@@ -8,7 +8,7 @@
         Title="{Binding Path=Content.Title, ElementName=MainFrame}"
         WindowState="Maximized"
         ResizeMode="CanResize"
-        MinWidth="600"
+        MinWidth="1032"
         MinHeight="600"
         SizeToContent="Manual"
         WindowStartupLocation="CenterScreen"
