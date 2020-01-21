@@ -1,4 +1,5 @@
-﻿using Extensions.Enums;
+﻿using Extensions.DataTypeHelpers;
+using Extensions.Enums;
 using System;
 using System.Data;
 using System.Data.SQLite;
@@ -71,6 +72,17 @@ namespace Extensions.DatabaseHelp
                 }
             }).ConfigureAwait(false);
             return ds;
+        }
+
+        /// <summary>Gets the next index from the SQLITE_SEQUENCE table for a passed table's autoincrement value</summary>
+        /// <param name="connectionString">Connection string for the database</param>
+        /// <param name="tableName">Name of the table whose autoincrement value being requested</param>
+        /// <returns>Autoincrement value being requested</returns>
+        public static async Task<int> GetNextIndex(string connectionString, string tableName)
+        {
+            DataSet ds = await FillDataSet(connectionString, $"SELECT * FROM SQLITE_SEQUENCE WHERE [name] = '{tableName}'");
+
+            return ds.Tables[0].Rows.Count > 0 ? Int32Helper.Parse(ds.Tables[0].Rows[0]["seq"]) + 1 : 1;
         }
 
         /// <summary>Executes commands.</summary>
